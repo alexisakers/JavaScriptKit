@@ -35,20 +35,20 @@ class FatalErrorManager {
 }
 
 /// Runs the run loop forever Run after a function that can return `Never`.
-public func stop() -> Never {
+internal func stop() -> Never {
     while true {
         RunLoop.current.run()
     }
 }
 
 /// Stops the program with an error message.
-public func fail(_ message: @autoclosure () -> String, _ file: StaticString = #file, _ line: UInt = #line) -> Never {
+internal func fail(_ message: @autoclosure () -> String, _ file: StaticString = #file, _ line: UInt = #line) -> Never {
     _ = FatalErrorManager.fatalErrorClosure(message(), file, line)
     stop()
 }
 
 /// Stops the program when a function is unavailable.
-public func unavailable(_ function: String = #function, _ file: String = #file, _ line: Int = #line) -> Never {
+internal func unavailable(_ function: String = #function, _ file: String = #file, _ line: Int = #line) -> Never {
     let message = "\(file):\(line) — \(function) is not available."
     fail(message)
 }
