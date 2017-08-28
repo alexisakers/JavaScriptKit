@@ -13,8 +13,8 @@ import CoreGraphics
 ///
 /// You can make your custom types conform to it if they can be converted to JavaScript.
 ///
-/// You can also use it to make your enumerations automatically compatible with the API
-/// if their `RawValue` is `JSConvertible`:
+/// You can also use it to make your enumerations automatically compatible with the API if their
+/// `RawValue` is `JSConvertible`:
 ///
 /// ~~~swift
 /// public enum FontFamily: String, JSConvertible {
@@ -24,8 +24,8 @@ import CoreGraphics
 /// }
 /// ~~~
 ///
-/// In this example, the raw value of `FontFamily` will now automatically be used
-/// in any API requiring a `JSConvertible` value.
+/// In this example, the raw value of `FontFamily` will now automatically be used in any API
+/// requiring a `JSConvertible` value.
 ///
 
 public protocol JSConvertible {
@@ -48,8 +48,8 @@ extension RawRepresentable where RawValue: JSConvertible {
 ///
 /// A type that is native to both Swift and JavaScript.
 ///
-/// - warning: This protocol is an implementation detail of `JSBridge`. Do not
-/// make your types conform to it.
+/// - warning: This protocol is an implementation detail of `JSBridge`. Do not make your types
+/// conform to it.
 ///
 
 public protocol JSPrimitiveType: JSConvertible {}
@@ -104,13 +104,12 @@ public protocol JSObject {
     ///
     /// Creates the Swift object from a JavaScript object literal.
     ///
-    /// Implement this initializer to configure your object with the contents
-    /// of its JS counterpart. You can return `nil` if the object literal is
-    /// not compatible with your model.
+    /// Implement this initializer to configure your object with the contents of its JS counterpart.
+    /// You can return `nil` if the object literal is not compatible with your model.
     ///
     /// - parameter objectLiteral: The JavaScript body of the object.
-    /// - returns: The initialized object, or `nil` if `objectLiteral` is not
-    /// compatible with the type's model.
+    /// - returns: The initialized object, or `nil` if `objectLiteral` is not compatible with the
+    /// type's model.
     ///
 
     init?(objectLiteral: NSDictionary)
@@ -129,8 +128,7 @@ public protocol SequenceInitializableCollection: MutableCollection {
     ///
     /// Creates a mutable collection from the elements of a sequence.
     ///
-    /// - parameter elements: The sequence of elements to copy to a new mutable
-    /// collection.
+    /// - parameter elements: The sequence of elements to copy to a new mutable collection.
     ///
 
     init<S>(_ elements: S) where S : Sequence, Element == S.Element

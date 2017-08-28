@@ -10,12 +10,11 @@ import Result
 ///
 /// A JavaScript expression that can be evaluated inside of a web view (`WKWebView`).
 ///
-/// Instances of this class are specialized with the `ReturnType` parameter
-/// that specifies the expected return type of the expression.
+/// Instances of this class are specialized with the `ReturnType` parameter that specifies the
+/// expected return type of the expression.
 ///
-/// This class is an abstract superclass that you need to subclass. In your
-/// concrete subclasses, override the `javaScriptString` property to return
-/// an appropriate script string.
+/// This class is an abstract superclass that you need to subclass. In your concrete subclasses,
+/// override the `javaScriptString` property to return an appropriate script string.
 ///
 /// The library provides ready-to-use subclasses:
 /// - `JSGlobal` to access a global variable
@@ -30,8 +29,8 @@ public class JSExpression<ReturnType> {
     /// A function that can decode a value passed by the web view's JavaScript context to the
     /// expected return type of the expression.
     ///
-    /// Usually, you do not need to create your own decoder, as default ones are implemented
-    /// for compatible return types.
+    /// Usually, you do not need to create your own decoder, as default ones are implemented for
+    /// compatible return types.
     ///
     /// - parameter value: The value returned by the JavaScript context.
     /// - returns: The decoded value, or `nil` if `value` is not compatible with `ReturnType`.
@@ -42,11 +41,11 @@ public class JSExpression<ReturnType> {
     ///
     /// The strategies to decode a value.
     ///
-    /// Strategies are used when the web view sends the result of the expression
-    /// to determine whether it is valid or not.
+    /// Strategies are used when the web view sends the result of the expression to determine
+    /// whether it is valid or not.
     ///
-    /// Usually, you don't need to specify a strategy, as the correct one is automatically
-    /// selected for compatible return types.
+    /// Usually, you don't need to specify a strategy, as the correct one is automatically selected
+    /// for compatible return types.
     ///
 
     public enum DecodingStrategy {
@@ -54,8 +53,8 @@ public class JSExpression<ReturnType> {
         ///
         /// A return value is mandatory.
         ///
-        /// If a value or an error is not provided, the result of the expression will be
-        /// considered invalid.
+        /// If a value or an error is not provided, the result of the expression will be considered
+        /// invalid.
         ///
 
         case returnValueMandatory
@@ -65,8 +64,8 @@ public class JSExpression<ReturnType> {
         ///
         /// If a value is provided, the result of the expression will be considered invalid.
         ///
-        /// When no value or error is provided, the default value will be passed to your
-        /// completion handler.
+        /// When no value or error is provided, the default value will be passed to your completion
+        /// handler.
         ///
         /// This strategy must only be used for `Void` return types, as the web view will not
         /// provide a value on success for this return type.
@@ -90,8 +89,8 @@ public class JSExpression<ReturnType> {
     ///
     /// The JavaScript text of the expression.
     ///
-    /// This property needs to be overriden and used by concrete subclasses.
-    /// Failure to comply to this requirement causes your app to crash.
+    /// This property needs to be overriden and used by concrete subclasses. Failure to comply with
+    /// this requirement causes your app to crash.
     ///
 
     var javaScriptString: String {
@@ -126,8 +125,8 @@ extension JSExpression {
     ///  result. Defaults to `returnValueMandatory`.
     /// - parameter completionHandler: The code to execute with the parsed execution results.
     ///     - result:  The result of the evaluation. Will be `.success(ReturnType)` if a valid
-    ///     return value was parsed ; or `.error(JSErrorDomain)` if an error was thrown by the web view
-    ///     when evaluating the script.
+    ///     return value was parsed ; or `.error(JSErrorDomain)` if an error was thrown by the web
+    ///     view when evaluating the script.
     ///
 
     public func evaluateScript(in webView: WKWebView,
@@ -194,8 +193,8 @@ extension JSExpression where ReturnType == Void {
     /// - parameter webView: The web view to execute the code in.
     /// - parameter completionHandler: The code to execute with the parsed execution results.
     ///     - result:  The result of the evaluation. Will be `.success(ReturnType)` if a valid
-    ///     return value was parsed ; or `.error(JSErrorDomain)` if an error was thrown by the web view
-    ///     when evaluating the script.
+    ///     return value was parsed ; or `.error(JSErrorDomain)` if an error was thrown by the web
+    ///     view when evaluating the script.
     ///
 
     public func evaluate(in webView: WKWebView,
@@ -228,8 +227,8 @@ extension JSExpression where ReturnType: JSPrimitiveType {
     /// - parameter webView: The web view to execute the code in.
     /// - parameter completionHandler: The code to execute with the parsed execution results.
     ///     - result:  The result of the evaluation. Will be `.success(ReturnType)` if a valid
-    ///     return value was parsed ; or `.error(JSErrorDomain)` if an error was thrown by the web view
-    ///     when evaluating the script.
+    ///     return value was parsed ; or `.error(JSErrorDomain)` if an error was thrown by the web
+    ///     view when evaluating the script.
     ///
 
     public func evaluate(in webView: WKWebView,
@@ -265,8 +264,8 @@ extension JSExpression where ReturnType: RawRepresentable, ReturnType.RawValue: 
     /// - parameter webView: The web view to execute the code in.
     /// - parameter completionHandler: The code to execute with the parsed execution results.
     ///     - result:  The result of the evaluation. Will be `.success(ReturnType)` if a valid
-    ///     return value was parsed ; or `.error(JSErrorDomain)` if an error was thrown by the web view
-    ///     when evaluating the script.
+    ///     return value was parsed ; or `.error(JSErrorDomain)` if an error was thrown by the web
+    ///     view when evaluating the script.
     ///
 
     public func evaluate(in webView: WKWebView,
@@ -306,8 +305,8 @@ extension JSExpression where ReturnType: JSObject {
     /// - parameter webView: The web view to execute the code in.
     /// - parameter completionHandler: The code to execute with the parsed execution results.
     ///     - result:  The result of the evaluation. Will be `.success(ReturnType)` if a valid
-    ///     return value was parsed ; or `.error(JSErrorDomain)` if an error was thrown by the web view
-    ///     when evaluating the script.
+    ///     return value was parsed ; or `.error(JSErrorDomain)` if an error was thrown by the web
+    ///     view when evaluating the script.
     ///
 
     public func evaluate(in webView: WKWebView,
@@ -355,8 +354,8 @@ extension JSExpression where ReturnType: SequenceInitializableCollection, Return
     /// - parameter webView: The web view to execute the code in.
     /// - parameter completionHandler: The code to execute with the parsed execution results.
     ///     - result:  The result of the evaluation. Will be `.success(ReturnType)` if a valid
-    ///     return value was parsed ; or `.error(JSErrorDomain)` if an error was thrown by the web view
-    ///     when evaluating the script.
+    ///     return value was parsed ; or `.error(JSErrorDomain)` if an error was thrown by the web
+    ///     view when evaluating the script.
     ///
 
     public func evaluate(in webView: WKWebView,
@@ -409,8 +408,8 @@ extension JSExpression where ReturnType: SequenceInitializableCollection, Return
     /// - parameter webView: The web view to execute the code in.
     /// - parameter completionHandler: The code to execute with the parsed execution results.
     ///     - result:  The result of the evaluation. Will be `.success(ReturnType)` if a valid
-    ///     return value was parsed ; or `.error(JSErrorDomain)` if an error was thrown by the web view
-    ///     when evaluating the script.
+    ///     return value was parsed ; or `.error(JSErrorDomain)` if an error was thrown by the web
+    ///     view when evaluating the script.
     ///
 
     public func evaluate(in webView: WKWebView,
@@ -464,8 +463,8 @@ extension JSExpression where ReturnType: SequenceInitializableCollection, Return
     /// - parameter webView: The web view to execute the code in.
     /// - parameter completionHandler: The code to execute with the parsed execution results.
     ///     - result:  The result of the evaluation. Will be `.success(ReturnType)` if a valid
-    ///     return value was parsed ; or `.error(JSErrorDomain)` if an error was thrown by the web view
-    ///     when evaluating the script.
+    ///     return value was parsed ; or `.error(JSErrorDomain)` if an error was thrown by the web
+    ///     view when evaluating the script.
     ///
 
     public func evaluate(in webView: WKWebView,

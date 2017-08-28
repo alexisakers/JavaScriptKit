@@ -6,8 +6,8 @@
 import Foundation
 
 ///
-/// A concrete JavaScript expression that returns the value of a property
-/// that belongs to a variable of the current JavaScript `this`.
+/// A concrete JavaScript expression that returns the value of a property that belongs to a variable
+/// of the current JavaScript `this`.
 ///
 /// For instance, to get the title of the current document:
 ///
@@ -16,9 +16,9 @@ import Foundation
 /// // equivalent to the JS script `this.document.title;`
 /// ~~~
 ///
-/// Instances of this class are specialized with the `ReturnType` generic parameter.
-/// It must be set to the type of the JavaScript property to query. Check the documentation of
-/// the JavaScript property to know what to set the parameter to.
+/// Instances of this class are specialized with the `ReturnType` generic parameter. It must be set
+/// to the type of the JavaScript property to query. Check the documentation of the JavaScript
+/// property to know what to set the parameter to.
 ///
 /// `ReturnType` must be a compatible type. Compatible types include:
 /// - Primitive values (`JSPrimitiveType`)
@@ -45,7 +45,8 @@ public class JSProperty<ReturnType>: JSExpression<ReturnType> {
     ///
     /// Creates a new JavaScript property description.
     ///
-    /// - parameter variableName: The name of the variable that contains the requested property. It must be a member of the current JavaScript `this`.
+    /// - parameter variableName: The name of the variable that contains the requested property. It
+    /// must be a member of the current JavaScript `this`.
     /// - parameter methodName: The name of the property to fetch.
     ///
 

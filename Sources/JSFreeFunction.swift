@@ -6,8 +6,8 @@
 import Foundation
 
 ///
-/// A concrete JavaScript expression that executes a global function of the current
-/// JavaScript `this`.
+/// A concrete JavaScript expression that executes a global function of the current JavaScript
+/// `this`.
 ///
 /// For instance, to present an alert:
 ///
@@ -16,9 +16,9 @@ import Foundation
 /// // equivalent to the JS script `this.alert("Hello from Swift!");`
 /// ~~~
 ///
-/// Instances of this class are specialized with the `ReturnType` generic parameter.
-/// It must be set to the return type of the JavaScript function to execute. Check the documentation of
-/// the JavaScript function to know what to set the parameter to.
+/// Instances of this class are specialized with the `ReturnType` generic parameter. It must be set
+/// to the return type of the JavaScript function to execute. Check the documentation of the
+/// JavaScript function to know what to set the parameter to.
 ///
 /// `ReturnType` must be a compatible type. Compatible types include:
 /// - `Void`
@@ -46,7 +46,8 @@ public class JSFreeFunction<ReturnType>: JSExpression<ReturnType> {
     ///
     /// Creates a new method description.
     ///
-    /// - parameter functionName: The name of the function to execute. It must be a member of the current JavaScript `this`.
+    /// - parameter functionName: The name of the function to execute. It must be a member of the
+    /// current JavaScript `this`.
     /// - parameter arguments: The arguments to pass to the function.
     ///
 
