@@ -56,6 +56,7 @@
 /* Begin PBXFileReference section */
 		556E88CE1F549EBE0031476D /* JSFreeFunction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JSFreeFunction.swift; sourceTree = "<group>"; };
 		556E88D01F549FD90031476D /* JSGlobal.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JSGlobal.swift; sourceTree = "<group>"; };
+		556E88D21F54B0C50031476D /* .gitignore */ = {isa = PBXFileReference; lastKnownFileType = text; path = .gitignore; sourceTree = "<group>"; };
 		55DAE6A31F546C21009593AF /* JSBridge.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = JSBridge.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		55DAE6AC1F546C22009593AF /* JSBridgeTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = JSBridgeTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		55DAE6BE1F546C8B009593AF /* JSBridgeTests.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = JSBridgeTests.plist; sourceTree = "<group>"; };
@@ -99,6 +100,7 @@
 		55DAE6991F546C21009593AF = {
 			isa = PBXGroup;
 			children = (
+				556E88D21F54B0C50031476D /* .gitignore */,
 				55DAE6C21F546C9F009593AF /* Sources */,
 				55DAE6EA1F546EDD009593AF /* Locales */,
 				55DAE6BD1F546C8B009593AF /* Config */,
