@@ -17,7 +17,7 @@ import Foundation
 /// ~~~
 ///
 /// Instances of this class are specialized with the `ReturnType` generic parameter.
-/// It must be set to the return type of the JavaScript variable to resolve. Check the docs of
+/// It must be set to the return type of the JavaScript variable to resolve. Check the documentation of
 /// the JavaScript variable to know what to set the parameter to.
 ///
 /// `ReturnType` must be a compatible type. Compatible types include:
@@ -31,13 +31,18 @@ import Foundation
 
 public class JSGlobal<ReturnType>: JSExpression<ReturnType> {
 
+    ///
     /// The name of the variable to resolve.
+    ///
+    /// It must be a member of the current JavaScript `this`.
+    ///
+
     public let variableName: String
 
     ///
     /// Creates a new variable description.
     ///
-    /// - parameter variableName: The name of the method to execute.
+    /// - parameter variableName: The name of the variable to resolve. It must be a member of the current JavaScript `this`.
     ///
 
     public init(_ variableName: String, _ arguments: JSConvertible...) {
@@ -49,5 +54,3 @@ public class JSGlobal<ReturnType>: JSExpression<ReturnType> {
     }
 
 }
-
-

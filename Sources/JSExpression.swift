@@ -17,14 +17,17 @@ import Result
 /// concrete subclasses, override the `javaScriptString` property to return
 /// an appropriate script string.
 ///
-/// You can use the `JSProperty` subclass to access a property of a global
-/// variable, and `JSMethod` to call a method of a global variable.
+/// The library provides ready-to-use subclasses:
+/// - `JSGlobal` to access a global variable
+/// - `JSProperty` to access a property of a global variable
+/// - `JSFreeFunction` to call a global function
+/// - `JSMethod` to call a method of a global variable
 ///
 
 public class JSExpression<ReturnType> {
 
     ///
-    /// A function that can decode a value passed by the web view's JavaScript to the
+    /// A function that can decode a value passed by the web view's JavaScript context to the
     /// expected return type of the expression.
     ///
     /// Usually, you do not need to create your own decoder, as default ones are implemented
@@ -66,7 +69,7 @@ public class JSExpression<ReturnType> {
         /// completion handler.
         ///
         /// This strategy must only be used for `Void` return types, as the web view will not
-        /// provide a value on success.
+        /// provide a value on success for this return type.
         ///
         /// - parameter defaultValue: The default value. Should be the `Void` literal, i.e.
         /// an empty tuple (`()`).
@@ -83,7 +86,6 @@ public class JSExpression<ReturnType> {
         }
 
     }
-
 
     ///
     /// The JavaScript text of the expression.
@@ -110,7 +112,7 @@ extension JSExpression {
     /// which is available when the return type is compatible with JavaScript.
     ///
     /// Compatible types include:
-    /// - Void
+    /// - `Void`
     /// - Primitive values (`JSPrimitiveType`)
     /// - Enum cases with a primitive `RawValue`
     /// - Objects (`JSObject`)

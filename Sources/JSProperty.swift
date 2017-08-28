@@ -17,8 +17,8 @@ import Foundation
 /// ~~~
 ///
 /// Instances of this class are specialized with the `ReturnType` generic parameter.
-/// It must be set to the type of the JavaScript property to query. Check the docs of
-/// the JavaScript variable to know what to set the parameter to.
+/// It must be set to the type of the JavaScript property to query. Check the documentation of
+/// the JavaScript property to know what to set the parameter to.
 ///
 /// `ReturnType` must be a compatible type. Compatible types include:
 /// - Primitive values (`JSPrimitiveType`)
@@ -45,7 +45,7 @@ public class JSProperty<ReturnType>: JSExpression<ReturnType> {
     ///
     /// Creates a new JavaScript property description.
     ///
-    /// - parameter variableName: The name of the variable that contains the requested property.
+    /// - parameter variableName: The name of the variable that contains the requested property. It must be a member of the current JavaScript `this`.
     /// - parameter methodName: The name of the property to fetch.
     ///
 

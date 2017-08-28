@@ -17,10 +17,11 @@ import Foundation
 /// ~~~
 ///
 /// Instances of this class are specialized with the `ReturnType` generic parameter.
-/// It must be set to the return type of the JavaScript function to execute. Check the docs of
+/// It must be set to the return type of the JavaScript function to execute. Check the documentation of
 /// the JavaScript function to know what to set the parameter to.
 ///
 /// `ReturnType` must be a compatible type. Compatible types include:
+/// - `Void`
 /// - Primitive values (`JSPrimitiveType`)
 /// - Enum cases with a primitive `RawValue`
 /// - Objects (`JSObject`)
@@ -31,17 +32,22 @@ import Foundation
 
 public class JSFreeFunction<ReturnType>: JSExpression<ReturnType> {
 
+    ///
     /// The name of the function to execute.
+    ///
+    /// It must be a member of the current JavaScript `this`.
+    ///
+
     public let functionName: String
 
-    /// The arguments to pass to the functionName.
+    /// The arguments to pass to the function.
     public let arguments: [JSConvertible]
 
     ///
     /// Creates a new method description.
     ///
-    /// - parameter functionName: The name of the method to execute.
-    /// - parameter arguments: The arguments to pass to the method.
+    /// - parameter functionName: The name of the function to execute. It must be a member of the current JavaScript `this`.
+    /// - parameter arguments: The arguments to pass to the function.
     ///
 
     public init(_ functionName: String, _ arguments: JSConvertible...) {
@@ -64,4 +70,3 @@ public class JSFreeFunction<ReturnType>: JSExpression<ReturnType> {
     }
 
 }
-
