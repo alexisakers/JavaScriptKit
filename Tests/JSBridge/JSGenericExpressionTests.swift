@@ -227,7 +227,7 @@ class MockTarget: JSObject, Equatable {
         self.categories = categories
     }
 
-    required init?(dictionary: NSDictionary) {
+    required init?(objectLiteral dictionary: NSDictionary) {
 
         guard let name = dictionary.value(forKey: "name") as? String else {
             return nil

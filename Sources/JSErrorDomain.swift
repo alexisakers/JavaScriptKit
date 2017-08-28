@@ -1,18 +1,23 @@
+/**
+ *  JSBridge
+ *  Copyright (c) 2017 Alexis Aubry. Licensed under the MIT license.
+ */
+
 import Foundation
 
 ///
-/// Les erreurs liées à l'éxécution JavaScript.
+/// JavaScript execution errors.
 ///
 
 public enum JSErrorDomain {
 
-    /// Le script a retourné une valeur incompatible.
+    /// The script returned an incompatible value.
     case invalidReturnType(value: Any)
 
-    /// L'éxécution du script a été interrompue en raison d'une erreur.
+    /// The script was stopped because of an error.
     case executionError(NSError)
 
-    /// Le script a retourné un résultat inattendu.
+    /// The script returned an unexpected result.
     case unexpectedResult
 
 }
@@ -20,9 +25,9 @@ public enum JSErrorDomain {
 
 // MARK: - ErrorDomain
 
-extension JSErrorDomain: ErrorDomain {
+extension JSErrorDomain: LocalizedError {
 
-    public static var identifier = "com.iphonconcept.AppFoundation.JSErrorDomain"
+    public static var identifier = "fr.alexaubry.JSBridge.JSErrorDomain"
 
     public var code: Int {
 
@@ -63,6 +68,23 @@ extension JSErrorDomain: ErrorDomain {
 
     }
 
+    /// Creates an NSError describing the receiver.
+    public var nsError: NSError {
+
+        var userInfo = [String: Any]()
+        userInfo[NSLocalizedDescriptionKey] = localizedDescription
+        userInfo[NSUnderlyingErrorKey] = underlyingError
+
+        return NSError(domain: JSErrorDomain.identifier,
+                       code: code,
+                       userInfo: userInfo)
+
+    }
+
+    public var errorDescription: String {
+        return localizedDescription
+    }
+
 }
 
 
@@ -70,14 +92,24 @@ extension JSErrorDomain: ErrorDomain {
 
 extension JSErrorDomain {
 
-    private enum LocalizedStrings: String, Localizable {
+    private enum LocalizedStrings: String {
 
-        static var localizationContainer = Bundle(identifier: "fr.aura-media.JSBridge")!
-        static var localizationTableName = "Error"
+        static var localizationContainer = Bundle(identifier: "fr.alexaubry.JSBridge")!
+        static var localizationTableName = "Localizable"
 
         case invalidReturnType = "JSErrorDomain.InvalidReturnType"
         case executionError = "JSErrorDomain.ExecutionError"
         case unexpectedResult = "JSErrorDomain.UnexpectedResult"
+
+        var localizedValue: String {
+
+            return NSLocalizedString(rawValue,
+                                     tableName: LocalizedStrings.localizationTableName,
+                                     bundle: LocalizedStrings.localizationContainer,
+                                     value: "",
+                                     comment: "")
+
+        }
 
     }
 

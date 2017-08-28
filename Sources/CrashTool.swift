@@ -1,48 +1,53 @@
+/**
+ *  JSBridge
+ *  Copyright (c) 2017 Alexis Aubry. Licensed under the MIT license.
+ */
+
 import Foundation
 
 ///
-/// Une classe pour utiliser des `fatalError` personnalisées.
+/// A class to customize fatal error closures.
 ///
-/// Ne doit être utilisé que dans ce fichier et les tests.
+/// Only use within this file and inside of tests to assert that `fail` gets called.
 ///
 
 class FatalErrorManager {
 
-    /// Une erreur fatale.
+    /// A fatal error.
     typealias FatalError = (@autoclosure () -> String, StaticString, UInt) -> Any
 
-    /// La fonction de gestion des erreurs fatales.
+    /// The current fatal error closure.
     static var fatalErrorClosure = FatalErrorManager.defaultFatalErrorClosure
 
-    /// La fonction de gestion des erreurs fatales par défaut.
+    /// The default fatal error closure.
     private static let defaultFatalErrorClosure: FatalError = Swift.fatalError
 
-    /// Remplace la fonction de gestion des erreurs fatales par une fonction de test.
+    /// Sets a new fatal error closure.
     static func replaceFatalError(closure: @escaping FatalError) {
         fatalErrorClosure = closure
     }
 
-    /// Rétablit la fonction de gestion des erreurs fatales par défaut.
+    /// Restores the default fatal error closure.
     static func restoreFatalError() {
         fatalErrorClosure = defaultFatalErrorClosure
     }
 
 }
 
-/// Arrête l'éxécution du programme.
+/// Runs the run loop forever Run after a function that can return `Never`.
 public func stop() -> Never {
     while true {
         RunLoop.current.run()
     }
 }
 
-/// Arrête le programme avec un message d'erreur.
+/// Stops the program with an error message.
 public func fail(_ message: @autoclosure () -> String, _ file: StaticString = #file, _ line: UInt = #line) -> Never {
     _ = FatalErrorManager.fatalErrorClosure(message(), file, line)
     stop()
 }
 
-/// Arrête le programme lorsqu'une fonction n'est pas disponible.
+/// Stops the program when a function is unavailable.
 public func unavailable(_ function: String = #function, _ file: String = #file, _ line: Int = #line) -> Never {
     let message = "\(file):\(line) — \(function) is not available."
     fail(message)

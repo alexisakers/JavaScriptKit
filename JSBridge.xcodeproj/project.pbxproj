@@ -7,24 +7,24 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		556E88CF1F549EBE0031476D /* JSFreeFunction.swift in Sources */ = {isa = PBXBuildFile; fileRef = 556E88CE1F549EBE0031476D /* JSFreeFunction.swift */; };
+		556E88D11F549FD90031476D /* JSGlobal.swift in Sources */ = {isa = PBXBuildFile; fileRef = 556E88D01F549FD90031476D /* JSGlobal.swift */; };
 		55DAE6AD1F546C22009593AF /* JSBridge.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 55DAE6A31F546C21009593AF /* JSBridge.framework */; };
 		55DAE6C91F546C9F009593AF /* JSProperty.swift in Sources */ = {isa = PBXBuildFile; fileRef = 55DAE6C31F546C9F009593AF /* JSProperty.swift */; };
 		55DAE6CA1F546C9F009593AF /* JSErrorDomain.swift in Sources */ = {isa = PBXBuildFile; fileRef = 55DAE6C41F546C9F009593AF /* JSErrorDomain.swift */; };
 		55DAE6CB1F546C9F009593AF /* JSExpression.swift in Sources */ = {isa = PBXBuildFile; fileRef = 55DAE6C51F546C9F009593AF /* JSExpression.swift */; };
-		55DAE6CD1F546C9F009593AF /* JSPrimitiveType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 55DAE6C71F546C9F009593AF /* JSPrimitiveType.swift */; };
+		55DAE6CD1F546C9F009593AF /* JSProtocols.swift in Sources */ = {isa = PBXBuildFile; fileRef = 55DAE6C71F546C9F009593AF /* JSProtocols.swift */; };
 		55DAE6CE1F546C9F009593AF /* JSMethod.swift in Sources */ = {isa = PBXBuildFile; fileRef = 55DAE6C81F546C9F009593AF /* JSMethod.swift */; };
 		55DAE6D61F546CB5009593AF /* JSBridgeTestsSupport.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 55DAE6D11F546CB5009593AF /* JSBridgeTestsSupport.bundle */; };
 		55DAE6DA1F546CF0009593AF /* JSExecutionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 55DAE6D31F546CB5009593AF /* JSExecutionTests.swift */; };
 		55DAE6DB1F546CF0009593AF /* JSGenericExpressionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 55DAE6D41F546CB5009593AF /* JSGenericExpressionTests.swift */; };
 		55DAE6DC1F546CF0009593AF /* JSConcreteExpressionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 55DAE6D51F546CB5009593AF /* JSConcreteExpressionTests.swift */; };
 		55DAE6DF1F546D67009593AF /* Result.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 55DAE6DE1F546D67009593AF /* Result.framework */; };
-		55DAE6E21F546DAC009593AF /* Localizable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 55DAE6E01F546DAB009593AF /* Localizable.swift */; };
-		55DAE6E31F546DAC009593AF /* ErrorDomain.swift in Sources */ = {isa = PBXBuildFile; fileRef = 55DAE6E11F546DAC009593AF /* ErrorDomain.swift */; };
 		55DAE6E51F546DFE009593AF /* CrashTool.swift in Sources */ = {isa = PBXBuildFile; fileRef = 55DAE6E41F546DFE009593AF /* CrashTool.swift */; };
 		55DAE6E61F546EA0009593AF /* Result.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 55DAE6DE1F546D67009593AF /* Result.framework */; };
 		55DAE6E81F546EAE009593AF /* JSBridge.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 55DAE6A31F546C21009593AF /* JSBridge.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		55DAE6E91F546EB9009593AF /* JSBridgeTestsSupport.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 55DAE6D11F546CB5009593AF /* JSBridgeTestsSupport.bundle */; };
-		55DAE6EE1F546EDD009593AF /* Error.strings in Resources */ = {isa = PBXBuildFile; fileRef = 55DAE6EB1F546EDD009593AF /* Error.strings */; };
+		55DAE6EE1F546EDD009593AF /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 55DAE6EB1F546EDD009593AF /* Localizable.strings */; };
 		55DAE6EF1F546F25009593AF /* Result.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 55DAE6DE1F546D67009593AF /* Result.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 /* End PBXBuildFile section */
 
@@ -54,6 +54,8 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		556E88CE1F549EBE0031476D /* JSFreeFunction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JSFreeFunction.swift; sourceTree = "<group>"; };
+		556E88D01F549FD90031476D /* JSGlobal.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JSGlobal.swift; sourceTree = "<group>"; };
 		55DAE6A31F546C21009593AF /* JSBridge.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = JSBridge.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		55DAE6AC1F546C22009593AF /* JSBridgeTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = JSBridgeTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		55DAE6BE1F546C8B009593AF /* JSBridgeTests.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = JSBridgeTests.plist; sourceTree = "<group>"; };
@@ -61,18 +63,16 @@
 		55DAE6C31F546C9F009593AF /* JSProperty.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = JSProperty.swift; sourceTree = "<group>"; };
 		55DAE6C41F546C9F009593AF /* JSErrorDomain.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = JSErrorDomain.swift; sourceTree = "<group>"; };
 		55DAE6C51F546C9F009593AF /* JSExpression.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = JSExpression.swift; sourceTree = "<group>"; };
-		55DAE6C71F546C9F009593AF /* JSPrimitiveType.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = JSPrimitiveType.swift; sourceTree = "<group>"; };
+		55DAE6C71F546C9F009593AF /* JSProtocols.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = JSProtocols.swift; sourceTree = "<group>"; };
 		55DAE6C81F546C9F009593AF /* JSMethod.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = JSMethod.swift; sourceTree = "<group>"; };
 		55DAE6D11F546CB5009593AF /* JSBridgeTestsSupport.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = JSBridgeTestsSupport.bundle; sourceTree = "<group>"; };
 		55DAE6D31F546CB5009593AF /* JSExecutionTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = JSExecutionTests.swift; sourceTree = "<group>"; };
 		55DAE6D41F546CB5009593AF /* JSGenericExpressionTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = JSGenericExpressionTests.swift; sourceTree = "<group>"; };
 		55DAE6D51F546CB5009593AF /* JSConcreteExpressionTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = JSConcreteExpressionTests.swift; sourceTree = "<group>"; };
 		55DAE6DE1F546D67009593AF /* Result.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Result.framework; path = Carthage/Build/iOS/Result.framework; sourceTree = "<group>"; };
-		55DAE6E01F546DAB009593AF /* Localizable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Localizable.swift; sourceTree = "<group>"; };
-		55DAE6E11F546DAC009593AF /* ErrorDomain.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ErrorDomain.swift; sourceTree = "<group>"; };
 		55DAE6E41F546DFE009593AF /* CrashTool.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CrashTool.swift; sourceTree = "<group>"; };
-		55DAE6EC1F546EDD009593AF /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Error.strings; sourceTree = "<group>"; };
-		55DAE6ED1F546EDD009593AF /* fr */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = fr; path = fr.lproj/Error.strings; sourceTree = "<group>"; };
+		55DAE6EC1F546EDD009593AF /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
+		55DAE6ED1F546EDD009593AF /* fr */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = fr; path = fr.lproj/Localizable.strings; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -129,12 +129,12 @@
 		55DAE6C21F546C9F009593AF /* Sources */ = {
 			isa = PBXGroup;
 			children = (
-				55DAE6E11F546DAC009593AF /* ErrorDomain.swift */,
-				55DAE6E01F546DAB009593AF /* Localizable.swift */,
 				55DAE6C41F546C9F009593AF /* JSErrorDomain.swift */,
-				55DAE6C71F546C9F009593AF /* JSPrimitiveType.swift */,
+				55DAE6C71F546C9F009593AF /* JSProtocols.swift */,
 				55DAE6C51F546C9F009593AF /* JSExpression.swift */,
 				55DAE6C31F546C9F009593AF /* JSProperty.swift */,
+				556E88D01F549FD90031476D /* JSGlobal.swift */,
+				556E88CE1F549EBE0031476D /* JSFreeFunction.swift */,
 				55DAE6C81F546C9F009593AF /* JSMethod.swift */,
 				55DAE6E41F546DFE009593AF /* CrashTool.swift */,
 			);
@@ -179,7 +179,7 @@
 		55DAE6EA1F546EDD009593AF /* Locales */ = {
 			isa = PBXGroup;
 			children = (
-				55DAE6EB1F546EDD009593AF /* Error.strings */,
+				55DAE6EB1F546EDD009593AF /* Localizable.strings */,
 			);
 			path = Locales;
 			sourceTree = "<group>";
@@ -279,7 +279,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				55DAE6D61F546CB5009593AF /* JSBridgeTestsSupport.bundle in Resources */,
-				55DAE6EE1F546EDD009593AF /* Error.strings in Resources */,
+				55DAE6EE1F546EDD009593AF /* Localizable.strings in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -298,14 +298,14 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				55DAE6CD1F546C9F009593AF /* JSPrimitiveType.swift in Sources */,
+				55DAE6CD1F546C9F009593AF /* JSProtocols.swift in Sources */,
 				55DAE6E51F546DFE009593AF /* CrashTool.swift in Sources */,
 				55DAE6CE1F546C9F009593AF /* JSMethod.swift in Sources */,
 				55DAE6C91F546C9F009593AF /* JSProperty.swift in Sources */,
-				55DAE6E31F546DAC009593AF /* ErrorDomain.swift in Sources */,
+				556E88CF1F549EBE0031476D /* JSFreeFunction.swift in Sources */,
 				55DAE6CA1F546C9F009593AF /* JSErrorDomain.swift in Sources */,
-				55DAE6E21F546DAC009593AF /* Localizable.swift in Sources */,
 				55DAE6CB1F546C9F009593AF /* JSExpression.swift in Sources */,
+				556E88D11F549FD90031476D /* JSGlobal.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -330,13 +330,13 @@
 /* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
-		55DAE6EB1F546EDD009593AF /* Error.strings */ = {
+		55DAE6EB1F546EDD009593AF /* Localizable.strings */ = {
 			isa = PBXVariantGroup;
 			children = (
 				55DAE6EC1F546EDD009593AF /* en */,
 				55DAE6ED1F546EDD009593AF /* fr */,
 			);
-			name = Error.strings;
+			name = Localizable.strings;
 			sourceTree = "<group>";
 		};
 /* End PBXVariantGroup section */
@@ -473,7 +473,7 @@
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = "fr.aura-media.JSBridge";
+				PRODUCT_BUNDLE_IDENTIFIER = fr.alexaubry.JSBridge;
 				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
 				SKIP_INSTALL = YES;
 				SWIFT_VERSION = 4.0;
@@ -499,7 +499,7 @@
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = "fr.aura-media.JSBridge";
+				PRODUCT_BUNDLE_IDENTIFIER = fr.alexaubry.JSBridge;
 				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
 				SKIP_INSTALL = YES;
 				SWIFT_VERSION = 4.0;

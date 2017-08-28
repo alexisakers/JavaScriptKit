@@ -1,31 +1,59 @@
+/**
+ *  JSBridge
+ *  Copyright (c) 2017 Alexis Aubry. Licensed under the MIT license.
+ */
+
 import Foundation
 
 ///
-/// Représente une méthode qui appartient à une variable.
+/// A concrete JavaScript expression that executes a function that belongs
+/// to the prototype of a variable of the current JavaScript `this`.
 ///
-/// `ReturnType` représente le type de la valeur retournée par la fonction.
+/// For instance, to log a value to the console:
+///
+/// ~~~swift
+/// let log = JSMethod<Void>("console", "log", "Hello from Swift!")
+/// // equivalent to the JS script `this.console.log("Hello from Swift!");`
+/// ~~~
+///
+/// Instances of this class are specialized with the `ReturnType` generic parameter.
+/// It must be set to the return type of the JavaScript function to execute. Check the docs of
+/// the JavaScript variable to know what to set the parameter to.
+///
+/// `ReturnType` must be a compatible type. Compatible types include:
+/// - Primitive values (`JSPrimitiveType`)
+/// - Enum cases with a primitive `RawValue`
+/// - Objects (`JSObject`)
+/// - Arrays of primitive values
+/// - Arrays of enum cases with a primitive `RawValue`
+/// - Arrays of objects.
 ///
 
 public class JSMethod<ReturnType>: JSExpression<ReturnType> {
     
-    /// Le nom de la variable à laquelle la méthode appartient.
+    ///
+    /// The name of the variable that contains the requested function.
+    ///
+    /// It must be a member of the current JavaScript `this`.
+    ///
+
     public let variableName: String
 
-    /// Le nom de la méthode.
+    /// The name of the method to execute.
     public let methodName: String
 
-    /// Les arguments à passer lors de l'appel de la fonction.
+    /// The arguments to pass to the method.
     public let arguments: [JSConvertible]
 
     ///
-    /// Créé une référence vers une méthode d'une variable.
+    /// Creates a new method description.
     ///
-    /// - parameter objectName: Le nom de l'objet global auquel la méthode appartient.
-    /// - parameter methodName: Le nom de la méthode.
-    /// - parameter arguments: Les arguments à passer lors de l'appel de la fonction.
+    /// - parameter variableName: The name of the variable that contains the requested function.
+    /// - parameter methodName: The name of the method to execute.
+    /// - parameter arguments: The arguments to pass to the method.
     ///
 
-    public init(variableName: String, _ methodName: String, _ arguments: JSConvertible...) {
+    public init(_ variableName: String, _ methodName: String, _ arguments: JSConvertible...) {
         self.variableName = variableName
         self.methodName = methodName
         self.arguments = arguments

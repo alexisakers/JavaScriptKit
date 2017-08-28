@@ -1,4 +1,4 @@
 /* JavaScript Error Domain */
 "JSErrorDomain.InvalidReturnType" = "Le script a retourné une valeur incompatible.";
-"JSErrorDomain.ExecutionError" = "L'éxécution du script a été interrompue en raison d'une erreur.";
+"JSErrorDomain.ExecutionError" = "Le script a été arrêté en raison d'une erreur.";
 "JSErrorDomain.UnexpectedResult" = "Le script a retourné un résultat inattendu.";

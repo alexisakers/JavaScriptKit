@@ -13,7 +13,7 @@ class JSConcreteExpressionTests: XCTestCase {
 
     func testPropertyScript() {
 
-        let property = JSProperty<Bool>(variableName: "reader", "isLoaded")
+        let property = JSProperty<Bool>("reader", "isLoaded")
 
         let script = property.javaScriptString
         let expectedScript = "reader.isLoaded"
@@ -27,7 +27,7 @@ class JSConcreteExpressionTests: XCTestCase {
 
     func testNoArgumentsMethod() {
 
-        let method = JSMethod<Bool>(variableName: "reader", "sendStats")
+        let method = JSMethod<Bool>("reader", "sendStats")
 
         let script = method.javaScriptString
         let expectedScript = "reader.sendStats()"
@@ -41,7 +41,7 @@ class JSConcreteExpressionTests: XCTestCase {
 
     func testSingleArgumentMethod() {
 
-        let method = JSMethod<Bool>(variableName: "reader", "setNumberOfParagraphsRead", 1)
+        let method = JSMethod<Bool>("reader", "setNumberOfParagraphsRead", 1)
 
         let script = method.javaScriptString
         let expectedScript = "reader.setNumberOfParagraphsRead(1)"
@@ -55,7 +55,7 @@ class JSConcreteExpressionTests: XCTestCase {
 
     func testMultipleArgumentsMethod() {
 
-        let method = JSMethod<Bool>(variableName: "reader", "setParagraphRead", "5DE741DD", true)
+        let method = JSMethod<Bool>("reader", "setParagraphRead", "5DE741DD", true)
 
         let script = method.javaScriptString
         let expectedScript = "reader.setParagraphRead(\"5DE741DD\", true)"
@@ -69,7 +69,7 @@ class JSConcreteExpressionTests: XCTestCase {
 
     func testRawRepresentableArguments() {
 
-        let method = JSMethod<Bool>(variableName: "reader", "setFont", MockFont.sanFrancisco, MockSize.large)
+        let method = JSMethod<Bool>("reader", "setFont", MockFont.sanFrancisco, MockSize.large)
 
         let script = method.javaScriptString
         let expectedScript = "reader.setFont(\"sanFrancisco\", 17)"
