@@ -73,7 +73,7 @@ extension JSExecutionTests {
 
     func testProperty() {
 
-        let property = JSProperty<String>("tester", "title")
+        let property = JSVariable<String>("tester.title")
         let resultExpectation = expectation(description: "Async execution callback is called")
 
         testInWebView(expectations: [resultExpectation]) {
@@ -96,7 +96,7 @@ extension JSExecutionTests {
 
     func testSuccessReturnValue() {
 
-        let method = JSMethod<Bool>("tester", "refresh")
+        let method = JSFunction<Bool>("tester.refresh")
         let resultExpectation = expectation(description: "Async execution callback is called")
 
         testInWebView(expectations: [resultExpectation]) {
@@ -119,7 +119,7 @@ extension JSExecutionTests {
 
     func testVoidSuccessValue() {
 
-        let method = JSMethod<Void>("tester", "clearQueue")
+        let method = JSFunction<Void>("tester.clearQueue")
         let resultExpectation = expectation(description: "Async execution callback is called")
 
         testInWebView(expectations: [resultExpectation]) {
@@ -141,7 +141,7 @@ extension JSExecutionTests {
 
     func testExpectedError() {
 
-        let method = JSMethod<Void>("yolo", "refresh")
+        let method = JSFunction<Void>("yolo.refresh")
         let resultExpectation = expectation(description: "Async execution callback is called")
 
         testInWebView(expectations: [resultExpectation]) {
@@ -171,7 +171,7 @@ extension JSExecutionTests {
 
     func testHandleUnexpectedReturnValue() {
 
-        let method = JSMethod<Void>("tester", "refresh")
+        let method = JSFunction<Void>("tester.refresh")
         let resultExpectation = expectation(description: "Async execution callback is called")
 
         testInWebView(expectations: [resultExpectation]) {
@@ -194,7 +194,7 @@ extension JSExecutionTests {
 
     func testInvalidReturnValue() {
 
-        let method = JSMethod<String>("tester", "refresh")
+        let method = JSFunction<String>("tester.refresh")
         let resultExpectation = expectation(description: "Async execution callback is called")
 
         testInWebView(expectations: [resultExpectation]) {
@@ -217,7 +217,7 @@ extension JSExecutionTests {
 
     func testMissingReturnValue() {
 
-        let method = JSMethod<Bool>("tester", "clearQueue")
+        let method = JSFunction<Bool>("tester.clearQueue")
         let resultExpectation = expectation(description: "Async execution callback is called")
 
         testInWebView(expectations: [resultExpectation]) {
@@ -248,7 +248,7 @@ extension JSExecutionTests {
 
     func testDecodeString() {
 
-        let method = JSMethod<String>("tester", "testString")
+        let method = JSFunction<String>("tester.testString")
         let resultExpectation = expectation(description: "Async execution callback is called")
 
         testInWebView(expectations: [resultExpectation]) {
@@ -270,7 +270,7 @@ extension JSExecutionTests {
 
     func testDecodeNumber() {
 
-        let method = JSMethod<Int8>("tester", "testNumber")
+        let method = JSFunction<Int8>("tester.testNumber")
         let resultExpectation = expectation(description: "Async execution callback is called")
 
         testInWebView(expectations: [resultExpectation]) {
@@ -292,7 +292,7 @@ extension JSExecutionTests {
 
     func testDecodeBool() {
 
-        let method = JSMethod<Bool>("tester", "testBool")
+        let method = JSFunction<Bool>("tester.testBool")
         let resultExpectation = expectation(description: "Async execution callback is called")
 
         testInWebView(expectations: [resultExpectation]) {
@@ -308,6 +308,29 @@ extension JSExecutionTests {
 
     }
 
+    ///
+    /// Teste le décodage d'une Date.
+    ///
+
+    func testDecodeDate() {
+
+        let method = JSFunction<Date>("tester.testDate")
+        let resultExpectation = expectation(description: "Async execution callback is called")
+        let testDate = Date(timeIntervalSince1970: 1500)
+
+        testInWebView(expectations: [resultExpectation]) {
+            webView in
+
+            method.evaluate(in: webView) {
+                result in
+                resultExpectation.fulfill()
+                self.assertSuccess(result, expectedValue: testDate)
+            }
+
+        }
+
+    }
+
     // MARK: RawRepresentable
 
     ///
@@ -316,7 +339,7 @@ extension JSExecutionTests {
 
     func testDecodeValidRawRepresentable() {
 
-        let method = JSMethod<MockTargetType>("tester", "testValidMockTargetType")
+        let method = JSFunction<MockTargetType>("tester.testValidMockTargetType")
         let resultExpectation = expectation(description: "Async execution callback is called")
 
         testInWebView(expectations: [resultExpectation]) {
@@ -338,7 +361,7 @@ extension JSExecutionTests {
 
     func testDecodeInvalidRawRepresentable() {
 
-        let method = JSMethod<MockTargetType>("tester", "invalidTestMockTargetRawType")
+        let method = JSFunction<MockTargetType>("tester.invalidTestMockTargetRawType")
         let resultExpectation = expectation(description: "Async execution callback is called")
 
         testInWebView(expectations: [resultExpectation]) {
@@ -362,7 +385,7 @@ extension JSExecutionTests {
 
     func testDecodeObject() {
 
-        let method = JSMethod<MockTarget>("tester", "testTarget")
+        let method = JSFunction<MockTarget>("tester.testTarget")
         let resultExpectation = expectation(description: "Async execution callback is called")
 
         let expectedTarget = MockTarget(name: "Client", targetType: .app, categories: ["News", "Entertainment"])
@@ -386,7 +409,7 @@ extension JSExecutionTests {
 
     func testDecodeInvalidObject() {
 
-        let method = JSMethod<MockTarget>("tester", "invalidTestTarget")
+        let method = JSFunction<MockTarget>("tester.invalidTestTarget")
         let resultExpectation = expectation(description: "Async execution callback is called")
 
         testInWebView(expectations: [resultExpectation]) {
@@ -408,7 +431,7 @@ extension JSExecutionTests {
 
     func testDecodeInvalidObjectPrototype() {
 
-        let method = JSMethod<MockTarget>("tester", "invalidTestTargetPrototype")
+        let method = JSFunction<MockTarget>("tester.invalidTestTargetPrototype")
         let resultExpectation = expectation(description: "Async execution callback is called")
 
         let expectedFailingPayload: [AnyHashable : Any] = [
@@ -438,7 +461,7 @@ extension JSExecutionTests {
 
     func testDecodeArrayOfPrimitives() {
 
-        let method = JSMethod<[UInt16]>("tester", "testPrimitivesArray")
+        let method = JSFunction<[UInt16]>("tester.testPrimitivesArray")
         let resultExpectation = expectation(description: "Async execution callback is called")
 
         let expectedArray: [UInt16] = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
@@ -463,7 +486,7 @@ extension JSExecutionTests {
 
     func testDecodeInvalidArrayOfPrimitives() {
 
-        let method = JSMethod<[UInt16]>("tester", "testInvalidPrimitivesArray")
+        let method = JSFunction<[UInt16]>("tester.testInvalidPrimitivesArray")
         let resultExpectation = expectation(description: "Async execution callback is called")
 
         testInWebView(expectations: [resultExpectation]) {
@@ -485,7 +508,7 @@ extension JSExecutionTests {
 
     func testDecodeInvalidMixedArrayOfPrimitives() {
 
-        let method = JSMethod<[String]>("tester", "testInvalidMixedPrimitivesArray")
+        let method = JSFunction<[String]>("tester.testInvalidMixedPrimitivesArray")
         let resultExpectation = expectation(description: "Async execution callback is called")
 
         let expectedFailingArray: [Any] = [1, "un", 2, "deux", 3, "trois"]
@@ -512,7 +535,7 @@ extension JSExecutionTests {
 
     func testDecodeArrayOfRawRepresentable() {
 
-        let method = JSMethod<[MockTargetType]>("tester", "testMockTargetTypes")
+        let method = JSFunction<[MockTargetType]>("tester.testMockTargetTypes")
         let resultExpectation = expectation(description: "Async execution callback is called")
 
         let expectedValue: [MockTargetType] = [.app, .executable]
@@ -537,7 +560,7 @@ extension JSExecutionTests {
 
     func testDecodeInvalidArrayOfRawRepresentable() {
 
-        let method = JSMethod<[MockTargetType]>("tester", "testInvalidMockTargetTypes")
+        let method = JSFunction<[MockTargetType]>("tester.testInvalidMockTargetTypes")
         let resultExpectation = expectation(description: "Async execution callback is called")
 
         testInWebView(expectations: [resultExpectation]) {
@@ -560,7 +583,7 @@ extension JSExecutionTests {
 
     func testDecodeInvalidRawTypesArray() {
 
-        let method = JSMethod<[MockTargetType]>("tester", "testInvalidRawMockTargetTypes")
+        let method = JSFunction<[MockTargetType]>("tester.testInvalidRawMockTargetTypes")
         let resultExpectation = expectation(description: "Async execution callback is called")
 
         let expectedFailingArray = [1, 2, 3]
@@ -585,7 +608,7 @@ extension JSExecutionTests {
 
     func testDecodeUnknownRawValue() {
 
-        let method = JSMethod<[MockTargetType]>("tester", "testUnknownRawMockTargetTypes")
+        let method = JSFunction<[MockTargetType]>("tester.testUnknownRawMockTargetTypes")
         let resultExpectation = expectation(description: "Async execution callback is called")
 
         let expectedFailingArray = ["app", "kext"]
@@ -611,7 +634,7 @@ extension JSExecutionTests {
 
     func testDecodeArrayOfObjects() {
 
-        let method = JSMethod<[MockTarget]>("tester", "testObjects")
+        let method = JSFunction<[MockTarget]>("tester.testObjects")
         let resultExpectation = expectation(description: "Async execution callback is called")
 
         let expectedArray: [MockTarget] = [
@@ -639,7 +662,7 @@ extension JSExecutionTests {
 
     func testDecodeInvalidArrayOfObjects() {
 
-        let method = JSMethod<[MockTarget]>("tester", "testInvalidObjects")
+        let method = JSFunction<[MockTarget]>("tester.testInvalidObjects")
         let resultExpectation = expectation(description: "Async execution callback is called")
 
         testInWebView(expectations: [resultExpectation]) {
@@ -662,7 +685,7 @@ extension JSExecutionTests {
 
     func testDecodeInvalidObjectContainingArray() {
 
-        let method = JSMethod<[MockTarget]>("tester", "textMixedObjects")
+        let method = JSFunction<[MockTarget]>("tester.textMixedObjects")
         let resultExpectation = expectation(description: "Async execution callback is called")
 
         let expectedFailingValue: [AnyHashable] = [
@@ -690,7 +713,7 @@ extension JSExecutionTests {
 
     func testDecodeInvalidObjectPrototypeContainingArray() {
 
-        let method = JSMethod<[MockTarget]>("tester", "textDifferentObjectPrototypes")
+        let method = JSFunction<[MockTarget]>("tester.textDifferentObjectPrototypes")
         let resultExpectation = expectation(description: "Async execution callback is called")
 
         let expectedFailingValue: [AnyHashable] = [

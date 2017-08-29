@@ -7,35 +7,6 @@ import XCTest
 
 class JSGenericExpressionTests: XCTestCase {
 
-    // MARK: - Test Subclassing Requirements
-
-    ///
-    /// Teste que la superclasse JSExpression retourne une erreur lorsque
-    /// un programme tente d'accéder à la propriété `javaScriptString`, directement
-    /// sans passer passer par une sous-classe concrète.
-    ///
-
-    func testDefaultJavaScriptStringUnavailable() {
-
-        let expression = JSExpression<Bool>()
-        let fatalErrorExpectation = expectation(description: "iPCUnavailable is called for the default JS script string.")
-
-        FatalErrorManager.replaceFatalError {
-            (message: @autoclosure () -> String, _: StaticString, _: UInt) -> Any in
-            fatalErrorExpectation.fulfill()
-            XCTAssertTrue(message().hasSuffix("javaScriptString is not available."))
-            return true
-        }
-
-        DispatchQueue.global().async {
-            _ = expression.javaScriptString
-        }
-
-        waitForExpectations(timeout: 2)
-
-    }
-
-
     // MARK: - Test Value Decoding
 
     ///
@@ -45,7 +16,7 @@ class JSGenericExpressionTests: XCTestCase {
 
     func testVoidDecoding() {
 
-        let expression = JSExpression<Void>()
+        let expression = JSGenericExpression<Void>()
 
         let decodedValue: Void? = expression.decodeValue(())
         XCTAssertNil(decodedValue)
@@ -58,7 +29,7 @@ class JSGenericExpressionTests: XCTestCase {
 
     func testPrimitiveDecoding() {
 
-        let expression = JSExpression<String>()
+        let expression = JSGenericExpression<String>()
 
         let _decodedValue = expression.decodeValue("Hello")
 
@@ -77,7 +48,7 @@ class JSGenericExpressionTests: XCTestCase {
 
     func testRawRepresentableDecoding() {
 
-        let expression = JSExpression<MockTargetType>()
+        let expression = JSGenericExpression<MockTargetType>()
 
         let _decodedValue = expression.decodeValue("appExtension")
 
@@ -96,7 +67,7 @@ class JSGenericExpressionTests: XCTestCase {
 
     func testObjectDecoding() {
 
-        let expression = JSExpression<MockTarget>()
+        let expression = JSGenericExpression<MockTarget>()
 
         let object: [String : Any] = [
             "name": "iPC",
@@ -126,7 +97,7 @@ class JSGenericExpressionTests: XCTestCase {
 
     func testPrimitiveSequenceDecoding() {
 
-        let expression = JSExpression<[String]>()
+        let expression = JSGenericExpression<[String]>()
 
         let sequence: [String] = [
             "Hello", " ", "world", "!"
@@ -149,7 +120,7 @@ class JSGenericExpressionTests: XCTestCase {
 
     func testRawRepresentableSequenceDecoding() {
 
-        let expression = JSExpression<[MockTargetType]>()
+        let expression = JSGenericExpression<[MockTargetType]>()
 
         let sequence = [
             "app", "appExtension", "unitTest", "uiTest"
@@ -176,7 +147,7 @@ class JSGenericExpressionTests: XCTestCase {
 
     func testObjectSequenceDecoding() {
 
-        let expression = JSExpression<[MockTarget]>()
+        let expression = JSGenericExpression<[MockTarget]>()
 
         let sequence = [
             [
@@ -253,6 +224,16 @@ class MockTarget: JSObject, Equatable {
 
     static func == (lhs: MockTarget, rhs: MockTarget) -> Bool {
         return (lhs.name == rhs.name) && (lhs.targetType == rhs.targetType) && (lhs.categories == rhs.categories)
+    }
+
+}
+
+class JSGenericExpression<T>: JSExpression {
+
+    typealias ReturnType = T
+
+    func makeExpressionString() -> String {
+        return "undefined"
     }
 
 }

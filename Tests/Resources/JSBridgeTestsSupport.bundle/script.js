@@ -26,6 +26,10 @@ Tester.prototype.testBool = function() {
     return true;
 }
 
+Tester.prototype.testDate = function() {
+    return new Date(1500000);
+}
+
 Tester.prototype.testValidMockTargetType = function() {
     return "app";
 }

@@ -6,7 +6,7 @@
 import Foundation
 import CoreGraphics
 
-// MARK: Convertible types
+// MARK: Convertible Types
 
 ///
 /// A type whose values can be converted to a JavaScript textual representation.
@@ -60,11 +60,25 @@ extension JSPrimitiveType {
     }
 }
 
+// MARK: Null
+
+extension NSNull: JSPrimitiveType {
+
+    public var jsRepresentation: String {
+        return "null"
+    }
+
+}
+
+// MARK: String
+
 extension String: JSPrimitiveType {
     public var jsRepresentation: String {
         return "\"\(self)\""
     }
 }
+
+// MARK: Numeric Types
 
 extension Bool: JSPrimitiveType {}
 
@@ -85,13 +99,16 @@ extension UInt16: JSPrimitiveType {}
 extension UInt32: JSPrimitiveType {}
 extension UInt64: JSPrimitiveType {}
 
+// MARK: Date
+
 extension Date: JSPrimitiveType {
 
     public var jsRepresentation: String {
-        return "new Date(\(timeIntervalSince1970 * 1000))"
+        return "new Date(\(Int(timeIntervalSince1970 * 1000)))"
     }
 
 }
+
 
 // MARK: - Object
 

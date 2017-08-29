@@ -13,10 +13,10 @@ class JSConcreteExpressionTests: XCTestCase {
 
     func testPropertyScript() {
 
-        let property = JSProperty<Bool>("reader", "isLoaded")
+        let property = JSVariable<Bool>("reader.isLoaded")
 
-        let script = property.javaScriptString
-        let expectedScript = "reader.isLoaded"
+        let script = property.makeExpressionString()
+        let expectedScript = "this.reader.isLoaded;"
         XCTAssertEqual(script, expectedScript)
 
     }
@@ -27,10 +27,10 @@ class JSConcreteExpressionTests: XCTestCase {
 
     func testNoArgumentsMethod() {
 
-        let method = JSMethod<Bool>("reader", "sendStats")
+        let method = JSFunction<Bool>("reader.sendStats")
 
-        let script = method.javaScriptString
-        let expectedScript = "reader.sendStats()"
+        let script = method.makeExpressionString()
+        let expectedScript = "this.reader.sendStats();"
         XCTAssertEqual(script, expectedScript)
 
     }
@@ -41,10 +41,10 @@ class JSConcreteExpressionTests: XCTestCase {
 
     func testSingleArgumentMethod() {
 
-        let method = JSMethod<Bool>("reader", "setNumberOfParagraphsRead", 1)
+        let method = JSFunction<Bool>("reader.setNumberOfParagraphsRead", arguments: 1)
 
-        let script = method.javaScriptString
-        let expectedScript = "reader.setNumberOfParagraphsRead(1)"
+        let script = method.makeExpressionString()
+        let expectedScript = "this.reader.setNumberOfParagraphsRead(1);"
         XCTAssertEqual(script, expectedScript)
 
     }
@@ -55,10 +55,10 @@ class JSConcreteExpressionTests: XCTestCase {
 
     func testMultipleArgumentsMethod() {
 
-        let method = JSMethod<Bool>("reader", "setParagraphRead", "5DE741DD", true)
+        let method = JSFunction<Bool>("reader.setParagraphRead", arguments: "5DE741DD", true, Date(timeIntervalSince1970: 1500))
 
-        let script = method.javaScriptString
-        let expectedScript = "reader.setParagraphRead(\"5DE741DD\", true)"
+        let script = method.makeExpressionString()
+        let expectedScript = "this.reader.setParagraphRead(\"5DE741DD\", true, new Date(1500000));"
         XCTAssertEqual(script, expectedScript)
 
     }
@@ -69,10 +69,10 @@ class JSConcreteExpressionTests: XCTestCase {
 
     func testRawRepresentableArguments() {
 
-        let method = JSMethod<Bool>("reader", "setFont", MockFont.sanFrancisco, MockSize.large)
+        let method = JSFunction<Bool>("reader.setFont", arguments: MockFont.sanFrancisco, MockSize.large)
 
-        let script = method.javaScriptString
-        let expectedScript = "reader.setFont(\"sanFrancisco\", 17)"
+        let script = method.makeExpressionString()
+        let expectedScript = "this.reader.setFont(\"sanFrancisco\", 17);"
         XCTAssertEqual(script, expectedScript)
 
     }
