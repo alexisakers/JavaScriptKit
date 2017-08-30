@@ -10,8 +10,8 @@
 		5543E4931F5736D80057E28B /* Result.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5543E4911F5736BF0057E28B /* Result.framework */; };
 		5543E4951F5736E50057E28B /* Result.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5543E4941F5736E50057E28B /* Result.framework */; };
 		5543E4961F5737370057E28B /* JavaScriptKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 556E88E71F556EF70031476D /* JavaScriptKit.framework */; };
-		5543E4981F57374F0057E28B /* JavaScriptKit.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 556E88E71F556EF70031476D /* JavaScriptKit.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		5543E49A1F5737560057E28B /* Result.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 5543E4941F5736E50057E28B /* Result.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		5543E4981F57374F0057E28B /* JavaScriptKit.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 556E88E71F556EF70031476D /* JavaScriptKit.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		5543E49A1F5737560057E28B /* Result.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 5543E4941F5736E50057E28B /* Result.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		5543E49B1F57376A0057E28B /* Result.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5543E4941F5736E50057E28B /* Result.framework */; };
 		5543E49D1F5737910057E28B /* Result.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 5543E4911F5736BF0057E28B /* Result.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		5543E49E1F57379E0057E28B /* Result.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5543E4911F5736BF0057E28B /* Result.framework */; };
@@ -59,15 +59,16 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXCopyFilesBuildPhase section */
-		5543E4971F5737460057E28B /* CopyFiles */ = {
+		5543E4971F5737460057E28B /* Embed Frameworks */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
-				5543E49A1F5737560057E28B /* Result.framework in CopyFiles */,
-				5543E4981F57374F0057E28B /* JavaScriptKit.framework in CopyFiles */,
+				5543E49A1F5737560057E28B /* Result.framework in Embed Frameworks */,
+				5543E4981F57374F0057E28B /* JavaScriptKit.framework in Embed Frameworks */,
 			);
+			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 		55DAE6E71F546EA5009593AF /* Embed Frameworks */ = {
@@ -303,7 +304,7 @@
 				556E88EC1F556FDA0031476D /* Sources */,
 				556E88F01F556FDA0031476D /* Frameworks */,
 				556E88F31F556FDA0031476D /* Resources */,
-				5543E4971F5737460057E28B /* CopyFiles */,
+				5543E4971F5737460057E28B /* Embed Frameworks */,
 			);
 			buildRules = (
 			);
@@ -581,14 +582,13 @@
 					"$(PROJECT_DIR)/Carthage/Build/Mac",
 				);
 				INFOPLIST_FILE = Config/JavaScriptKitTests.plist;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/../Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "fr.alexaubry.JavaScriptKit.Tests-macOS";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SDKROOT = macosx;
 				SUPPORTED_PLATFORMS = macosx;
 				SWIFT_VERSION = 4.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Debug;
 		};
@@ -604,14 +604,13 @@
 					"$(PROJECT_DIR)/Carthage/Build/Mac",
 				);
 				INFOPLIST_FILE = Config/JavaScriptKitTests.plist;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/../Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "fr.alexaubry.JavaScriptKit.Tests-macOS";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SDKROOT = macosx;
 				SUPPORTED_PLATFORMS = macosx;
 				SWIFT_VERSION = 4.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Release;
 		};
