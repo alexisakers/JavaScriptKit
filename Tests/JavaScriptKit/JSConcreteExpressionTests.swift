@@ -1,5 +1,5 @@
 import XCTest
-@testable import JSBridge
+@testable import JavaScriptKit
 
 ///
 /// Teste la génération de scripts à partir d'une expression concrète.

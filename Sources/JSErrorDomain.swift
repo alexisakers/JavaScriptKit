@@ -1,5 +1,5 @@
 /**
- *  JSBridge
+ *  JavaScriptKit
  *  Copyright (c) 2017 Alexis Aubry. Licensed under the MIT license.
  */
 
@@ -27,7 +27,7 @@ public enum JSErrorDomain {
 
 extension JSErrorDomain: LocalizedError {
 
-    public static var identifier = "fr.alexaubry.JSBridge.JSErrorDomain"
+    public static var identifier = "fr.alexaubry.JavaScriptKit.JSErrorDomain"
 
     public var code: Int {
 
@@ -94,7 +94,7 @@ extension JSErrorDomain {
 
     private enum LocalizedStrings: String {
 
-        static var localizationContainer = Bundle(identifier: "fr.alexaubry.JSBridge")!
+        static var localizationContainer = Bundle(identifier: "fr.alexaubry.JavaScriptKit")!
         static var localizationTableName = "Localizable"
 
         case invalidReturnType = "JSErrorDomain.InvalidReturnType"

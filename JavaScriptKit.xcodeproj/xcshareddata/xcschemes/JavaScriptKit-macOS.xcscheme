@@ -14,10 +14,10 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "55DAE6A21F546C21009593AF"
-               BuildableName = "JSBridge.framework"
-               BlueprintName = "JSBridge"
-               ReferencedContainer = "container:JSBridge.xcodeproj">
+               BlueprintIdentifier = "556E88D61F556EF70031476D"
+               BuildableName = "JavaScriptKit.framework"
+               BlueprintName = "JavaScriptKit-macOS"
+               ReferencedContainer = "container:JavaScriptKit.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
@@ -27,26 +27,27 @@
       selectedDebuggerIdentifier = "Xcode.DebuggerFoundation.Debugger.LLDB"
       selectedLauncherIdentifier = "Xcode.DebuggerFoundation.Launcher.LLDB"
       language = ""
-      shouldUseLaunchSchemeArgsEnv = "YES">
+      shouldUseLaunchSchemeArgsEnv = "YES"
+      codeCoverageEnabled = "YES">
       <Testables>
          <TestableReference
             skipped = "NO">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "55DAE6AB1F546C22009593AF"
-               BuildableName = "JSBridgeTests.xctest"
-               BlueprintName = "JSBridgeTests"
-               ReferencedContainer = "container:JSBridge.xcodeproj">
+               BlueprintIdentifier = "556E88E91F556FDA0031476D"
+               BuildableName = "JavaScriptKitTests-macOS.xctest"
+               BlueprintName = "JavaScriptKitTests-macOS"
+               ReferencedContainer = "container:JavaScriptKit.xcodeproj">
             </BuildableReference>
          </TestableReference>
       </Testables>
       <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "55DAE6A21F546C21009593AF"
-            BuildableName = "JSBridge.framework"
-            BlueprintName = "JSBridge"
-            ReferencedContainer = "container:JSBridge.xcodeproj">
+            BlueprintIdentifier = "556E88D61F556EF70031476D"
+            BuildableName = "JavaScriptKit.framework"
+            BlueprintName = "JavaScriptKit-macOS"
+            ReferencedContainer = "container:JavaScriptKit.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
       <AdditionalOptions>
@@ -66,10 +67,10 @@
       <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "55DAE6A21F546C21009593AF"
-            BuildableName = "JSBridge.framework"
-            BlueprintName = "JSBridge"
-            ReferencedContainer = "container:JSBridge.xcodeproj">
+            BlueprintIdentifier = "556E88D61F556EF70031476D"
+            BuildableName = "JavaScriptKit.framework"
+            BlueprintName = "JavaScriptKit-macOS"
+            ReferencedContainer = "container:JavaScriptKit.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
       <AdditionalOptions>
@@ -84,10 +85,10 @@
       <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "55DAE6A21F546C21009593AF"
-            BuildableName = "JSBridge.framework"
-            BlueprintName = "JSBridge"
-            ReferencedContainer = "container:JSBridge.xcodeproj">
+            BlueprintIdentifier = "556E88D61F556EF70031476D"
+            BuildableName = "JavaScriptKit.framework"
+            BlueprintName = "JavaScriptKit-macOS"
+            ReferencedContainer = "container:JavaScriptKit.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
    </ProfileAction>

@@ -1,7 +1,7 @@
 import XCTest
 import WebKit
 import Result
-@testable import JSBridge
+@testable import JavaScriptKit
 
 ///
 /// Teste l'éxécution d'expressions JavaScript dans une WebView.
@@ -39,7 +39,7 @@ class JSExecutionTests: XCTestCase {
     /// Les URLs vers les ressources nécéssaires à l'éxécution des tests.
     let resources: (supportBundle: URL, html: URL) = {
         let bundleURL = Bundle(for: JSExecutionTests.self).resourceURL!
-        let supportBundleURL = bundleURL.appendingPathComponent("JSBridgeTestsSupport.bundle", isDirectory: true)
+        let supportBundleURL = bundleURL.appendingPathComponent("UnitTestsSupport.bundle", isDirectory: true)
         let htmlURL = supportBundleURL.appendingPathComponent("Tests.html", isDirectory: false)
         return (supportBundleURL, htmlURL)
     }()

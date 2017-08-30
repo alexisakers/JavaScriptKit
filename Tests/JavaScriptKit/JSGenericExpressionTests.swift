@@ -1,5 +1,5 @@
 import XCTest
-@testable import JSBridge
+@testable import JavaScriptKit
 
 ///
 /// Teste la génération et le décodage générique d'expressions JavaScript.

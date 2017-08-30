@@ -1,5 +1,5 @@
 /**
- *  JSBridge
+ *  JavaScriptKit
  *  Copyright (c) 2017 Alexis Aubry. Licensed under the MIT license.
  */
 
@@ -48,7 +48,7 @@ extension RawRepresentable where RawValue: JSConvertible {
 ///
 /// A type that is native to both Swift and JavaScript.
 ///
-/// - warning: This protocol is an implementation detail of `JSBridge`. Do not make your types
+/// - warning: This protocol is an implementation detail of `JavaScriptKit`. Do not make your types
 /// conform to it.
 ///
 
