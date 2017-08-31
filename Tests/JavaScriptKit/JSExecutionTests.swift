@@ -38,8 +38,8 @@ class JSExecutionTests: XCTestCase {
 
     /// Les URLs vers les ressources nécéssaires à l'éxécution des tests.
     let resources: (supportBundle: URL, html: URL) = {
-        let bundleURL = Bundle(for: JSExecutionTests.self).resourceURL!
-        let supportBundleURL = bundleURL.appendingPathComponent("UnitTestsSupport.bundle", isDirectory: true)
+        let supportBundleURL = Bundle(for: JSExecutionTests.self)
+            .url(forResource: "UnitTestsSupport", withExtension: "bundle")!
         let htmlURL = supportBundleURL.appendingPathComponent("Tests.html", isDirectory: false)
         return (supportBundleURL, htmlURL)
     }()
