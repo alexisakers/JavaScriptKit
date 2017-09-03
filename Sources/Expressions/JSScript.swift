@@ -45,7 +45,7 @@ import Foundation
 /// - Arrays of objects.
 ///
 
-public final class JSScript<T>: JSExpression {
+public final class JSScript<T>: JSExpression where T: Decodable {
 
     public typealias ReturnType = T
     public let javaScriptString: String

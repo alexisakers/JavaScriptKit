@@ -29,7 +29,7 @@ import Foundation
 /// - Arrays of objects.
 ///
 
-public final class JSVariable<T>: JSExpression {
+public final class JSVariable<T>: JSExpression where T: Decodable {
     
     public typealias ReturnType = T
 

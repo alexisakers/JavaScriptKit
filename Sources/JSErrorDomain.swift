@@ -20,6 +20,9 @@ public enum JSErrorDomain {
     /// The script returned an unexpected result.
     case unexpectedResult
 
+    /// The expression could not be built because it is invalid.
+    case invalidExpression(NSError)
+
 }
 
 
@@ -38,6 +41,8 @@ extension JSErrorDomain: LocalizedError {
             return 2001
         case .unexpectedResult:
             return 2002
+        case .invalidExpression(_):
+            return 2003
         }
 
     }
@@ -53,6 +58,9 @@ extension JSErrorDomain: LocalizedError {
 
         case .unexpectedResult:
             return LocalizedStrings.unexpectedResult.localizedValue
+
+        case .invalidExpression(_):
+            return LocalizedStrings.invalidExpression.localizedValue
         }
 
     }
@@ -60,7 +68,7 @@ extension JSErrorDomain: LocalizedError {
     public var underlyingError: NSError? {
 
         switch self {
-        case .executionError(let error):
+        case .executionError(let error), .invalidExpression(let error):
             return error
         default:
             return nil
@@ -100,6 +108,7 @@ extension JSErrorDomain {
         case invalidReturnType = "JSErrorDomain.InvalidReturnType"
         case executionError = "JSErrorDomain.ExecutionError"
         case unexpectedResult = "JSErrorDomain.UnexpectedResult"
+        case invalidExpression = "JSErrorDomain.InvalidExpression"
 
         var localizedValue: String {
 

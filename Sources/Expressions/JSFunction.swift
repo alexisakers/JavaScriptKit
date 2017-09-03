@@ -30,7 +30,7 @@ import Foundation
 /// - Arrays of objects.
 ///
 
-public final class JSFunction<T>: JSExpression {
+public final class JSFunction<T>: JSExpression where T: Decodable {
 
     public typealias ReturnType = T
 
@@ -38,7 +38,7 @@ public final class JSFunction<T>: JSExpression {
     public let keyPath: String
 
     /// The arguments to pass to the function.
-    public let arguments: [JSConvertible]
+    public let arguments: [Encodable]
 
     ///
     /// Creates a new method description.
@@ -56,19 +56,20 @@ public final class JSFunction<T>: JSExpression {
     /// ~~~
     ///
 
-    public init(_ keyPath: String, arguments: JSConvertible...) {
+    public init(_ keyPath: String, arguments: Encodable...) {
         self.keyPath = keyPath
         self.arguments = arguments
     }
 
-    public func makeExpressionString() -> String {
-        
-        let argumentsList = arguments.reduce("") {
+    public func makeExpressionString() throws -> String {
+
+        let encoder = JSArgumentEncoder()
+
+        let argumentsList = try arguments.reduce("") {
             partialResult, argument in
-
+            let jsArgument = try encoder.encode(argument)
             let separator = partialResult.isEmpty ? "" : ", "
-            return partialResult + separator + argument.jsRepresentation
-
+            return partialResult + separator + jsArgument
         }
 
         return "this.\(keyPath)" + "(" + argumentsList + ");"
