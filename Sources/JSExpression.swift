@@ -122,7 +122,6 @@ extension JSExpression {
     ///
 
     public func evaluate(in webView: WKWebView,
-                         decoder: @escaping (_ value: Any) -> ReturnType?,
                          completionHandler: ((_ result: Result<ReturnType, JSErrorDomain>) -> Void)?) {
 
         DispatchQueue.global(qos: .userInitiated).async {
@@ -181,7 +180,7 @@ extension JSExpression {
                                             _ resultError: Error?,
                                             _ completionHandler: ((_ result: Result<ReturnType, JSErrorDomain>) -> Void)?) {
 
-        let decoder = JSDecoder()
+        let decoder = JSResultDecoder()
 
         switch (resultValue, resultError) {
 

@@ -1,8 +1,6 @@
 import Foundation
 import JavaScriptKit
 
-
-
 class EmptyObject: Encodable {
 
     class Void: Encodable {
@@ -39,12 +37,11 @@ class Image: Encodable {
     }
 
     func encode(with encoder: Encoder) throws {
-
         var keyedContainer = encoder.container(keyedBy: Keys.self)
         try keyedContainer.encode(url, forKey: .url)
         try keyedContainer.encode(likeCount, forKey: .likeCount)
         try keyedContainer.encode(location, forKey: .location)
-
+        try keyedContainer.encode(user, forKey: .user)
     }
 
 }
@@ -52,14 +49,4 @@ class Image: Encodable {
 struct User: Encodable {
     let displayName: String
     let handle: String
-
-    enum Keys: String, CodingKey {
-        case displayName, handle
-    }
-
-    func encode(with encoder: Encoder) throws {
-
-    }
-
-
 }

@@ -34,6 +34,34 @@ class JSUnkeyedEncoderTests: XCTestCase {
 
     }
 
+    func testEncodeNestedArray() throws {
+
+        let array: [[String]] = [
+            ["foo", "bar"],
+            ["hello", "world"]
+        ]
+
+        let encoder = JSArgumentEncoder()
+        let encodedArray = try encoder.encode(array)
+
+        print(encodedArray)
+
+    }
+
+    func testNestedKeyedContainer() throws {
+
+        let users = [
+            User(displayName: "Elon Musk", handle: "elon_musk"),
+            User(displayName: "Tim Cook", handle: "tim_cook")
+        ]
+
+        let encoder = JSArgumentEncoder()
+        let encodedArray = try encoder.encode(users)
+
+        print(encodedArray)
+
+    }
+
 }
 
 class AnyEncodable: Encodable {

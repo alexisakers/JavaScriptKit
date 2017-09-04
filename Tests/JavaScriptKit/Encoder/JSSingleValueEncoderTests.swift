@@ -6,7 +6,7 @@ import Foundation
 /// Tests encoding a single value inside a JavaScript encoder.
 ///
 
-class JSSingleValueEncoderTests: XCTestCase {
+class SingleValueEncoderTests: XCTestCase {
 
     /// Tests encoding a `nil` value.
     func testEncodeNil() throws {
@@ -150,7 +150,7 @@ class JSSingleValueEncoderTests: XCTestCase {
         let encoder = JSArgumentEncoder()
         let encodedString = try encoder.encode(string)
 
-        XCTAssertEqual(encodedString, doubleQuote("\\'Hello, world !\\'"))
+        XCTAssertEqual(encodedString, doubleQuote("\\u{27}Hello, world !\\u{27}"))
 
     }
 

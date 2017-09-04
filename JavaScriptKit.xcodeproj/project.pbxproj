@@ -7,8 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		551B2F6D1F5A9466009AE800 /* JSDecoder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 551B2F6C1F5A9466009AE800 /* JSDecoder.swift */; };
-		551B2F6E1F5A9466009AE800 /* JSDecoder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 551B2F6C1F5A9466009AE800 /* JSDecoder.swift */; };
+		551B2F6D1F5A9466009AE800 /* JSResultDecoder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 551B2F6C1F5A9466009AE800 /* JSResultDecoder.swift */; };
+		551B2F6E1F5A9466009AE800 /* JSResultDecoder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 551B2F6C1F5A9466009AE800 /* JSResultDecoder.swift */; };
 		5543E4931F5736D80057E28B /* Result.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5543E4911F5736BF0057E28B /* Result.framework */; };
 		5543E4951F5736E50057E28B /* Result.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5543E4941F5736E50057E28B /* Result.framework */; };
 		5543E4961F5737370057E28B /* JavaScriptKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 556E88E71F556EF70031476D /* JavaScriptKit.framework */; };
@@ -17,8 +17,8 @@
 		5543E49B1F57376A0057E28B /* Result.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5543E4941F5736E50057E28B /* Result.framework */; };
 		5543E49D1F5737910057E28B /* Result.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 5543E4911F5736BF0057E28B /* Result.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		5543E49E1F57379E0057E28B /* Result.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5543E4911F5736BF0057E28B /* Result.framework */; };
-		556987D11F5B2B2600FC4E07 /* JSCodableContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 556987D01F5B2B2600FC4E07 /* JSCodableContainer.swift */; };
-		556987D21F5B2B2600FC4E07 /* JSCodableContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 556987D01F5B2B2600FC4E07 /* JSCodableContainer.swift */; };
+		556987D11F5B2B2600FC4E07 /* CodableSupport.swift in Sources */ = {isa = PBXBuildFile; fileRef = 556987D01F5B2B2600FC4E07 /* CodableSupport.swift */; };
+		556987D21F5B2B2600FC4E07 /* CodableSupport.swift in Sources */ = {isa = PBXBuildFile; fileRef = 556987D01F5B2B2600FC4E07 /* CodableSupport.swift */; };
 		556987D41F5BF31700FC4E07 /* JSUnkeyedEncoderTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 556987D31F5BF31700FC4E07 /* JSUnkeyedEncoderTests.swift */; };
 		556987D51F5BF31700FC4E07 /* JSUnkeyedEncoderTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 556987D31F5BF31700FC4E07 /* JSUnkeyedEncoderTests.swift */; };
 		556E88CF1F549EBE0031476D /* JSFunction.swift in Sources */ = {isa = PBXBuildFile; fileRef = 556E88CE1F549EBE0031476D /* JSFunction.swift */; };
@@ -92,13 +92,13 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		551B2F6C1F5A9466009AE800 /* JSDecoder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JSDecoder.swift; sourceTree = "<group>"; };
+		551B2F6C1F5A9466009AE800 /* JSResultDecoder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JSResultDecoder.swift; sourceTree = "<group>"; };
 		5543E48A1F57336D0057E28B /* JavaScriptKit.podspec */ = {isa = PBXFileReference; lastKnownFileType = text; path = JavaScriptKit.podspec; sourceTree = "<group>"; };
 		5543E48B1F57336D0057E28B /* LICENSE */ = {isa = PBXFileReference; lastKnownFileType = text; path = LICENSE; sourceTree = "<group>"; };
 		5543E48C1F57336D0057E28B /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		5543E4911F5736BF0057E28B /* Result.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Result.framework; path = Carthage/Build/iOS/Result.framework; sourceTree = "<group>"; };
 		5543E4941F5736E50057E28B /* Result.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Result.framework; path = Carthage/Build/Mac/Result.framework; sourceTree = "<group>"; };
-		556987D01F5B2B2600FC4E07 /* JSCodableContainer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JSCodableContainer.swift; sourceTree = "<group>"; };
+		556987D01F5B2B2600FC4E07 /* CodableSupport.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CodableSupport.swift; sourceTree = "<group>"; };
 		556987D31F5BF31700FC4E07 /* JSUnkeyedEncoderTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JSUnkeyedEncoderTests.swift; sourceTree = "<group>"; };
 		556E88CE1F549EBE0031476D /* JSFunction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JSFunction.swift; sourceTree = "<group>"; };
 		556E88D21F54B0C50031476D /* .gitignore */ = {isa = PBXFileReference; lastKnownFileType = text; path = .gitignore; sourceTree = "<group>"; };
@@ -166,8 +166,8 @@
 			isa = PBXGroup;
 			children = (
 				55BFFFD31F57EF6400F13633 /* JSArgumentEncoder.swift */,
-				551B2F6C1F5A9466009AE800 /* JSDecoder.swift */,
-				556987D01F5B2B2600FC4E07 /* JSCodableContainer.swift */,
+				551B2F6C1F5A9466009AE800 /* JSResultDecoder.swift */,
+				556987D01F5B2B2600FC4E07 /* CodableSupport.swift */,
 			);
 			path = Codable;
 			sourceTree = "<group>";
@@ -267,11 +267,11 @@
 		55DAE6D21F546CB5009593AF /* JavaScriptKit */ = {
 			isa = PBXGroup;
 			children = (
+				55C410B71F5AEF6C008B0B0E /* JSMockData.swift */,
 				556987D61F5C0B4700FC4E07 /* Encoder */,
 				55DAE6D31F546CB5009593AF /* JSExecutionTests.swift */,
 				55DAE6D41F546CB5009593AF /* JSGenericExpressionTests.swift */,
 				55DAE6D51F546CB5009593AF /* JSConcreteExpressionTests.swift */,
-				55C410B71F5AEF6C008B0B0E /* JSMockData.swift */,
 			);
 			path = JavaScriptKit;
 			sourceTree = "<group>";
@@ -479,8 +479,8 @@
 				556E88D91F556EF70031476D /* JSVariable.swift in Sources */,
 				556E88DA1F556EF70031476D /* JSFunction.swift in Sources */,
 				556E88DB1F556EF70031476D /* JSScript.swift in Sources */,
-				556987D21F5B2B2600FC4E07 /* JSCodableContainer.swift in Sources */,
-				551B2F6E1F5A9466009AE800 /* JSDecoder.swift in Sources */,
+				556987D21F5B2B2600FC4E07 /* CodableSupport.swift in Sources */,
+				551B2F6E1F5A9466009AE800 /* JSResultDecoder.swift in Sources */,
 				556E88DC1F556EF70031476D /* JSErrorDomain.swift in Sources */,
 				556E88DD1F556EF70031476D /* JSExpression.swift in Sources */,
 			);
@@ -505,8 +505,8 @@
 				55DAE6C91F546C9F009593AF /* JSVariable.swift in Sources */,
 				556E88CF1F549EBE0031476D /* JSFunction.swift in Sources */,
 				556E88D51F5557A90031476D /* JSScript.swift in Sources */,
-				556987D11F5B2B2600FC4E07 /* JSCodableContainer.swift in Sources */,
-				551B2F6D1F5A9466009AE800 /* JSDecoder.swift in Sources */,
+				556987D11F5B2B2600FC4E07 /* CodableSupport.swift in Sources */,
+				551B2F6D1F5A9466009AE800 /* JSResultDecoder.swift in Sources */,
 				55DAE6CA1F546C9F009593AF /* JSErrorDomain.swift in Sources */,
 				55DAE6CB1F546C9F009593AF /* JSExpression.swift in Sources */,
 			);

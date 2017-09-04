@@ -6,7 +6,7 @@
 import Foundation
 
 ///
-/// `JSEncoder` generates the JavaScript representation of `Encodable` arguments.
+/// `JSArgumentEncoder` generates the JavaScript representation of `Encodable` arguments.
 ///
 
 final class JSArgumentEncoder {
@@ -20,48 +20,48 @@ final class JSArgumentEncoder {
 
     internal func encode(_ argument: Encodable) throws -> String {
 
-        let encoder = JSConcreteEncoder()
+        let structureEncoder = JSStructureEncoder()
 
         //==== I- Encode value into an encoding container ====//
 
         // Date and URL Encodable implementations are not compatible with JavaScript.
         if argument is Date {
-            var singleValueStorage = encoder.singleValueContainer()
+            var singleValueStorage = structureEncoder.singleValueContainer()
             try singleValueStorage.encode(argument as! Date)
 
         } else if argument is URL {
-            var singleValueStorage = encoder.singleValueContainer()
+            var singleValueStorage = structureEncoder.singleValueContainer()
             try singleValueStorage.encode(argument as! URL)
 
         } else {
-            try argument.encode(to: encoder)
+            try argument.encode(to: structureEncoder)
         }
 
         //==== II- Get the encoded value and convert it to JavaScript ====//
 
-        guard let topLevelContainer = encoder.container else {
-            let errorContext = EncodingError.Context(codingPath: encoder.codingPath,
+        guard let topLevelContainer = structureEncoder.container else {
+            let errorContext = EncodingError.Context(codingPath: structureEncoder.codingPath,
                                                      debugDescription: "Top-level argument did not encode any values.")
             throw EncodingError.invalidValue(argument, errorContext)
         }
 
         switch topLevelContainer {
-        case .singleValue(let encodedValue):
-            return jsEncodeSingleValue(encodedValue)
+        case .singleValue(let storage):
+            return jsEncodeSingleValue(storage)
 
-        case .unkeyed(let arrayRef):
-            return try jsEncodeObject(arrayRef.array)
+        case .unkeyed(let storage):
+            return try jsEncodeObject(storage.array)
 
-        case .keyed(let dictionaryRef):
-            return try jsEncodeObject(dictionaryRef.dictionary)
+        case .keyed(let storage):
+            return try jsEncodeObject(storage.dictionary)
         }
 
     }
 
-    /// Encodes the content of a single-value container to a JavaScript literal.
-    private func jsEncodeSingleValue(_ singleValue: JSSingleValue) -> String {
+    /// Encodes the content of a single-value container storage to a JavaScript literal.
+    private func jsEncodeSingleValue(_ storage: SingleValueStorage) -> String {
 
-        switch singleValue {
+        switch storage {
         case .null:
             return "null"
 
@@ -72,7 +72,7 @@ final class JSArgumentEncoder {
             return string
 
         case .integer(let integer):
-            return integer.makeString()
+            return integer.stringValue
 
         case .float(let float):
             return String(float)
@@ -80,13 +80,17 @@ final class JSArgumentEncoder {
         case .double(let double):
             return String(double)
 
+        case .date(let date):
+            let timestamp = Int(date.timeIntervalSince1970) * 1000
+            return "new Date(\(timestamp))"
+            
         case .emptyObject:
             return "{}"
         }
 
     }
 
-    /// Encodes the contents of an unkeyed or a keyed container into a JSON literal.
+    /// Encodes the contents of an unkeyed or a keyed container storage into a JSON literal.
     private func jsEncodeObject<T: Sequence>(_ object: T) throws -> String {
         let jsonData = try JSONSerialization.data(withJSONObject: object, options: [])
         return String(data: jsonData, encoding: .utf8)!
@@ -94,17 +98,29 @@ final class JSArgumentEncoder {
 
 }
 
-enum StringLiteralEscaping {
-    case automatic
-    case manual(Bool)
-}
+// MARK: - Structure Encoder
 
-// MARK: - Concrete Encoder
+///
+/// A class that serializes the structure of arguments before JavaScript literal conversion.
+///
 
-private class JSConcreteEncoder: Encoder {
+private class JSStructureEncoder: Encoder {
+
+    /// The string literal quoting method.
+    enum StringLiteralQuoting {
+
+        /// The literal will be quoted if encoded inside a single value container (default).
+        case automatic
+
+        /// The literal will be quoted if the manual value is set to `true`.
+        case manual(Bool)
+
+    }
+
+    // MARK: Properties
 
     /// The encoder's storage.
-    var container: JSEncodingContainer?
+    var container: JSCodingContainer?
 
     /// The path to the current point in encoding.
     var codingPath: [CodingKey]
@@ -112,18 +128,20 @@ private class JSConcreteEncoder: Encoder {
     /// Contextual user-provided information for use during encoding.
     var userInfo: [CodingUserInfoKey : Any]
 
-    /// The string literal escaping strategies.
-    var stringLiteralEscaping: StringLiteralEscaping
+    // MARK: Options
 
-    /// Indicates whether can encoder should escape the
+    /// The string literal quoting strategy.
+    let stringLiteralQuoting: StringLiteralQuoting
+
+    /// Indicates whether the encoder can quote string literals.
     var canQuoteStringLiteral: Bool {
         return container == nil
     }
 
-    /// Indicates whether string literals should be quoted.
+    /// Indicates whether string literals should be quoted by the encoder.
     var shouldQuoteStringLiteral: Bool {
 
-        switch stringLiteralEscaping {
+        switch stringLiteralQuoting {
         case .automatic:
             return canQuoteStringLiteral
 
@@ -135,11 +153,11 @@ private class JSConcreteEncoder: Encoder {
 
     // MARK: Initialization
 
-    init(codingPath: [CodingKey] = [], userInfo: [CodingUserInfoKey : Any] = [:], stringEscaping: StringLiteralEscaping = .automatic) {
+    init(codingPath: [CodingKey] = [], userInfo: [CodingUserInfoKey : Any] = [:], stringQuoting: StringLiteralQuoting = .automatic) {
         self.container = nil
         self.codingPath = codingPath
         self.userInfo = userInfo
-        self.stringLiteralEscaping = stringEscaping
+        self.stringLiteralQuoting = stringQuoting
     }
 
     // MARK: Coding Path Operations
@@ -160,7 +178,7 @@ private class JSConcreteEncoder: Encoder {
     func assertCanRequestNewContainer() {
 
         guard self.container == nil else {
-            let previousContainerType = self.container!.type
+            let previousContainerType = self.container!.debugType
             preconditionFailure("Attempt to encode value with a new container when it has already been encoded with a \(previousContainerType) container.")
         }
 
@@ -176,6 +194,9 @@ private class JSConcreteEncoder: Encoder {
     /// - parameter key: The key to push. May be nil for unkeyed containers.
     /// - parameter work: The work to perform with the key in the path.
     ///
+    /// If the `work` fails, `key` will be left in the coding path, which indicates a failure and
+    /// prevents requesting new containers.
+    ///
 
     fileprivate func with<T>(pushedKey key: CodingKey, _ work: () throws -> T) rethrows -> T {
         self.codingPath.append(key)
@@ -184,22 +205,21 @@ private class JSConcreteEncoder: Encoder {
         return ret
     }
 
-    // MARK: Encoder
+    // MARK: Containers
 
     func container<Key: CodingKey>(keyedBy type: Key.Type) -> KeyedEncodingContainer<Key> {
         assertCanRequestNewContainer()
-        /*let storageDictionary = NSMutableDictionary()
-        container = .keyed(storageDictionary)
-        let keyedContainer = JSKeyedEncodingContainer<Key>(referencing: self, codingPath: codingPath, wrapping: storageDictionary)
-        return KeyedEncodingContainer(keyedContainer)*/
-        fatalError("Unimplemented. WIP.")
+        let storage = DictionaryStorage()
+        container = .keyed(storage)
+        let keyedContainer = JSKeyedEncodingContainer<Key>(referencing: self, codingPath: codingPath, wrapping: storage)
+        return KeyedEncodingContainer(keyedContainer)
     }
 
     func unkeyedContainer() -> UnkeyedEncodingContainer {
         assertCanRequestNewContainer()
-        let storageArray = ArrayRef()
-        container = .unkeyed(storageArray)
-        return JSUnkeyedEncodingContainer(referencing: self, codingPath: codingPath, wrapping: storageArray)
+        let storage = ArrayStorage()
+        container = .unkeyed(storage)
+        return JSUnkeyedEncodingContainer(referencing: self, codingPath: codingPath, wrapping: storage)
     }
 
     func singleValueContainer() -> SingleValueEncodingContainer {
@@ -211,7 +231,7 @@ private class JSConcreteEncoder: Encoder {
 
 // MARK: - Single Value Container
 
-extension JSConcreteEncoder: SingleValueEncodingContainer {
+extension JSStructureEncoder: SingleValueEncodingContainer {
 
     ///
     /// Asserts that a single value can be encoded into the container (i.e. that no value has
@@ -225,7 +245,7 @@ extension JSConcreteEncoder: SingleValueEncodingContainer {
             preconditionFailure("Attempt to encode multiple values in a single value container.")
 
         case .keyed(_)?, .unkeyed(_)?:
-            preconditionFailure("Attempt to encode value with a new container when it has already been encoded with a \(container!.type) container.")
+            preconditionFailure("Attempt to encode value with a new container when it has already been encoded with a \(container!.debugType) container.")
 
         case nil:
             return
@@ -330,20 +350,20 @@ extension JSConcreteEncoder: SingleValueEncodingContainer {
 private class JSUnkeyedEncodingContainer: UnkeyedEncodingContainer {
 
     /// A reference to the encoder we're writing to.
-    let encoder: JSConcreteEncoder
+    let encoder: JSStructureEncoder
 
-    /// A reference to the container we're writing to.
-    let container: ArrayRef
+    /// A reference to the container storage we're writing to.
+    let storage: ArrayStorage
 
     /// The path of coding keys taken to get to this point in encoding.
     var codingPath: [CodingKey]
 
     // MARK: Initialization
 
-    init(referencing encoder: JSConcreteEncoder, codingPath: [CodingKey], wrapping container: ArrayRef) {
+    init(referencing encoder: JSStructureEncoder, codingPath: [CodingKey], wrapping storage: ArrayStorage) {
         self.encoder = encoder
         self.codingPath = codingPath
-        self.container = container
+        self.storage = storage
     }
 
     // MARK: Coding Path
@@ -353,6 +373,9 @@ private class JSUnkeyedEncodingContainer: UnkeyedEncodingContainer {
     ///
     /// - parameter key: The key to push. May be nil for unkeyed containers.
     /// - parameter work: The work to perform with the key in the path.
+    ///
+    /// If the `work` fails, `key` will be left in the coding path, which indicates a failure and
+    /// prevents requesting new containers.
     ///
 
     fileprivate func with<T>(pushedKey key: CodingKey, _ work: () throws -> T) rethrows -> T {
@@ -365,67 +388,67 @@ private class JSUnkeyedEncodingContainer: UnkeyedEncodingContainer {
     // MARK: Encoding
 
     var count: Int {
-        return container.count
+        return storage.count
     }
 
     func encodeNil() throws {
-        container.append("null")
+        storage.append("null")
     }
 
     func encode(_ value: Bool) throws {
-        container.append(value)
+        storage.append(value)
     }
 
     func encode(_ value: Int) throws {
-        container.append(value)
+        storage.append(value)
     }
 
     func encode(_ value: Int8) throws {
-        container.append(value)
+        storage.append(value)
     }
 
     func encode(_ value: Int16) throws {
-        container.append(value)
+        storage.append(value)
     }
 
     func encode(_ value: Int32) throws {
-        container.append(value)
+        storage.append(value)
     }
 
     func encode(_ value: Int64) throws {
-        container.append(value)
+        storage.append(value)
     }
 
     func encode(_ value: UInt) throws {
-        container.append(value)
+        storage.append(value)
     }
 
     func encode(_ value: UInt8) throws {
-        container.append(value)
+        storage.append(value)
     }
 
     func encode(_ value: UInt16) throws {
-        container.append(value)
+        storage.append(value)
     }
 
     func encode(_ value: UInt32) throws {
-        container.append(value)
+        storage.append(value)
     }
 
     func encode(_ value: UInt64) throws {
-        container.append(value)
+        storage.append(value)
     }
 
     func encode(_ value: Float) throws {
-        container.appendSingleValue(encoder.parseFloat(value))
+        storage.appendSingleValue(encoder.parseFloat(value))
     }
 
     func encode(_ value: Double) throws {
-        container.appendSingleValue(encoder.parseDouble(value))
+        storage.appendSingleValue(encoder.parseDouble(value))
     }
 
     func encode(_ value: String) throws {
-        container.append(value)
+        storage.append(value)
     }
 
     func encode<T: Encodable>(_ value: T) throws  {
@@ -436,60 +459,84 @@ private class JSUnkeyedEncodingContainer: UnkeyedEncodingContainer {
 
             switch newContainer {
             case .keyed(let dictionaryRef):
-                container.append(dictionaryRef.dictionary)
+                storage.append(dictionaryRef.dictionary)
             case .singleValue(let value):
-                container.append(value.underlyingValue)
+                storage.append(value.underlyingValue)
             case .unkeyed(let arrayRef):
-                container.append(arrayRef.array)
+                storage.append(arrayRef.array)
             }
 
         }
 
     }
 
-    // MARK: References
+    // MARK: Nested Containers
+
+    var nestedUnkeyedContainers: [Int: ArrayStorage] = [:]
+    var nestedKeyedContainers: [Int: DictionaryStorage] = [:]
 
     func nestedContainer<NestedKey: CodingKey>(keyedBy keyType: NestedKey.Type) -> KeyedEncodingContainer<NestedKey> {
-        /*let dictionary = DictionaryRef
-        self.container.append(dictionary)
-        let container = JSKeyedEncodingContainer<NestedKey>(referencing: encoder, codingPath: codingPath, wrapping: dictionary)
-        return KeyedEncodingContainer(container)*/
-        fatalError("Unimplemented. WIP.")
+        let containerIndex = storage.count
+        let nestedStorage = DictionaryStorage()
+        storage.append(nestedStorage)
+        nestedKeyedContainers[containerIndex] = nestedStorage
+        let keyedContainer = JSKeyedEncodingContainer<NestedKey>(referencing: encoder, codingPath: codingPath, wrapping: nestedStorage)
+        return KeyedEncodingContainer(keyedContainer)
     }
 
     func nestedUnkeyedContainer() -> UnkeyedEncodingContainer {
-        /*let array = NSMutableArray()
-        self.container.add(array)
-        return JSUnkeyedEncodingContainer(referencing: self.encoder, codingPath: self.codingPath, wrapping: array)*/
-        fatalError("Unimplemented. WIP.")
+        let containerIndex = storage.count
+        let nestedStorage = ArrayStorage()
+        storage.append(nestedStorage)
+        nestedUnkeyedContainers[containerIndex] = nestedStorage
+        return JSUnkeyedEncodingContainer(referencing: encoder, codingPath: codingPath, wrapping: nestedStorage)
     }
 
     func superEncoder() -> Encoder {
-        return JSReferencingEncoder(referencing: encoder, at: container.count, wrapping: container)
+        return JSReferencingEncoder(referencing: encoder, at: storage.count, wrapping: storage)
+    }
+
+    // MARK: Deinitialization
+
+    // Insert the contents of the nested containers into the array storage.
+    deinit {
+
+        for (index, unkeyedContainerStorage) in nestedUnkeyedContainers {
+            storage.array[index] = unkeyedContainerStorage.array
+        }
+
+        for (index, keyedContainerStorage) in nestedKeyedContainers {
+            storage.array[index] = keyedContainerStorage.dictionary
+        }
+
     }
 
 }
 
-// MARK: - Single
-/*
+// MARK: - Keyed Encoding Container
+
+///
+/// A keyed encoding container for objects.
+///
+
 private class JSKeyedEncodingContainer<K: CodingKey>: KeyedEncodingContainerProtocol {
     typealias Key = K
 
     /// A reference to the encoder we're writing to.
-    let encoder: JSConcreteEncoder
+    let encoder: JSStructureEncoder
 
-    /// A reference to the container we're writing to.
-    let container: DictionaryRef
+    /// A reference to the container storage we're writing to.
+    let storage: DictionaryStorage
 
     /// The path of coding keys taken to get to this point in encoding.
     var codingPath: [CodingKey]
 
     // MARK: Initialization
 
-    init(referencing encoder: JSConcreteEncoder, codingPath: [CodingKey], wrapping container: DictionaryRef) {
+    init(referencing encoder: JSStructureEncoder, codingPath: [CodingKey], wrapping storage: DictionaryStorage) {
         self.encoder = encoder
         self.codingPath = codingPath
-        self.container = container
+        self.storage = storage
     }
 
     // MARK: Coding Path Operations
@@ -499,6 +546,9 @@ private class JSKeyedEncodingContainer<K: CodingKey>: KeyedEncodingContainerProt
     ///
     /// - parameter key: The key to push. May be nil for unkeyed containers.
     /// - parameter work: The work to perform with the key in the path.
+    ///
+    /// If the `work` fails, `key` will be left in the coding path, which indicates a failure and
+    /// prevents requesting new containers.
     ///
 
     func with<T>(pushedKey key: CodingKey, _ work: () throws -> T) rethrows -> T {
@@ -511,103 +561,135 @@ private class JSKeyedEncodingContainer<K: CodingKey>: KeyedEncodingContainerProt
     // MARK: Encoding
 
     func encodeNil(forKey key: K) throws {
-        container[key.stringValue] = NSNull()
+        storage[key.stringValue] = NSNull()
     }
 
     func encode(_ value: Bool, forKey key: K) throws {
-        container[key.stringValue] = encoder.box(value)
+        storage[key.stringValue] = value
     }
 
     func encode(_ value: Int, forKey key: K) throws {
-        container[key.stringValue] = encoder.box(value)
+        storage[key.stringValue] = value
     }
 
     func encode(_ value: Int8, forKey key: K) throws {
-        container[key.stringValue] = encoder.box(value)
+        storage[key.stringValue] = value
     }
 
     func encode(_ value: Int16, forKey key: K) throws {
-        container[key.stringValue] = encoder.box(value)
+        storage[key.stringValue] = value
     }
 
     func encode(_ value: Int32, forKey key: K) throws {
-        container[key.stringValue] = encoder.box(value)
+        storage[key.stringValue] = value
     }
 
     func encode(_ value: Int64, forKey key: K) throws {
-        container[key.stringValue] = encoder.box(value)
+        storage[key.stringValue] = value
     }
 
     func encode(_ value: UInt, forKey key: K) throws {
-        container[key.stringValue] = encoder.box(value)
+        storage[key.stringValue] = value
     }
 
     func encode(_ value: UInt8, forKey key: K) throws {
-        container[key.stringValue] = encoder.box(value)
+        storage[key.stringValue] = value
     }
 
     func encode(_ value: UInt16, forKey key: K) throws {
-        container[key.stringValue] = encoder.box(value)
+        storage[key.stringValue] = value
     }
 
     func encode(_ value: UInt32, forKey key: K) throws {
-        container[key.stringValue] = encoder.box(value)
+        storage[key.stringValue] = value
     }
 
     func encode(_ value: UInt64, forKey key: K) throws {
-        container[key.stringValue] = encoder.box(value)
+        storage[key.stringValue] = value
     }
 
     func encode(_ value: Float, forKey key: K) throws {
-        container[key.stringValue] = encoder.box(value)
+        storage[key.stringValue] = encoder.parseFloat(value).underlyingValue
     }
 
     func encode(_ value: Double, forKey key: K) throws {
-        container[key.stringValue] = encoder.box(value)
+        storage[key.stringValue] = encoder.parseDouble(value).underlyingValue
     }
 
     func encode(_ value: String, forKey key: K) throws {
-        container[key.stringValue] = encoder.box(value)
+        storage[key.stringValue] = encoder.parseString(value).underlyingValue
     }
 
     func encode<T: Encodable>(_ value: T, forKey key: K) throws {
 
-        try with(pushedKey: key) {
-            self.container[key.stringValue] = try self.encoder.box(value)
+        try encoder.with(pushedKey: JSONKey.string(key.stringValue)) {
+
+            let newContainer = try self.encoder.parseValue(value)
+
+            switch newContainer {
+            case .keyed(let dictionaryRef):
+                storage[key.stringValue] = dictionaryRef.dictionary
+            case .singleValue(let value):
+                storage[key.stringValue] = value.underlyingValue
+            case .unkeyed(let arrayRef):
+                storage[key.stringValue] = arrayRef.array
+            }
+
         }
 
     }
 
-    // MARK: References
+    // MARK: Nested Containers
+
+    var nestedUnkeyedContainers: [String: ArrayStorage] = [:]
+    var nestedKeyedContainers: [String: DictionaryStorage] = [:]
 
     func nestedContainer<NestedKey: CodingKey>(keyedBy keyType: NestedKey.Type, forKey key: K) -> KeyedEncodingContainer<NestedKey> {
-        let dictionary = DictionaryRef()
-        self.container[key.stringValue] = dictionary
+        let dictionary = DictionaryStorage()
+        storage[key.stringValue] = dictionary
+        nestedKeyedContainers[key.stringValue] = dictionary
         let container = JSKeyedEncodingContainer<NestedKey>(referencing: encoder, codingPath: codingPath, wrapping: dictionary)
         return KeyedEncodingContainer(container)
     }
 
     func nestedUnkeyedContainer(forKey key: K) -> UnkeyedEncodingContainer {
-        let array = NSMutableArray()
-        container[key.stringValue] = array
+        let array = ArrayStorage()
+        storage[key.stringValue] = array
+        nestedUnkeyedContainers[key.stringValue] = array
         return JSUnkeyedEncodingContainer(referencing: encoder, codingPath: codingPath, wrapping: array)
     }
 
     func superEncoder() -> Encoder {
-        return JSReferencingEncoder(referencing: encoder, at: JSONKey.super, wrapping: container)
+        return JSReferencingEncoder(referencing: encoder, at: JSONKey.super, wrapping: storage)
     }
 
     func superEncoder(forKey key: K) -> Encoder {
-        return JSReferencingEncoder(referencing: encoder, at: key, wrapping: container)
+        return JSReferencingEncoder(referencing: encoder, at: key, wrapping: storage)
+    }
+
+    // MARK: Deinitialization
+
+    // Insert the contents of the nested containers into the dictionary storage.
+    deinit {
+
+        for (key, unkeyedContainerStorage) in nestedUnkeyedContainers {
+            storage.dictionary[key] = unkeyedContainerStorage.array
+        }
+
+        for (key, keyedContainerStorage) in nestedKeyedContainers {
+            storage.dictionary[key] = keyedContainerStorage.dictionary
+        }
+
     }
 
 }
-*/
-// MARK: - Wrappers
 
-extension JSConcreteEncoder {
+// MARK: - Parsers
 
-    func parseString(_ value: String) -> JSSingleValue {
+extension JSStructureEncoder {
+
+    /// Escapes and quotes a String if required, and returns it inside a Single Value container.
+    func parseString(_ value: String) -> SingleValueStorage {
         let escapedString = value.escapingSpecialCharacters
 
         if shouldQuoteStringLiteral {
@@ -617,7 +699,8 @@ extension JSConcreteEncoder {
         }
     }
 
-    func parseFloat(_ float: Float) -> JSSingleValue {
+    /// Returns the correct representation of the Float for JavaScript.
+    func parseFloat(_ float: Float) -> SingleValueStorage {
 
         if float == Float.infinity {
             return .string("Number.POSITIVE_INFINITY")
@@ -631,7 +714,8 @@ extension JSConcreteEncoder {
 
     }
 
-    func parseDouble(_ double: Double) -> JSSingleValue {
+    /// Returns the correct representation of the Double for JavaScript.
+    func parseDouble(_ double: Double) -> SingleValueStorage {
 
         if double == Double.infinity {
             return .string("Number.POSITIVE_INFINITY")
@@ -645,29 +729,21 @@ extension JSConcreteEncoder {
 
     }
 
-    func parseDate(_ date: Date) -> JSSingleValue {
-        let timestamp = Int(date.timeIntervalSince1970) * 1000
-        return .string("new Date(\(timestamp))")
-    }
-
-    func parseValue<T: Encodable>(_ value: T) throws -> JSEncodingContainer {
+    /// Encodes the value and returns the container it has been encoded to.
+    func parseValue<T: Encodable>(_ value: T) throws -> JSCodingContainer {
 
         if T.self == Date.self {
-            return .singleValue(parseDate(value as! Date))
+            return .singleValue(.date(value as! Date))
         } else if T.self == URL.self {
             return .singleValue(parseString((value as! URL).absoluteString))
         }
 
-        let tempEncoder = JSConcreteEncoder(stringEscaping: .manual(canQuoteStringLiteral))
+        let tempEncoder = JSStructureEncoder(codingPath: codingPath,
+                                             userInfo: userInfo,
+                                             stringQuoting: .manual(canQuoteStringLiteral))
+
         try value.encode(to: tempEncoder)
-
-        switch tempEncoder.container {
-        case .some:
-            return tempEncoder.container!
-
-        case nil:
-            return .singleValue(.emptyObject)
-        }
+        return tempEncoder.container ?? .singleValue(.emptyObject)
 
     }
 
@@ -675,38 +751,46 @@ extension JSConcreteEncoder {
 
 // MARK: - Reference
 
-fileprivate class JSReferencingEncoder: JSConcreteEncoder {
+///
+/// A structure encoder that references the contents of a sub-encoder.
+///
 
+private class JSReferencingEncoder: JSStructureEncoder {
+
+    /// The kind of refrence.
     enum Reference {
-        case array(ArrayRef, Int)
-        case dictionary(DictionaryRef, String)
+
+        /// The encoder references an array at the given index.
+        case array(ArrayStorage, Int)
+
+        /// The encoder references a dictionary at the given key.
+        case dictionary(DictionaryStorage, String)
+
     }
 
     // MARK: Properties
 
     /// The encoder we're referencing.
-    fileprivate let encoder: JSConcreteEncoder
+    let encoder: JSStructureEncoder
 
     /// The container reference itself.
-    private let reference: Reference
+    let reference: Reference
 
     // MARK: Initialization
 
     /// Initializes `self` by referencing the given array container in the given encoder.
-    fileprivate init(referencing encoder: JSConcreteEncoder, at index: Int, wrapping array: ArrayRef) {
+    fileprivate init(referencing encoder: JSStructureEncoder, at index: Int, wrapping array: ArrayStorage) {
         self.encoder = encoder
         self.reference = .array(array, index)
-        super.init(codingPath: encoder.codingPath)
-        self.stringLiteralEscaping = .manual(false)
+        super.init(codingPath: encoder.codingPath, stringQuoting: .manual(false))
         codingPath.append(JSONKey.index(index))
     }
 
     /// Initializes `self` by referencing the given dictionary container in the given encoder.
-    fileprivate init(referencing encoder: JSConcreteEncoder, at key: CodingKey, wrapping dictionary: DictionaryRef) {
+    fileprivate init(referencing encoder: JSStructureEncoder, at key: CodingKey, wrapping dictionary: DictionaryStorage) {
         self.encoder = encoder
         self.reference = .dictionary(dictionary, key.stringValue)
-        super.init(codingPath: encoder.codingPath)
-        self.stringLiteralEscaping = .manual(false)
+        super.init(codingPath: encoder.codingPath, stringQuoting: .manual(false))
         self.codingPath.append(key)
     }
 
@@ -714,7 +798,7 @@ fileprivate class JSReferencingEncoder: JSConcreteEncoder {
 
     /// Indicates whether encoding has failed at the current key path.
     override var containsFailures: Bool {
-        return !(codingPath.count == 1)
+        return codingPath.count != (encoder.codingPath.count + 1)
     }
 
     // MARK: Deinitialization
@@ -727,89 +811,23 @@ fileprivate class JSReferencingEncoder: JSConcreteEncoder {
         case nil:
             value = [String: Any]()
 
-        case .singleValue(let singleValue)?:
-            value = singleValue.underlyingValue
+        case .singleValue(let storage)?:
+            value = storage.underlyingValue
 
-        case .unkeyed(let arrayRef)?:
-            value = arrayRef.array
+        case .unkeyed(let storage)?:
+            value = storage.array
 
-        case .keyed(let dictionaryRef)?:
-            value = dictionaryRef.dictionary
+        case .keyed(let storage)?:
+            value = storage.dictionary
         }
 
-        switch self.reference {
-        case .array(let arrayRef, let index):
-            arrayRef.insert(value, at: index)
+        switch reference {
+        case .array(let storage, let index):
+            storage.array[index] = value
 
-        case .dictionary(let dictionaryRef, let key):
-            dictionaryRef[key] = value
+        case .dictionary(let storage, let key):
+            storage[key] = value
         }
-    }
-
-}
-
-// MARK: - JSON Key
-
-enum JSONKey: CodingKey {
-
-    case string(String)
-    case index(Int)
-    case `super`
-
-    var stringValue: String {
-
-        switch self {
-        case .string(let string):
-            return string
-        case .index(let index):
-            return "Index \(index)"
-        case .super:
-            return "super"
-        }
-
-    }
-
-    var intValue: Int? {
-
-        switch self {
-        case .string(_):
-            return nil
-        case .index(let index):
-            return index
-        case .super:
-            return nil
-        }
-
-    }
-
-    init?(intValue: Int) {
-        self = .index(intValue)
-    }
-
-    init?(stringValue: String) {
-        self = .string(stringValue)
-    }
-
-}
-
-// MARK: - Escaping
-
-extension String {
-
-    /// Escapes the JavaScript special characters.
-    internal var escapingSpecialCharacters: String {
-
-        return self
-            .replacingOccurrences(of: "\u{0008}", with: "\\b")
-            .replacingOccurrences(of: "\u{0009}", with: "\\t")
-            .replacingOccurrences(of: "\u{000A}", with: "\\n")
-            .replacingOccurrences(of: "\u{000B}", with: "\\v")
-            .replacingOccurrences(of: "\u{000C}", with: "\\f")
-            .replacingOccurrences(of: "\u{000D}", with: "\\r")
-            .replacingOccurrences(of: "\u{0022}", with: "\\\"")
-            .replacingOccurrences(of: "\u{0027}", with: "\\'")
-            .replacingOccurrences(of: "\u{005C}", with: "\\")
-
     }
 
 }
