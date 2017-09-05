@@ -20,20 +20,7 @@ class JSUnkeyedEncoderTests: XCTestCase {
 
     }
 
-    func testEncodeValues() throws {
-
-        let array = EncodableArray()
-        array.append("Hello, world!")
-        array.append(Int(1))
-        array.append(Int8(2))
-
-        let encoder = JSArgumentEncoder()
-        let encodedArray = try encoder.encode(array)
-
-        print(encodedArray)
-
-    }
-
+    /// Tests encoding an array with nested arrays.
     func testEncodeNestedArray() throws {
 
         let array: [[String]] = [
@@ -48,55 +35,18 @@ class JSUnkeyedEncoderTests: XCTestCase {
 
     }
 
+    /// Tests encoding
     func testNestedKeyedContainer() throws {
 
         let users = [
-            User(displayName: "Elon Musk", handle: "elon_musk"),
-            User(displayName: "Tim Cook", handle: "tim_cook")
+            [User(displayName: "Elon Musk", handle: "elon_musk")],
+            [User(displayName: "Tim Cook", handle: "tim_cook")]
         ]
 
         let encoder = JSArgumentEncoder()
         let encodedArray = try encoder.encode(users)
 
         print(encodedArray)
-
-    }
-
-}
-
-class AnyEncodable: Encodable {
-
-    let performEncoding: (Encoder) throws -> Void
-
-    init<T: Encodable>(_ base: T) {
-
-        performEncoding = {
-            try base.encode(to: $0)
-        }
-
-    }
-
-    func encode(to encoder: Encoder) throws {
-        try performEncoding(encoder)
-    }
-
-}
-
-class EncodableArray: Encodable {
-
-    var array = [AnyEncodable]()
-
-    func append<T: Encodable>(_ value: T) {
-        array.append(AnyEncodable(value))
-    }
-
-    func encode(to encoder: Encoder) throws {
-
-        var unkeyedContainer = encoder.unkeyedContainer()
-
-        for value in array {
-            try unkeyedContainer.encode(value)
-        }
 
     }
 

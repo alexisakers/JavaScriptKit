@@ -63,7 +63,8 @@ enum SingleValueStorage {
     /// An empty object.
     case emptyObject
 
-    var underlyingValue: Any {
+    /// The stored value.
+    var storedValue: Any {
 
         switch self {
         case .null:
@@ -84,7 +85,11 @@ enum SingleValueStorage {
             return [String: Any]()
         }
 
+    }
 
+    /// The type of the stored value.
+    var storedType: Any.Type {
+        return type(of: storedValue)
     }
 
 }
@@ -130,26 +135,6 @@ class ArrayStorage {
         array.insert(value, at: index)
     }
 
-    /// Appends the contents of a single value storage to the array.
-    func appendSingleValue(_ storage: SingleValueStorage) {
-
-        switch storage {
-        case .boolean(let bool):
-            array.append(bool)
-        case .double(let double):
-            array.append(double)
-        case .float(let float):
-            array.append(float)
-        case .integer(let integer):
-            array.append(integer.intValue)
-        case .string(let string):
-            array.append(string)
-        default:
-            break
-        }
-
-    }
-
 }
 
 // MARK: - Dictionary Storage
@@ -162,18 +147,18 @@ class ArrayStorage {
 class DictionaryStorage {
 
     /// The underlying dictionary.
-    var dictionary: [String: Any]
+    var dictionary: [AnyHashable: Any]
 
     // MARK: Initialization
 
     /// Creates an empty dictionary storage.
     init() {
-        dictionary = [String: Any]()
+        dictionary = [AnyHashable: Any]()
     }
 
     /// Creates a dictionary storage from an existing copy.
     init(_ dictionary: NSDictionary) {
-        self.dictionary = dictionary as! [String: Any]
+        self.dictionary = dictionary as! [AnyHashable: Any]
     }
 
     // MARK: Dictionary Interaction
@@ -224,6 +209,24 @@ class AnyInteger {
         return intGenerator()
     }
 
+    /// Converts the integer to another integer type or returns `nil` if the target type is too
+    /// small to contain the `intValue`.
+    func convertingType<T: BinaryInteger & FixedWidthInteger>() -> T? {
+
+        let intValue = self.intValue
+
+        guard T.bitWidth <= Int.bitWidth else {
+            return nil
+        }
+
+        guard intValue >= T.min && intValue <= T.max else {
+            return nil
+        }
+
+        return T(intValue)
+
+    }
+
 }
 
 // MARK: - Escaping
@@ -240,22 +243,12 @@ extension String {
         escapableCharacters.insert(charactersIn: escapablePuntuation)
 
         return unicodeScalars.reduce("") {
-            current, next in
-            let needsEscaping = escapableCharacters.contains(next)
-            let nextString = needsEscaping ? next.escapingForJS : String(next)
-            return current + nextString
+            current, scalar in
+            let needsEscaping = escapableCharacters.contains(scalar)
+            let nextSequence = needsEscaping ? "\\u{\(String(scalar.value, radix: 16))}" : String(scalar)
+            return current + nextSequence
         }
 
-    }
-
-}
-
-extension UnicodeScalar {
-
-    /// Escapes the Unicode code point for use in JavaScript.
-    var escapingForJS: String {
-        let hexString = String(value, radix: 16)
-        return "\\u" + "{\(hexString)}"
     }
 
 }

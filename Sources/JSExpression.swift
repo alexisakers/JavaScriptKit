@@ -19,10 +19,11 @@ import Result
 /// return value needs to conform to the `Decodable` protocol. This includes:
 ///
 /// - `JSVoid` for expressions that do not return a value
-/// - Primitive values (String, Numbers, Booleans, ...)
+/// - Primitive values (Strings, Numbers, Booleans, ...)
 /// - Decodable enumerations
 /// - Objects decodable from JSON
 /// - Arrays of primitive values
+/// - Arrays of enumeration cases
 /// - Arrays of objects
 /// - Native dictionaries
 ///

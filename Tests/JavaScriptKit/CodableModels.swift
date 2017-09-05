@@ -1,6 +1,27 @@
 import Foundation
 import JavaScriptKit
 
+enum Country: String, Encodable {
+    case utopia = "UTOPIA"
+}
+
+struct Address: Encodable {
+    let line1: String
+    let line2: String?
+    let zipCode: Int
+    let city: String
+    let country: Country
+}
+
+struct Person: Encodable {
+    let firstName: String
+    let lastName: String
+    let birthDate: Date
+    let mainAddress: Address
+    let socialMediaURL: URL
+    var bestFriends: [Person]?
+}
+
 class EmptyObject: Encodable {
 
     class Void: Encodable {
