@@ -2,8 +2,13 @@ import XCTest
 import Foundation
 @testable import JavaScriptKit
 
+///
+/// Tests decoding single values.
+///
+
 class JSSingleValueDecoderTests: XCTestCase {
 
+    /// Tests decoding a String.
     func testDecodeString() throws {
 
         let string = "Hello, world!"
@@ -12,6 +17,7 @@ class JSSingleValueDecoderTests: XCTestCase {
 
     }
 
+    /// Tests decoding a Boolean.
     func testDecodeBool() throws {
 
         let falseBool = false
@@ -24,6 +30,7 @@ class JSSingleValueDecoderTests: XCTestCase {
 
     }
 
+    /// Tests decoding integers.
     func testDecodeIntegers() throws {
 
         let decoder = JSResultDecoder()
@@ -110,6 +117,85 @@ class JSSingleValueDecoderTests: XCTestCase {
                 let int: Int = -100
                 let uint8: UInt8 = try decoder.decode(int)
                 XCTFail("Int value shouldn't be decoded because it cannot fit into Int8 (\(uint8)).")
+            } catch {
+                failureExpectation.fulfill()
+            }
+
+        }
+
+        wait(for: [failureExpectation], timeout: 5)
+
+    }
+
+    /// Tests decoding a Date.
+    func testDecodeDate() throws {
+
+        let decoder = JSResultDecoder()
+
+        let intTimeInterval: Int = 1504602844000
+        let decodedIntDate: Date = try decoder.decode(intTimeInterval)
+        XCTAssertEqual(decodedIntDate, Date(timeIntervalSince1970: Double(intTimeInterval) / 1000))
+
+        let doubleTimeInterval: Double = 1404602844000
+        let decodedDoubleDate: Date = try decoder.decode(doubleTimeInterval)
+        XCTAssertEqual(decodedDoubleDate, Date(timeIntervalSince1970: doubleTimeInterval / 1000))
+
+        let floatTimeInterval: Float = 1604602844000
+        let decodedFloatDate: Date = try decoder.decode(floatTimeInterval)
+        XCTAssertEqual(decodedFloatDate, Date(timeIntervalSince1970: Double(floatTimeInterval) / 1000))
+
+        let date = Date()
+        let decodedDate: Date = try decoder.decode(date)
+        XCTAssertEqual(decodedDate, date)
+
+    }
+
+    /// Tests decoding a URL.
+    func testDecodeURL() throws {
+
+        let decoder = JSResultDecoder()
+
+        let urlString = "https://developer.apple.com/reference/JavaScriptCore"
+        let decodedURL: URL = try decoder.decode(urlString)
+        XCTAssertEqual(decodedURL.absoluteString, urlString)
+
+    }
+
+    /// Tests decoding a UUID.
+    func testDecodeUUID() throws {
+
+        let decoder = JSResultDecoder()
+
+        let uuidString = "B011902E-0D68-4889-A459-77AE18E8616E"
+        let decodedUUID: UUID = try decoder.decode(uuidString)
+        XCTAssertEqual(decodedUUID.uuidString, uuidString)
+
+    }
+
+    /// Tests decoding a CGFloat.
+    func testDecodeCGFloat() throws {
+
+        let decoder = JSResultDecoder()
+
+        let float: Float = 1604602844000
+        let decodedFloat: CGFloat = try decoder.decode(float)
+        XCTAssertEqual(decodedFloat, CGFloat(float))
+
+    }
+
+    /// Tests that an error is thrown when the decoded type does not match the encoded value type.
+    func testTypeError() {
+
+        let decoder = JSResultDecoder()
+        let failureExpectation = expectation(description: "An error is thrown when the decoded type does not match the encoded value type.")
+        let deadline = DispatchTime.now() + DispatchTimeInterval.seconds(2)
+
+        DispatchQueue.main.asyncAfter(deadline: deadline) {
+
+            do {
+                let string = "Hello, world!"
+                let int: Int = try decoder.decode(string)
+                XCTFail("An error should have been thrown because the encoded type does not match the decoded type. \(int)")
             } catch {
                 failureExpectation.fulfill()
             }

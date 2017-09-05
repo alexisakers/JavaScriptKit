@@ -21,6 +21,8 @@ final class JSResultDecoder {
 
     func decode<T: Decodable>(_ value: Any) throws -> T {
 
+        //==== I- Serialize the top container ====//
+
         let container: JSCodingContainer
 
         if let dictionary = value as? NSDictionary {
@@ -34,7 +36,15 @@ final class JSResultDecoder {
             container = .singleValue(storage)
         }
 
+        //==== II- Decode the container ====//
+
         let decoder = JSStructureDecoder(container: container)
+
+        if T.self == URL.self || T.self == Date.self {
+            let singleValueContainer = try decoder.singleValueContainer()
+            return try singleValueContainer.decode(T.self)
+        }
+
         return try T(from: decoder)
 
     }
@@ -48,6 +58,15 @@ final class JSResultDecoder {
             return .string(value as! String)
         } else if value is Date {
             return .date(value as! Date)
+        } else if value is Bool {
+            return .boolean(value as! Bool)
+        } else if value is Double {
+            return .double(value as! Double)
+        } else if value is Float {
+            return .float(value as! Float)
+        } else if value is Int {
+            let anyInteger = AnyInteger(value as! Int)
+            return .integer(anyInteger)
         } else if value is NSNumber {
 
             let nsNumber = value as! NSNumber
@@ -323,6 +342,14 @@ private class JSSingleValueDecodingContainer: SingleValueDecodingContainer {
             switch storage {
             case .date(let date):
                 return date as! T
+            case .double(let timeInterval):
+                return Date(timeIntervalSince1970: timeInterval / 1000) as! T
+            case .float(let timeInterval):
+                let timestamp = Double(timeInterval) / 1000
+                return Date(timeIntervalSince1970: timestamp) as! T
+            case .integer(let anyInterger):
+                let timestamp = Double(anyInterger.intValue) / 1000
+                return Date(timeIntervalSince1970: timestamp) as! T
             default:
                 try throwTypeError(expected: "Date")
             }
