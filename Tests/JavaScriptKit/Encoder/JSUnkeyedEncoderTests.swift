@@ -31,7 +31,8 @@ class JSUnkeyedEncoderTests: XCTestCase {
         let encoder = JSArgumentEncoder()
         let encodedArray = try encoder.encode(array)
 
-        print(encodedArray)
+        let expectedEncodedArray = "[[\"foo\",\"bar\"],[\"hello\",\"world\"]]"
+        XCTAssertEqual(encodedArray, expectedEncodedArray)
 
     }
 
@@ -46,7 +47,9 @@ class JSUnkeyedEncoderTests: XCTestCase {
         let encoder = JSArgumentEncoder()
         let encodedArray = try encoder.encode(users)
 
-        print(encodedArray)
+        let expectedEncodedArray = "[[{\"displayName\":\"Elon Musk\",\"handle\":\"elon_musk\"}],[{\"displayName\":\"Tim Cook\",\"handle\":\"tim_cook\"}]]"
+
+        XCTAssertEqual(encodedArray, expectedEncodedArray)
 
     }
 

@@ -1,27 +1,9 @@
 import Foundation
 import JavaScriptKit
 
-enum Country: String, Encodable {
-    case utopia = "UTOPIA"
-}
+// MARK: Empty Object
 
-struct Address: Encodable {
-    let line1: String
-    let line2: String?
-    let zipCode: Int
-    let city: String
-    let country: Country
-}
-
-struct Person: Encodable {
-    let firstName: String
-    let lastName: String
-    let birthDate: Date
-    let mainAddress: Address
-    let socialMediaURL: URL
-    var bestFriends: [Person]?
-}
-
+/// An object that does not encode a value.
 class EmptyObject: Encodable {
 
     class Void: Encodable {
@@ -37,37 +19,41 @@ class EmptyObject: Encodable {
 
 }
 
-class Image: Encodable {
+// MARK: - User
 
-    let url: URL
-    let likeCount: Int
-    let location: String
-    let hasFilters: Bool
-    let user: User
-
-    init(url: URL, likeCount: Int, location: String, hasFilters: Bool, user: User) {
-        self.url = url
-        self.likeCount = likeCount
-        self.location = location
-        self.hasFilters = hasFilters
-        self.user = user
-    }
-
-    enum Keys: String, CodingKey {
-        case url, likeCount, location, hasFilters, user
-    }
-
-    func encode(with encoder: Encoder) throws {
-        var keyedContainer = encoder.container(keyedBy: Keys.self)
-        try keyedContainer.encode(url, forKey: .url)
-        try keyedContainer.encode(likeCount, forKey: .likeCount)
-        try keyedContainer.encode(location, forKey: .location)
-        try keyedContainer.encode(user, forKey: .user)
-    }
-
-}
-
+/// A simple structure
 struct User: Encodable {
     let displayName: String
     let handle: String
+}
+
+// MARK: - Person
+
+/// A structure with nested unkeyed containers containing keyed containers.
+struct Person: Encodable {
+    let firstName: String
+    let lastName: String
+    let birthDate: Date
+    let mainAddress: Address
+    let socialMediaURL: URL
+    var bestFriends: [Person]?
+}
+
+// MARK: - Address
+
+/// A structure with an optional field.
+struct Address: Encodable {
+    let line1: String
+    let line2: String?
+    let zipCode: Int
+    let city: String
+    let country: Country
+}
+
+// MARK: - Country
+
+/// A Raw Representable and Codable enum.
+enum Country: String, Encodable {
+    case discoveryland = "DISCOVERYLAND"
+    case utopia = "UTOPIA"
 }
