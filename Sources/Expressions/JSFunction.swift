@@ -6,28 +6,30 @@
 import Foundation
 
 ///
-/// A concrete JavaScript expression that executes a function in the current JavaScript `this`. The
-/// function variable is represented by a key path relative to the current `this`.
+/// A JavaScript expression that executes a function in the current JavaScript `this`. The
+/// function variable is referenced by a key path relative to the current `this`.
 ///
 /// For instance, to present an alert:
 ///
 /// ~~~swift
-/// let alert = JSFreeFunction<Void>("window.alert", arguments: "Hello from Swift!")
-/// // equivalent to the JS script `this.window.alert("Hello from Swift!");`
+/// let alert = JSFunction<JSVoid>("window.alert", arguments: "Hello from Swift!")
+/// // equivalent to the JS script: `this.window.alert("Hello from Swift!");`
 /// ~~~
 ///
 /// Instances of this class are specialized with the `T` generic parameter. It must be set to the
 /// return type of the JavaScript function to execute. Check the documentation of the JavaScript
 /// function to know what to set the parameter to.
 ///
-/// `T` must be a compatible type. Compatible types include:
-/// - `Void`
-/// - Primitive values (`JSPrimitiveType`)
-/// - Enum cases with a primitive `RawValue`
-/// - Objects (`JSObject`)
+/// `T` must be a `Decodable` type. This includes:
+///
+/// - `JSVoid` for functions that do not return a value
+/// - Primitive values (Strings, Numbers, Booleans, ...)
+/// - Decodable enumerations
+/// - Objects decodable from JSON
 /// - Arrays of primitive values
-/// - Arrays of enum cases with a primitive `RawValue`
-/// - Arrays of objects.
+/// - Arrays of enumeration cases
+/// - Arrays of objects
+/// - Native dictionaries
 ///
 
 public final class JSFunction<T>: JSExpression where T: Decodable {
@@ -51,8 +53,8 @@ public final class JSFunction<T>: JSExpression where T: Decodable {
     /// For instance, to present an alert:
     ///
     /// ~~~swift
-    /// let alert = JSFreeFunction<Void>("window.alert", arguments: "Hello from Swift!")
-    /// // equivalent to the JS script `this.window.alert("Hello from Swift!");`
+    /// let alert = JSFunction<JSVoid>("window.alert", arguments: "Hello from Swift!")
+    /// // equivalent to the JS script: `this.window.alert("Hello from Swift!");`
     /// ~~~
     ///
 

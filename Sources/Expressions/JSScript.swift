@@ -6,8 +6,8 @@
 import Foundation
 
 ///
-/// A concrete JavaScript expression that executes a user-defined script. This class allows you to
-/// evaluate your own scripts.
+/// A JavaScript expression that executes a user-defined script. This class allows you to
+/// evaluate your own custom scripts.
 ///
 /// For instance, to return the text of the longest <p> node in the current document:
 ///
@@ -35,26 +35,30 @@ import Foundation
 /// type of the last statement in your script. In the above example, `findLongestText` has a return
 /// type of `String` because its last statement is a String (`longestInnerHTML`).
 ///
-/// `T` must be a compatible type. Compatible types include:
-/// - `Void`
-/// - Primitive values (`JSPrimitiveType`)
-/// - Enum cases with a primitive `RawValue`
-/// - Objects (`JSObject`)
+/// `T` must be a `Decodable` type. This includes:
+///
+/// - `JSVoid` for scripts that do not return a value
+/// - Primitive values (Strings, Numbers, Booleans, ...)
+/// - Decodable enumerations
+/// - Objects decodable from JSON
 /// - Arrays of primitive values
-/// - Arrays of enum cases with a primitive `RawValue`
-/// - Arrays of objects.
+/// - Arrays of enumeration cases
+/// - Arrays of objects
+/// - Native dictionaries
 ///
 
 public final class JSScript<T>: JSExpression where T: Decodable {
-
     public typealias ReturnType = T
+
+    /// The text of the script to execute.
     public let javaScriptString: String
 
     ///
     /// Creates a new custom script description with the script to execute.
     ///
     /// - parameter javaScriptString: The script to run when evaluating this expression. It will
-    /// be ran as is, make sure to check for syntax errors before creating the expression.
+    /// be ran without modifications, so make sure to check for syntax errors and escape strings if
+    /// necessary before creating the expression.
     ///
 
     public init(_ javaScriptString: String) {
