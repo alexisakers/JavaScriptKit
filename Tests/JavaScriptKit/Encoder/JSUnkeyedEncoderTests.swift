@@ -36,7 +36,7 @@ class JSUnkeyedEncoderTests: XCTestCase {
 
     }
 
-    /// Tests encoding
+    /// Tests encoding an array with nested keyed containers.
     func testNestedKeyedContainer() throws {
 
         let users = [

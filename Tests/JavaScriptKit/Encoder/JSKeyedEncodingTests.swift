@@ -13,11 +13,11 @@ class JSKeyedEncodingTests: XCTestCase {
 
         let encoder = JSArgumentEncoder()
 
-        let address = Address(line1: "Mickey Mouse Clubhouse",
-                              line2: "Somewhere over the rainbow",
-                              zipCode: 12345,
-                              city: "Mickey Park",
-                              country: .utopia)
+        let address = Address(line1: "Apple Inc.",
+                              line2: "1 Infinite Loop",
+                              zipCode: 95014,
+                              city: "Cupertino",
+                              country: .unitedStates)
 
         let encodedAddress1 = try encoder.encode(address).data(using: .utf8)!
 
@@ -27,11 +27,11 @@ class JSKeyedEncodingTests: XCTestCase {
         }
 
         let expectedJSONObject: [AnyHashable: Any] = [
-            "line1": "Mickey Mouse Clubhouse",
-            "line2": "Somewhere over the rainbow",
-            "zipCode": 12345,
-            "city": "Mickey Park",
-            "country": "UTOPIA"
+            "line1": "Apple Inc.",
+            "line2": "1 Infinite Loop",
+            "zipCode": 95014,
+            "city": "Cupertino",
+            "country": "United States"
         ]
 
         XCTAssertTrue(encodedAddressJSON.isEqual(to: expectedJSONObject))
@@ -43,11 +43,11 @@ class JSKeyedEncodingTests: XCTestCase {
 
         let encoder = JSArgumentEncoder()
 
-        let address = Address(line1: "Mickey Mouse Clubhouse",
+        let address = Address(line1: "1 Infinite Loop",
                               line2: nil,
-                              zipCode: 12345,
-                              city: "Mickey Park",
-                              country: .utopia)
+                              zipCode: 95014,
+                              city: "Cupertino",
+                              country: .unitedStates)
 
         let encodedAddress1 = try encoder.encode(address).data(using: .utf8)!
 
@@ -57,10 +57,10 @@ class JSKeyedEncodingTests: XCTestCase {
         }
 
         let expectedJSONObject: [AnyHashable: Any] = [
-            "line1": "Mickey Mouse Clubhouse",
-            "zipCode": 12345,
-            "city": "Mickey Park",
-            "country": "UTOPIA"
+            "line1": "1 Infinite Loop",
+            "zipCode": 95014,
+            "city": "Cupertino",
+            "country": "United States"
         ]
 
         XCTAssertTrue(encodedAddressJSON.isEqual(to: expectedJSONObject))
@@ -70,118 +70,91 @@ class JSKeyedEncodingTests: XCTestCase {
     /// Tests encoding a JSON object with nested objects.
     func testEncodeNestedObjects() throws {
 
-        let clubhouse = Address(line1: "Mickey Mouse Clubhouse",
-                                line2: nil,
-                                zipCode: 12345,
-                                city: "Mickey Park",
-                                country: .utopia)
+        let campus = Address(line1: "1 Infinite Loop",
+                             line2: nil,
+                             zipCode: 95014,
+                             city: "Cupertino",
+                             country: .unitedStates)
 
-        var mickey = Person(firstName: "Mickey",
-                            lastName: "Mouse",
-                            birthDate: Date(timeIntervalSince1970: -1297598400),
-                            mainAddress: clubhouse,
-                            socialMediaURL: URL(string: "https://example.com/@mickey")!,
-                            bestFriends: nil)
+        let campusFR = Address(line1: "7 Place d'Iéna",
+                               line2: nil,
+                               zipCode: 75116,
+                               city: "Paris XVIÈ",
+                               country: .france)
 
-        let minnie = Person(firstName: "Minnie",
-                            lastName: "Mouse",
-                            birthDate: Date(timeIntervalSince1970: -1297598400),
-                            mainAddress: clubhouse,
-                            socialMediaURL: URL(string: "https://example.com/@minnie")!,
-                            bestFriends: nil)
+        var apple = Company(name: "Apple",
+                            address: campus,
+                            childCompanies: [])
 
-        let donald = Person(firstName: "Donald",
-                            lastName: "Duck",
-                            birthDate: Date(timeIntervalSince1970: -1122292800),
-                            mainAddress: clubhouse,
-                            socialMediaURL: URL(string: "https://example.com/@donald")!,
-                            bestFriends: nil)
+        let appleFrance = Company(name: "Apple France",
+                                  address: campusFR,
+                                  childCompanies: [])
 
-        mickey.bestFriends = [minnie, donald]
+        apple.childCompanies.append(appleFrance)
 
         let encoder = JSArgumentEncoder()
-        let encodedGraph = try encoder.encode(mickey).data(using: .utf8)!
+        let encodedGraph = try encoder.encode(apple).data(using: .utf8)!
 
-        guard let jsonObjectGraph = try JSONSerialization.jsonObject(with: encodedGraph, options: []) as? NSDictionary else {
+        guard let jsonObjectGraph = try JSONSerialization.jsonObject(with: encodedGraph, options: []) as? [String: Any] else {
             XCTFail("Encoded didn't encode a valid JSON literal for the object graph.")
             return
         }
 
-        let expectedGraph: [AnyHashable: Any] = [
-            "firstName": "Mickey",
-            "lastName": "Mouse",
-            "birthDate": -1297598400000,
-            "mainAddress": [
-                "line1": "Mickey Mouse Clubhouse",
-                "zipCode": 12345,
-                "city": "Mickey Park",
-                "country": "UTOPIA"
+        let expectedGraph: [String: Any] = [
+            "name": "Apple",
+            "address": [
+                "line1": "1 Infinite Loop",
+                "zipCode": 95014,
+                "city": "Cupertino",
+                "country": "United States"
             ],
-            "socialMediaURL": "https://example.com/@mickey",
-            "bestFriends": [
+            "childCompanies": [
                 [
-                    "firstName": "Minnie",
-                    "lastName": "Mouse",
-                    "birthDate": -1297598400000,
-                    "mainAddress": [
-                        "line1": "Mickey Mouse Clubhouse",
-                        "zipCode": 12345,
-                        "city": "Mickey Park",
-                        "country": "UTOPIA"
+                    "name": "Apple France",
+                    "address": [
+                        "line1": "7 Place d\\u{27}Iéna",
+                        "zipCode": 75116,
+                        "city": "Paris XVIÈ",
+                        "country": "France"
                     ],
-                    "socialMediaURL": "https://example.com/@minnie"
-                ],
-                [
-                    "firstName": "Donald",
-                    "lastName": "Duck",
-                    "birthDate": -1122292800000,
-                    "mainAddress": [
-                        "line1": "Mickey Mouse Clubhouse",
-                        "zipCode": 12345,
-                        "city": "Mickey Park",
-                        "country": "UTOPIA"
-                    ],
-                    "socialMediaURL": "https://example.com/@donald"
+                    "childCompanies": [],
                 ]
             ]
         ]
 
-        XCTAssertTrue(jsonObjectGraph.isEqual(to: expectedGraph))
+        XCTAssertEqual(jsonObjectGraph, expectedGraph)
 
     }
 
     /// Tests encoding an array of JSON objects.
     func testEncodeObjectList() throws {
 
-        let clubhouse = Address(line1: "Mickey Mouse Clubhouse",
-                                line2: nil,
-                                zipCode: 12345,
-                                city: "Mickey Park",
-                                country: .utopia)
+        let appleCampus = Address(line1: "1 Infinite Loop",
+                                  line2: nil,
+                                  zipCode: 95014,
+                                  city: "Cupertino",
+                                  country: .unitedStates)
 
-        let mickey = Person(firstName: "Mickey",
-                            lastName: "Mouse",
-                            birthDate: Date(timeIntervalSince1970: -1297598400),
-                            mainAddress: clubhouse,
-                            socialMediaURL: URL(string: "https://example.com/@mickey")!,
-                            bestFriends: nil)
+        let apple = Company(name: "Apple", address: appleCampus, childCompanies: [])
 
-        let minnie = Person(firstName: "Minnie",
-                            lastName: "Mouse",
-                            birthDate: Date(timeIntervalSince1970: -1297598400),
-                            mainAddress: clubhouse,
-                            socialMediaURL: URL(string: "https://example.com/@minnie")!,
-                            bestFriends: nil)
+        let googlePlex = Address(line1: "1600 Amphitheatre Parkway",
+                                 line2: nil,
+                                 zipCode: 94043,
+                                 city: "Mountain View",
+                                 country: .unitedStates)
 
-        let donald = Person(firstName: "Donald",
-                            lastName: "Duck",
-                            birthDate: Date(timeIntervalSince1970: -1122292800),
-                            mainAddress: clubhouse,
-                            socialMediaURL: URL(string: "https://example.com/@donald")!,
-                            bestFriends: nil)
+        let google = Company(name: "Google", address: googlePlex, childCompanies: [])
+
+        let facebookHQ = Address(line1: "1 Hacker Way",
+                               line2: nil,
+                               zipCode: 94025,
+                               city: "Menlo Park",
+                               country: .unitedStates)
+
+        let facebook = Company(name: "Facebook", address: facebookHQ, childCompanies: [])
 
         let encoder = JSArgumentEncoder()
-        let encodedGraph = try encoder.encode([mickey, minnie, donald]).data(using: .utf8)!
+        let encodedGraph = try encoder.encode([apple, google, facebook]).data(using: .utf8)!
 
         guard let jsonObjectList = try JSONSerialization.jsonObject(with: encodedGraph, options: []) as? NSArray else {
             XCTFail("Encoded didn't encode a valid JSON array literal for the object graph.")
@@ -189,41 +162,36 @@ class JSKeyedEncodingTests: XCTestCase {
         }
 
         let expectedList: [Any] = [
-            ["firstName": "Mickey",
-            "lastName": "Mouse",
-            "birthDate": -1297598400000,
-            "mainAddress": [
-                "line1": "Mickey Mouse Clubhouse",
-                "zipCode": 12345,
-                "city": "Mickey Park",
-                "country": "UTOPIA"
-            ],
-            "socialMediaURL": "https://example.com/@mickey",
+            [
+                "name": "Apple",
+                "address": [
+                    "line1": "1 Infinite Loop",
+                    "zipCode": 95014,
+                    "city": "Cupertino",
+                    "country": "United States"
+                ],
+                "childCompanies": []
             ],
             [
-                "firstName": "Minnie",
-                "lastName": "Mouse",
-                "birthDate": -1297598400000,
-                "mainAddress": [
-                    "line1": "Mickey Mouse Clubhouse",
-                    "zipCode": 12345,
-                    "city": "Mickey Park",
-                    "country": "UTOPIA"
+                "name": "Google",
+                "address": [
+                    "line1": "1600 Amphitheatre Parkway",
+                    "zipCode": 94043,
+                    "city": "Mountain View",
+                    "country": "United States"
                 ],
-                "socialMediaURL": "https://example.com/@minnie"
+                "childCompanies": []
             ],
             [
-                "firstName": "Donald",
-                "lastName": "Duck",
-                "birthDate": -1122292800000,
-                "mainAddress": [
-                    "line1": "Mickey Mouse Clubhouse",
-                    "zipCode": 12345,
-                    "city": "Mickey Park",
-                    "country": "UTOPIA"
+                "name": "Facebook",
+                "address": [
+                    "line1": "1 Hacker Way",
+                    "zipCode": 94025,
+                    "city": "Menlo Park",
+                    "country": "United States"
                 ],
-                "socialMediaURL": "https://example.com/@donald"
-            ]
+                "childCompanies": []
+            ],
         ]
 
         XCTAssertTrue(jsonObjectList.isEqual(to: expectedList))

@@ -179,6 +179,7 @@ class JSSingleValueDecoderTests: XCTestCase {
 
         let float: Float = 1604602844000
         let decodedFloat: CGFloat = try decoder.decode(float)
+
         XCTAssertEqual(decodedFloat, CGFloat(float))
 
     }

@@ -92,6 +92,47 @@ enum SingleValueStorage {
         return type(of: storedValue)
     }
 
+    // MARK: Initialization
+
+    /// Decodes the stored value.
+    init(storedValue: Any) throws {
+
+        if storedValue is NSNull {
+            self = .null
+        } else if storedValue is String {
+            self = .string(storedValue as! String)
+        } else if storedValue is Date {
+            self = .date(storedValue as! Date)
+        } else if storedValue is Bool {
+            self = .boolean(storedValue as! Bool)
+        } else if storedValue is NSNumber {
+
+            let nsNumber = storedValue as! NSNumber
+
+            if nsNumber == kCFBooleanTrue || nsNumber == kCFBooleanFalse {
+                self = .boolean(nsNumber.boolValue)
+                return
+            }
+
+            let doubleValue = nsNumber.doubleValue
+
+            if doubleValue.truncatingRemainder(dividingBy: 1) == 0 {
+                let anyInteger = AnyInteger(nsNumber.intValue)
+                self = .integer(anyInteger)
+                return
+            }
+
+            self = .double(doubleValue)
+
+        } else {
+
+            let context = DecodingError.Context(codingPath: [], debugDescription: "Could not decode \(storedValue) because its type is not supported. Supported types include null, booleans, strings, dates and numbers.")
+            throw DecodingError.dataCorrupted(context)
+
+        }
+
+    }
+
 }
 
 // MARK: - Array Storage
@@ -133,6 +174,11 @@ class ArrayStorage {
     /// Inserts an element in the array at the given index.
     func insert(_ value: Any, at index: Int) {
         array.insert(value, at: index)
+    }
+
+    /// Get the value at the given index.
+    subscript(index: Int) -> Any {
+        return array[index]
     }
 
 }
