@@ -10,8 +10,6 @@ import CoreGraphics
 /// The `Void` return value.
 ///
 
-public final class JSVoid: Equatable, Decodable {
-    public init() {}
-    public init(from decoder: Decoder) {}
+public struct JSVoid: Equatable, Decodable {
     public static func == (lhs: JSVoid, rhs: JSVoid) -> Bool { return true }
 }

@@ -154,6 +154,27 @@ extension ExecutionTests {
 
 extension ExecutionTests {
 
+    /// Tests that an error is thrown when an argument cannot be encoded.
+    func testHandleExpressionGenerationError() {
+
+        let value = NotSoEncodable(name: "Error")
+        let method = JSFunction<JSVoid>("tester.refresh", arguments: [value])
+        let resultExpectation = expectation(description: "Async execution callback is called")
+
+        testInWebView(expectations: [resultExpectation]) {
+            webView in
+
+            method.evaluate(in: webView) {
+                result in
+                assert(Thread.isMainThread)
+                resultExpectation.fulfill()
+                self.assertInvalidExpressionError(result)
+            }
+
+        }
+
+    }
+
     /// Tests that an error is thrown when a value is returned and Void is expected.
     func testHandleUnexpectedReturnValue() {
 
@@ -674,10 +695,7 @@ extension ExecutionTests {
 
 extension ExecutionTests {
 
-    ///
-    /// S'assure que le résultat est un succès contenant la valeur donnée.
-    ///
-
+    /// Asserts that the result is a success containing the given value.
     func assertSuccess<R: Equatable, E>(_ result: Result<R, E>, expectedValue: R) {
 
         switch result {
@@ -685,31 +703,12 @@ extension ExecutionTests {
             XCTAssertEqual(value, expectedValue)
 
         case .failure(let error):
-            XCTFail("Erreur innatendue : \(error)")
+            XCTFail("Unexpected error : \(error)")
         }
 
     }
 
-    ///
-    /// S'assure que le résultat est un succès contenant la valeur donnée.
-    ///
-
-    func assertSuccess<E>(_ result: Result<Void, E>, expectedValue: Void) {
-
-        switch result {
-        case .success(let value):
-            XCTAssertTrue(value == ())
-
-        case .failure(let error):
-            XCTFail("Erreur innatendue : \(error)")
-        }
-
-    }
-
-    ///
-    /// S'assure que le résultat est un succès contenant la valeur donnée.
-    ///
-
+    /// Asserts that the result is a success containing the given value.
     func assertSuccess<R: Equatable, E>(_ result: Result<[R], E>, expectedValue: Array<R>) {
 
         switch result {
@@ -717,37 +716,34 @@ extension ExecutionTests {
             XCTAssertEqual(value, expectedValue)
 
         case .failure(let error):
-            XCTFail("Erreur innatendue : \(error)")
+            XCTFail("Unexpected error : \(error)")
         }
 
     }
 
-    ///
-    /// S'assure que le résultat est un échec de type causé par une mauvaise valeur donnée.
-    ///
-
+    /// Asserts that the result is an invalid type error.
     func assertInvalidTypeError<R, T: Equatable>(_ result: Result<R, JSErrorDomain>, expectedFailingValue: T) {
 
         switch result {
         case .success(_):
-            XCTFail("Une valeur a été retournée, alors qu'une erreur de type `invalidReturnType` était attendue.")
+            XCTFail("A value was returned but an `invalidReturnType` error was expected.")
 
         case .failure(let error):
 
             switch error {
             case .invalidReturnType(let value):
-                XCTAssertTrue((value as? T) == expectedFailingValue, "Une erreur de type a bien été retournée, mais la valeur posant problème ne correspond pas à celle attendue.")
-                XCTAssertEqual(error.nsError.domain, JSErrorDomain.identifier, "L'erreur ne provient pas du domaine attendu.")
+                XCTAssertTrue((value as? T) == expectedFailingValue, "A type error was thrown, but the associated value does not match the expected one.")
+                XCTAssertEqual(error.nsError.domain, JSErrorDomain.identifier, "Incorrect error domain.")
+                XCTAssertEqual(error.nsError.localizedDescription, error.errorDescription)
 
             case .executionError(_):
-                XCTFail("Une erreur de type `executionError` a été retournée alors qu'une erreur de type `invalidReturnType` était attendue.")
+                XCTFail("An `executionError` error was thrown, expected`invalidReturnType` error.")
 
             case .unexpectedResult:
-                XCTFail("Une erreur de type `unexpectedResult` a été retournée alors qu'une erreur de type `invalidReturnType` était attendue.")
+                XCTFail("An `unexpectedResult` error was thrown, expected `invalidReturnType` error.")
 
             case .invalidExpression(_):
-                XCTFail("Une erreur de type `invalidExpression` a été retournée alors qu'une erreur de type `invalidReturnType` était attendue.")
-
+                XCTFail("An `invalidExpression` error was thrown, expected `invalidReturnType` error.")
 
             }
 
@@ -755,31 +751,29 @@ extension ExecutionTests {
 
     }
 
-    ///
-    /// S'assure que le résultat est un échec de type causé par une mauvaise valeur donnée.
-    ///
-
+    /// Asserts that the result is an invalid type error.
     func assertInvalidTypeError<R>(_ result: Result<[R], JSErrorDomain>, expectedFailingValue: [Any]) {
 
         switch result {
         case .success(_):
-            XCTFail("Une valeur a été retournée, alors qu'une erreur de type `invalidReturnType` était attendue.")
+            XCTFail("A value was returned but an `invalidReturnType` error was expected.")
 
         case .failure(let error):
 
             switch error {
             case .invalidReturnType(let value):
-                XCTAssertTrue((value as? NSArray)?.isEqual(to: expectedFailingValue) == true, "Une erreur de type a bien été retournée, mais la valeur posant problème ne correspond pas à celle attendue.")
-                XCTAssertEqual(error.nsError.domain, JSErrorDomain.identifier, "L'erreur ne provient pas du domaine attendu.")
+                XCTAssertTrue((value as? NSArray)?.isEqual(to: expectedFailingValue) == true, "A type error was thrown, but the associated value does not match the expected one.")
+                XCTAssertEqual(error.nsError.domain, JSErrorDomain.identifier, "Incorrect error domain.")
+                XCTAssertEqual(error.nsError.localizedDescription, error.errorDescription)
 
             case .executionError(_):
-                XCTFail("Une erreur de type `executionError` a été retournée alors qu'une erreur de type `invalidReturnType` était attendue.")
+                XCTFail("An `executionError` error was thrown, expected`invalidReturnType` error.")
 
             case .unexpectedResult:
-                XCTFail("Une erreur de type `unexpectedResult` a été retournée alors qu'une erreur de type `invalidReturnType` était attendue.")
+                XCTFail("An `unexpectedResult` error was thrown, expected `invalidReturnType` error.")
 
             case .invalidExpression(_):
-                XCTFail("Une erreur de type `unexpectedResult` a été retournée alors qu'une erreur de type `invalidExpression` était attendue.")
+                XCTFail("An `unexpectedResult` error was thrown, expected `invalidExpression` error.")
 
             }
 
@@ -787,31 +781,29 @@ extension ExecutionTests {
 
     }
 
-    ///
-    /// S'assure que le résultat est un échec de type causé par une mauvaise valeur donnée.
-    ///
-
+    /// Asserts that the result is an invalid type error.
     func assertInvalidTypeError<R>(_ result: Result<R, JSErrorDomain>, expectedFailingValue: [AnyHashable : Any]) {
 
         switch result {
         case .success(_):
-            XCTFail("Une valeur a été retournée, alors qu'une erreur de type `invalidReturnType` était attendue.")
+            XCTFail("A value was returned but an `invalidReturnType` error was expected.")
 
         case .failure(let error):
 
             switch error {
             case .invalidReturnType(let value):
-                XCTAssertTrue((value as? NSDictionary)?.isEqual(to: expectedFailingValue) == true, "Une erreur de type a bien été retournée, mais la valeur posant problème ne correspond pas à celle attendue.")
-                XCTAssertEqual(error.nsError.domain, JSErrorDomain.identifier, "L'erreur ne provient pas du domaine attendu.")
+                XCTAssertTrue((value as? NSDictionary)?.isEqual(to: expectedFailingValue) == true, "A type error was thrown, but the associated value does not match the expected one.")
+                XCTAssertEqual(error.nsError.domain, JSErrorDomain.identifier, "Incorrect error domain.")
+                XCTAssertEqual(error.nsError.localizedDescription, error.errorDescription)
 
             case .executionError(_):
-                XCTFail("Une erreur de type `executionError` a été retournée alors qu'une erreur de type `invalidReturnType` était attendue.")
+                XCTFail("An `executionError` error was thrown, expected`invalidReturnType` error.")
 
             case .unexpectedResult:
-                XCTFail("Une erreur de type `unexpectedResult` a été retournée alors qu'une erreur de type `invalidReturnType` était attendue.")
+                XCTFail("An `unexpectedResult` error was thrown, expected `invalidReturnType` error.")
 
             case .invalidExpression(_):
-                XCTFail("Une erreur de type `invalidExpression` a été retournée alors qu'une erreur de type `invalidReturnType` était attendue.")
+                XCTFail("An `invalidExpression` error was thrown, expected `invalidReturnType` error.")
 
 
             }
@@ -821,30 +813,28 @@ extension ExecutionTests {
     }
 
 
-    ///
-    /// S'assure que le résultat est un échec contenant le type donnée.
-    ///
-
+    /// Asserts that the result is an execution error.
     func assertExecutionError<R>(_ result: Result<R, JSErrorDomain>) {
 
         switch result {
         case .success(_):
-            XCTFail("Une valeur a été retournée, alors qu'une erreur de type `executionError` était attendue.")
+            XCTFail("A value was returned but an `executionError` error was expected.")
 
         case .failure(let error):
 
             switch error {
             case .invalidReturnType(_):
-                XCTFail("Une erreur de type `invalidReturnType` a été retournée alors qu'une erreur de type `executionError` était attendue.")
+                XCTFail("An `invalidReturnType` error was thrown, expected `executionError` error.")
 
             case .executionError(_):
-                XCTAssertEqual(error.nsError.domain, JSErrorDomain.identifier, "L'erreur ne provient pas du domaine attendu.")
+                XCTAssertEqual(error.nsError.domain, JSErrorDomain.identifier, "Incorrect error.")
+                XCTAssertEqual(error.nsError.localizedDescription, error.errorDescription)
 
             case .unexpectedResult:
-                XCTFail("Une erreur de type `unexpectedResult` a été retournée alors qu'une erreur de type `executionError` était attendue.")
+                XCTFail("An `unexpectedResult` error was thrown, expected `executionError` error.")
 
             case .invalidExpression(_):
-                XCTFail("Une erreur de type `invalidExpression` a été retournée alors qu'une erreur de type `executionError` était attendue.")
+                XCTFail("An `invalidExpression` error was thrown, expected `executionError` error.")
 
             }
 
@@ -852,30 +842,58 @@ extension ExecutionTests {
 
     }
 
-    ///
-    /// S'assure que le résultat est un échec contenant le type donnée.
-    ///
-
+    /// Asserts that the result is an unexpected result error.
     func assertUnexpectedResultError<R>(_ result: Result<R, JSErrorDomain>) {
 
         switch result {
         case .success(_):
-            XCTFail("Une valeur a été retournée, alors qu'une erreur de type `unexpectedResult` était attendue.")
+            XCTFail("A value was returned but an `unexpectedResult` error was expected.")
 
         case .failure(let error):
 
             switch error {
             case .invalidReturnType(_):
-                XCTFail("Une erreur de type `invalidReturnType` a été retournée alors qu'une erreur de type `unexpectedResult` était attendue.")
+                XCTFail("An `invalidReturnType` error was thrown, expected`unexpectedResult` error.")
 
             case .executionError(_):
-                XCTFail("Une erreur de type `executionError` a été retournée alors qu'une erreur de type `unexpectedResult` était attendue.")
+                XCTFail("An `executionError` error was thrown, expected`unexpectedResult` error.")
 
             case .unexpectedResult:
-                XCTAssertEqual(error.nsError.domain, JSErrorDomain.identifier, "L'erreur ne provient pas du domaine attendu.")
+                XCTAssertEqual(error.nsError.domain, JSErrorDomain.identifier, "Incorrect error domain.")
+                XCTAssertEqual(error.nsError.localizedDescription, error.errorDescription)
 
             case .invalidExpression(_):
-                XCTFail("Une erreur de type `invalidExpression` a été retournée alors qu'une erreur de type `unexpectedResult` était attendue.")
+                XCTFail("An `invalidExpression` error was thrown, expected `unexpectedResult` error.")
+
+            }
+
+        }
+
+    }
+
+    /// Asserts that the result is an invalid expression error.
+    func assertInvalidExpressionError<R>(_ result: Result<R, JSErrorDomain>) {
+
+        switch result {
+        case .success(_):
+            XCTFail("A value was returned but an `invalidExpression` error was expected.")
+
+        case .failure(let error):
+
+            switch error {
+            case .invalidReturnType(_):
+                XCTFail("An `invalidReturnType` error was thrown, expected`invalidExpression` error.")
+
+            case .executionError(_):
+                XCTFail("An `executionError` error was thrown, expected `invalidExpression` error.")
+
+            case .unexpectedResult:
+                XCTFail("An `unexpectedResult` error was thrown, expected `invalidExpression` error.")
+
+            case .invalidExpression(let underlyingError):
+                XCTAssertEqual(error.nsError.domain, JSErrorDomain.identifier)
+                XCTAssertEqual(underlyingError.domain, NSCocoaErrorDomain)
+                XCTAssertEqual(error.nsError.localizedDescription, error.errorDescription)
 
             }
 

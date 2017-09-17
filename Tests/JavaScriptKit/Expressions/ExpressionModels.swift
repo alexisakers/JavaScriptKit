@@ -30,3 +30,16 @@ struct MockTarget: Codable, Equatable {
     }
 
 }
+
+/// A structure that always fails encoding.
+struct NotSoEncodable: Encodable {
+
+    let name: String
+
+    func encode(to encoder: Encoder) throws {
+        throw EncodingError.invalidValue(name,
+                                         EncodingError.Context(codingPath: [],
+                                                               debugDescription: "NotSoEncodable structures cannot be encoded."))
+    }
+
+}

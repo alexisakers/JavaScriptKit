@@ -96,9 +96,9 @@ extension JSExpression {
 
         if ReturnType.self == JSVoid.self {
             return .noReturnValue(defaultValue: JSVoid() as! ReturnType)
-        } else {
-            return .returnValueMandatory
         }
+
+        return .returnValueMandatory
 
     }
 
