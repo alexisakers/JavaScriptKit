@@ -11,3 +11,22 @@ enum ReaderSize: Int, Codable {
     case large = 17
     case xLarge = 20
 }
+
+/// A mock enum of targets.
+enum MockTargetType: String, Codable {
+    case app, executable, framework, unitTest
+}
+
+/// A mock struct.
+struct MockTarget: Codable, Equatable {
+
+
+    let name: String
+    let targetType: MockTargetType
+    let categories: [String]
+
+    static func ==(lhs: MockTarget, rhs: MockTarget) -> Bool {
+        return (lhs.name == rhs.name) && (lhs.targetType == rhs.targetType) && (lhs.categories == rhs.categories)
+    }
+
+}

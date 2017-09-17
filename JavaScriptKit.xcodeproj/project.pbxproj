@@ -11,6 +11,8 @@
 		550F9F2F1F6E941F00792329 /* ScriptGenerationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 55DAE6D51F546CB5009593AF /* ScriptGenerationTests.swift */; };
 		550F9F311F6E94AA00792329 /* ExpressionModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 550F9F301F6E94AA00792329 /* ExpressionModels.swift */; };
 		550F9F321F6E94AA00792329 /* ExpressionModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 550F9F301F6E94AA00792329 /* ExpressionModels.swift */; };
+		550F9F331F6E9C8F00792329 /* ExecutionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 55DAE6D31F546CB5009593AF /* ExecutionTests.swift */; };
+		550F9F341F6E9C8F00792329 /* ExecutionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 55DAE6D31F546CB5009593AF /* ExecutionTests.swift */; };
 		5513C3681F6E71B700030A30 /* TestsSupport.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5513C3671F6E71B700030A30 /* TestsSupport.swift */; };
 		5513C3691F6E71B700030A30 /* TestsSupport.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5513C3671F6E71B700030A30 /* TestsSupport.swift */; };
 		5513C36B1F6E78A000030A30 /* KeyedDecodingTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5513C36A1F6E78A000030A30 /* KeyedDecodingTests.swift */; };
@@ -137,7 +139,7 @@
 		55DAE6C51F546C9F009593AF /* JSExpression.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = JSExpression.swift; sourceTree = "<group>"; };
 		55DAE6C71F546C9F009593AF /* JSTypes.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = JSTypes.swift; sourceTree = "<group>"; };
 		55DAE6D11F546CB5009593AF /* UnitTestsSupport.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = UnitTestsSupport.bundle; sourceTree = "<group>"; };
-		55DAE6D31F546CB5009593AF /* JSExecutionTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = JSExecutionTests.swift; sourceTree = "<group>"; };
+		55DAE6D31F546CB5009593AF /* ExecutionTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ExecutionTests.swift; sourceTree = "<group>"; };
 		55DAE6D51F546CB5009593AF /* ScriptGenerationTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ScriptGenerationTests.swift; sourceTree = "<group>"; };
 		55DAE6EC1F546EDD009593AF /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
 		55DAE6ED1F546EDD009593AF /* fr */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = fr; path = fr.lproj/Localizable.strings; sourceTree = "<group>"; };
@@ -186,6 +188,7 @@
 			children = (
 				550F9F301F6E94AA00792329 /* ExpressionModels.swift */,
 				55DAE6D51F546CB5009593AF /* ScriptGenerationTests.swift */,
+				55DAE6D31F546CB5009593AF /* ExecutionTests.swift */,
 			);
 			path = Expressions;
 			sourceTree = "<group>";
@@ -311,7 +314,6 @@
 				556987D61F5C0B4700FC4E07 /* Encoding */,
 				5530C2FB1F5D8415005A97C9 /* Decoding */,
 				550F9F2D1F6E93FE00792329 /* Expressions */,
-				55DAE6D31F546CB5009593AF /* JSExecutionTests.swift */,
 			);
 			path = JavaScriptKit;
 			sourceTree = "<group>";
@@ -534,6 +536,7 @@
 				5530C3011F5DAC73005A97C9 /* KeyedEncodingTests.swift in Sources */,
 				555CCC301F5EA7FD00BA9E1D /* UnkeyedDecodingTests.swift in Sources */,
 				550F9F321F6E94AA00792329 /* ExpressionModels.swift in Sources */,
+				550F9F341F6E9C8F00792329 /* ExecutionTests.swift in Sources */,
 				55C410B91F5AEF6C008B0B0E /* CodableModels.swift in Sources */,
 				5513C3691F6E71B700030A30 /* TestsSupport.swift in Sources */,
 				5513C36C1F6E78A000030A30 /* KeyedDecodingTests.swift in Sources */,
@@ -567,6 +570,7 @@
 				5530C3001F5DAC73005A97C9 /* KeyedEncodingTests.swift in Sources */,
 				555CCC2F1F5EA7FD00BA9E1D /* UnkeyedDecodingTests.swift in Sources */,
 				550F9F311F6E94AA00792329 /* ExpressionModels.swift in Sources */,
+				550F9F331F6E9C8F00792329 /* ExecutionTests.swift in Sources */,
 				55C410B81F5AEF6C008B0B0E /* CodableModels.swift in Sources */,
 				5513C3681F6E71B700030A30 /* TestsSupport.swift in Sources */,
 				5513C36B1F6E78A000030A30 /* KeyedDecodingTests.swift in Sources */,

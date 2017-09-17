@@ -4,19 +4,19 @@ import Result
 @testable import JavaScriptKit
 
 ///
-/// Teste l'éxécution d'expressions JavaScript dans une WebView.
+/// Tests executing JavaScript expressions inside a web view.
 ///
 /// ## Usage
-/// Pour éxécuter un test dans la web view à partir d'une fonction:
+/// To execute tests:
 ///
 /// ~~~swift
 /// testInWebView {
 ///     webView in
-///     // Faites les tests dans ce bloc.
+///     // Run your tests in this block.
 /// }
 /// ~~~
 ///
-/// Vous pouvez utiliser des expectations dans le bloc `testInWebView`:
+/// You can also use expectations in `testInWebView`:
 ///
 /// ~~~swift
 /// let callbackExpectation = expectation(description: "...")
@@ -27,24 +27,24 @@ import Result
 /// }
 /// ~~~
 ///
-/// Le timeout pour une expectation est de 10s par défaut.
+/// The default timeout is 10s.
 ///
 ///
 
-class JSExecutionTests: XCTestCase {
+class ExecutionTests: XCTestCase {
 
-    /// La WebView où les tests seront éxécutés.
+    /// The web view where to execute the tests.
     var webView: WKWebView!
 
     /// Les URLs vers les ressources nécéssaires à l'éxécution des tests.
     let resources: (supportBundle: URL, html: URL) = {
-        let supportBundleURL = Bundle(for: JSExecutionTests.self)
+        let supportBundleURL = Bundle(for: ExecutionTests.self)
             .url(forResource: "UnitTestsSupport", withExtension: "bundle")!
         let htmlURL = supportBundleURL.appendingPathComponent("Tests.html", isDirectory: false)
         return (supportBundleURL, htmlURL)
     }()
 
-    /// La queue des actions. Gérée automatiquement, ne pas modfier.
+    /// The pending action queue. Managaed by the test case, do not manipulate.
     var actionQueue = [(WKWebView) -> Void]()
 
 
@@ -65,12 +65,9 @@ class JSExecutionTests: XCTestCase {
 
 // MARK: - Test Expected Results
 
-extension JSExecutionTests {
+extension ExecutionTests {
 
-    ///
-    /// Teste l'éxécution d'une expression qui récupère la valeur d'une propriété.
-    ///
-
+    /// Tests getting a property.
     func testProperty() {
 
         let property = JSVariable<String>("tester.title")
@@ -81,6 +78,7 @@ extension JSExecutionTests {
 
             property.evaluate(in: webView) {
                 result in
+                assert(Thread.isMainThread)
                 resultExpectation.fulfill()
                 self.assertSuccess(result, expectedValue: "AppFoundation Tests")
             }
@@ -89,11 +87,7 @@ extension JSExecutionTests {
 
     }
 
-    ///
-    /// Teste l'éxécution d'une expression qui appelle une fonction retournant
-    /// une valeur du type attendu.
-    ///
-
+    /// Tests executing a function that returns a value of the expected type.
     func testSuccessReturnValue() {
 
         let method = JSFunction<Bool>("tester.refresh")
@@ -104,6 +98,7 @@ extension JSExecutionTests {
 
             method.evaluate(in: webView) {
                 result in
+                assert(Thread.isMainThread)
                 resultExpectation.fulfill()
                 self.assertSuccess(result, expectedValue: true)
             }
@@ -112,14 +107,10 @@ extension JSExecutionTests {
 
     }
 
-    ///
-    /// Teste l'éxécution d'une expression qui appelle une fonction retournant
-    /// Void, le type attendu.
-    ///
-
+    /// Tests executing a function that returns Void.
     func testVoidSuccessValue() {
 
-        let method = JSFunction<Void>("tester.clearQueue")
+        let method = JSFunction<JSVoid>("tester.clearQueue")
         let resultExpectation = expectation(description: "Async execution callback is called")
 
         testInWebView(expectations: [resultExpectation]) {
@@ -127,21 +118,19 @@ extension JSExecutionTests {
 
             method.evaluate(in: webView) {
                 result in
+                assert(Thread.isMainThread)
                 resultExpectation.fulfill()
-                self.assertSuccess(result, expectedValue: ())
+                self.assertSuccess(result, expectedValue: JSVoid())
             }
 
         }
 
     }
 
-    ///
-    /// Teste l'éxécution d'une expression qui retourne une erreur attendue.
-    ///
-
+    /// Tests that an error is thrown when the function does not exist.
     func testExpectedError() {
 
-        let method = JSFunction<Void>("yolo.refresh")
+        let method = JSFunction<JSVoid>("yolo.refresh")
         let resultExpectation = expectation(description: "Async execution callback is called")
 
         testInWebView(expectations: [resultExpectation]) {
@@ -149,6 +138,7 @@ extension JSExecutionTests {
 
             method.evaluate(in: webView) {
                 result in
+                assert(Thread.isMainThread)
                 resultExpectation.fulfill()
                 self.assertExecutionError(result)
             }
@@ -162,16 +152,12 @@ extension JSExecutionTests {
 
 // MARK: - Test Invalid Value Handling
 
-extension JSExecutionTests {
+extension ExecutionTests {
 
-    ///
-    /// Teste que l'expression retourne une erreur si une fonction qui devrait
-    /// retourner Void retourne une valeur.
-    ///
-
+    /// Tests that an error is thrown when a value is returned and Void is expected.
     func testHandleUnexpectedReturnValue() {
 
-        let method = JSFunction<Void>("tester.refresh")
+        let method = JSFunction<JSVoid>("tester.refresh")
         let resultExpectation = expectation(description: "Async execution callback is called")
 
         testInWebView(expectations: [resultExpectation]) {
@@ -179,6 +165,7 @@ extension JSExecutionTests {
 
             method.evaluate(in: webView) {
                 result in
+                assert(Thread.isMainThread)
                 resultExpectation.fulfill()
                 self.assertInvalidTypeError(result, expectedFailingValue: true)
             }
@@ -187,11 +174,7 @@ extension JSExecutionTests {
 
     }
 
-    ///
-    /// Teste que l'expression retourne une erreur si une fonction qui devrait
-    /// retourner un certain type de valeur en retourne une autre.
-    ///
-
+    /// Tests that an error is thrown when the type is mismatching.
     func testInvalidReturnValue() {
 
         let method = JSFunction<String>("tester.refresh")
@@ -202,6 +185,7 @@ extension JSExecutionTests {
 
             method.evaluate(in: webView) {
                 result in
+                assert(Thread.isMainThread)
                 resultExpectation.fulfill()
                 self.assertInvalidTypeError(result, expectedFailingValue: true)
             }
@@ -210,11 +194,7 @@ extension JSExecutionTests {
 
     }
 
-    ///
-    /// Teste que l'expression retourne une erreur si une fonction qui devrait
-    /// retourner une valeur n'en retourne pas.
-    ///
-
+    /// Tests that an error is thrown when the function does not return a value.
     func testMissingReturnValue() {
 
         let method = JSFunction<Bool>("tester.clearQueue")
@@ -225,6 +205,7 @@ extension JSExecutionTests {
 
             method.evaluate(in: webView) {
                 result in
+                assert(Thread.isMainThread)
                 resultExpectation.fulfill()
                 self.assertUnexpectedResultError(result)
             }
@@ -238,14 +219,11 @@ extension JSExecutionTests {
 
 // MARK: - Test JS to Native decoding
 
-extension JSExecutionTests {
+extension ExecutionTests {
 
     // MARK: Primitives
 
-    ///
-    /// Teste le décodage d'une String.
-    ///
-
+    /// Tests decoding a String.
     func testDecodeString() {
 
         let method = JSFunction<String>("tester.testString")
@@ -256,6 +234,7 @@ extension JSExecutionTests {
 
             method.evaluate(in: webView) {
                 result in
+                assert(Thread.isMainThread)
                 resultExpectation.fulfill()
                 self.assertSuccess(result, expectedValue: "Hello, world!")
             }
@@ -264,10 +243,7 @@ extension JSExecutionTests {
 
     }
 
-    ///
-    /// Teste le décodage d'un nombre.
-    ///
-
+    /// Tests decoding a number.
     func testDecodeNumber() {
 
         let method = JSFunction<Int8>("tester.testNumber")
@@ -278,6 +254,7 @@ extension JSExecutionTests {
 
             method.evaluate(in: webView) {
                 result in
+                assert(Thread.isMainThread)
                 resultExpectation.fulfill()
                 self.assertSuccess(result, expectedValue: 42)
             }
@@ -286,10 +263,7 @@ extension JSExecutionTests {
 
     }
 
-    ///
-    /// Teste le décodage d'une Bool.
-    ///
-
+    /// Tests decoding a Bool.
     func testDecodeBool() {
 
         let method = JSFunction<Bool>("tester.testBool")
@@ -300,6 +274,7 @@ extension JSExecutionTests {
 
             method.evaluate(in: webView) {
                 result in
+                assert(Thread.isMainThread)
                 resultExpectation.fulfill()
                 self.assertSuccess(result, expectedValue: true)
             }
@@ -308,10 +283,7 @@ extension JSExecutionTests {
 
     }
 
-    ///
-    /// Teste le décodage d'une Date.
-    ///
-
+    /// Tests decoding a Date.
     func testDecodeDate() {
 
         let method = JSFunction<Date>("tester.testDate")
@@ -323,6 +295,7 @@ extension JSExecutionTests {
 
             method.evaluate(in: webView) {
                 result in
+                assert(Thread.isMainThread)
                 resultExpectation.fulfill()
                 self.assertSuccess(result, expectedValue: testDate)
             }
@@ -333,10 +306,7 @@ extension JSExecutionTests {
 
     // MARK: RawRepresentable
 
-    ///
-    /// Teste le décodage d'un RawRepresentable valide.
-    ///
-
+    /// Tests decoding a RawRepresentable.
     func testDecodeValidRawRepresentable() {
 
         let method = JSFunction<MockTargetType>("tester.testValidMockTargetType")
@@ -347,6 +317,7 @@ extension JSExecutionTests {
 
             method.evaluate(in: webView) {
                 result in
+                assert(Thread.isMainThread)
                 resultExpectation.fulfill()
                 self.assertSuccess(result, expectedValue: .app)
             }
@@ -355,10 +326,7 @@ extension JSExecutionTests {
 
     }
 
-    ///
-    /// Teste le décodage d'un RawRepresentable invalide.
-    ///
-
+    /// Tests decoding an invalid RawRepresentable.
     func testDecodeInvalidRawRepresentable() {
 
         let method = JSFunction<MockTargetType>("tester.invalidTestMockTargetRawType")
@@ -369,6 +337,7 @@ extension JSExecutionTests {
 
             method.evaluate(in: webView) {
                 result in
+                assert(Thread.isMainThread)
                 resultExpectation.fulfill()
                 self.assertInvalidTypeError(result, expectedFailingValue: 100)
             }
@@ -379,10 +348,7 @@ extension JSExecutionTests {
 
     // MARK: Objects
 
-    ///
-    /// Teste le décodage d'un objet valide.
-    ///
-
+    /// Tests decoding an object.
     func testDecodeObject() {
 
         let method = JSFunction<MockTarget>("tester.testTarget")
@@ -395,6 +361,7 @@ extension JSExecutionTests {
 
             method.evaluate(in: webView) {
                 result in
+                assert(Thread.isMainThread)
                 resultExpectation.fulfill()
                 self.assertSuccess(result, expectedValue: expectedTarget)
             }
@@ -403,10 +370,7 @@ extension JSExecutionTests {
 
     }
 
-    ///
-    /// Teste le décodage d'une valeur invalide lorsqu'un objet est attendu.
-    ///
-
+    /// Tests failure when an object is expected but a primitive is returned.
     func testDecodeInvalidObject() {
 
         let method = JSFunction<MockTarget>("tester.invalidTestTarget")
@@ -417,6 +381,7 @@ extension JSExecutionTests {
 
             method.evaluate(in: webView) {
                 result in
+                assert(Thread.isMainThread)
                 resultExpectation.fulfill()
                 self.assertInvalidTypeError(result, expectedFailingValue: false)
             }
@@ -425,10 +390,7 @@ extension JSExecutionTests {
 
     }
 
-    ///
-    /// Teste le décodage d'un objet invalide.
-    ///
-
+    /// Tests decoding failure.
     func testDecodeInvalidObjectPrototype() {
 
         let method = JSFunction<MockTarget>("tester.invalidTestTargetPrototype")
@@ -445,6 +407,7 @@ extension JSExecutionTests {
 
             method.evaluate(in: webView) {
                 result in
+                assert(Thread.isMainThread)
                 resultExpectation.fulfill()
                 self.assertInvalidTypeError(result, expectedFailingValue: expectedFailingPayload)
             }
@@ -455,10 +418,7 @@ extension JSExecutionTests {
 
     // MARK: Array of Primitives
 
-    ///
-    /// Teste le décodage d'un Array de primitives valide.
-    ///
-
+    /// Tests decoding an array of primitives.
     func testDecodeArrayOfPrimitives() {
 
         let method = JSFunction<[UInt16]>("tester.testPrimitivesArray")
@@ -471,6 +431,7 @@ extension JSExecutionTests {
 
             method.evaluate(in: webView) {
                 result in
+                assert(Thread.isMainThread)
                 resultExpectation.fulfill()
                 self.assertSuccess(result, expectedValue: expectedArray)
             }
@@ -479,11 +440,7 @@ extension JSExecutionTests {
 
     }
 
-    ///
-    /// Teste le décodage d'une valeur invalide lorsqu'un Array de
-    /// primitives est attendu.
-    ///
-
+    /// Tests decoding and invalid array of primitives.
     func testDecodeInvalidArrayOfPrimitives() {
 
         let method = JSFunction<[UInt16]>("tester.testInvalidPrimitivesArray")
@@ -494,6 +451,7 @@ extension JSExecutionTests {
 
             method.evaluate(in: webView) {
                 result in
+                assert(Thread.isMainThread)
                 resultExpectation.fulfill()
                 self.assertInvalidTypeError(result, expectedFailingValue: "trolld")
             }
@@ -502,10 +460,7 @@ extension JSExecutionTests {
 
     }
 
-    ///
-    /// Teste le décodage d'un Array de primitives invalide.
-    ///
-
+    /// Tests decoding an array of invalid primitives (mixed types).
     func testDecodeInvalidMixedArrayOfPrimitives() {
 
         let method = JSFunction<[String]>("tester.testInvalidMixedPrimitivesArray")
@@ -518,6 +473,7 @@ extension JSExecutionTests {
 
             method.evaluate(in: webView) {
                 result in
+                assert(Thread.isMainThread)
                 resultExpectation.fulfill()
                 self.assertInvalidTypeError(result, expectedFailingValue: expectedFailingArray)
             }
@@ -529,10 +485,7 @@ extension JSExecutionTests {
 
     // MARK: Array of RawRepresentable
 
-    ///
-    /// Teste le décodage d'un Array de RawRepresentable.
-    ///
-
+    /// Tests decoding an array of Raw Representables.
     func testDecodeArrayOfRawRepresentable() {
 
         let method = JSFunction<[MockTargetType]>("tester.testMockTargetTypes")
@@ -545,6 +498,7 @@ extension JSExecutionTests {
 
             method.evaluate(in: webView) {
                 result in
+                assert(Thread.isMainThread)
                 resultExpectation.fulfill()
                 self.assertSuccess(result, expectedValue: expectedValue)
             }
@@ -553,11 +507,7 @@ extension JSExecutionTests {
 
     }
 
-    ///
-    /// Teste le décodage d'une valeur invalide lorsqu'un Array de
-    /// RawRepresentable est attendu.
-    ///
-
+    /// Tests decoding an array of invalid raw representable values.
     func testDecodeInvalidArrayOfRawRepresentable() {
 
         let method = JSFunction<[MockTargetType]>("tester.testInvalidMockTargetTypes")
@@ -568,6 +518,7 @@ extension JSExecutionTests {
 
             method.evaluate(in: webView) {
                 result in
+                assert(Thread.isMainThread)
                 resultExpectation.fulfill()
                 self.assertInvalidTypeError(result, expectedFailingValue: false)
             }
@@ -576,11 +527,7 @@ extension JSExecutionTests {
 
     }
 
-    ///
-    /// Teste le décodage d'une liste de valeurs incompatibles
-    /// avec le type RawValue du type RawRepresentable testé.
-    ///
-
+    /// Tests decoding an array that doesnt match the expected raw type.
     func testDecodeInvalidRawTypesArray() {
 
         let method = JSFunction<[MockTargetType]>("tester.testInvalidRawMockTargetTypes")
@@ -601,11 +548,7 @@ extension JSExecutionTests {
 
     }
 
-    ///
-    /// Teste le décodage d'une liste qui contient une valeur inconnue
-    /// du type RawRepresentable testé.
-    ///
-
+    /// Tests decoding an unknown raw value.
     func testDecodeUnknownRawValue() {
 
         let method = JSFunction<[MockTargetType]>("tester.testUnknownRawMockTargetTypes")
@@ -618,6 +561,7 @@ extension JSExecutionTests {
 
             method.evaluate(in: webView) {
                 result in
+                assert(Thread.isMainThread)
                 resultExpectation.fulfill()
                 self.assertInvalidTypeError(result, expectedFailingValue: expectedFailingArray)
             }
@@ -628,10 +572,7 @@ extension JSExecutionTests {
 
     // MARK: Array of Object
 
-    ///
-    /// Teste le décodage d'un array d'objets.
-    ///
-
+    /// Tests decoding an array of objects.
     func testDecodeArrayOfObjects() {
 
         let method = JSFunction<[MockTarget]>("tester.testObjects")
@@ -647,6 +588,7 @@ extension JSExecutionTests {
 
             method.evaluate(in: webView) {
                 result in
+                assert(Thread.isMainThread)
                 resultExpectation.fulfill()
                 self.assertSuccess(result, expectedValue: expectedArray)
             }
@@ -655,11 +597,7 @@ extension JSExecutionTests {
 
     }
 
-    ///
-    /// Teste le décodage d'une valeur invalide lorsqu'un Array
-    /// d'objets est attendu.
-    ///
-
+    /// Tests decoding an invalid array of objects.
     func testDecodeInvalidArrayOfObjects() {
 
         let method = JSFunction<[MockTarget]>("tester.testInvalidObjects")
@@ -670,6 +608,7 @@ extension JSExecutionTests {
 
             method.evaluate(in: webView) {
                 result in
+                assert(Thread.isMainThread)
                 resultExpectation.fulfill()
                 self.assertInvalidTypeError(result, expectedFailingValue: false)
             }
@@ -678,11 +617,7 @@ extension JSExecutionTests {
 
     }
 
-    ///
-    /// Teste le décodage d'un Array contenant des objets et des
-    /// objets invalides.
-    ///
-
+    /// Tests failure when decoding an array of invalid objects.
     func testDecodeInvalidObjectContainingArray() {
 
         let method = JSFunction<[MockTarget]>("tester.textMixedObjects")
@@ -698,6 +633,7 @@ extension JSExecutionTests {
 
             method.evaluate(in: webView) {
                 result in
+                assert(Thread.isMainThread)
                 resultExpectation.fulfill()
                 self.assertInvalidTypeError(result, expectedFailingValue: expectedFailingValue)
             }
@@ -706,11 +642,7 @@ extension JSExecutionTests {
 
     }
 
-    ///
-    /// Teste le décodage d'un Array contenant des objets et des
-    /// objets d'un autre type.
-    ///
-
+    /// Tests failure when the value is an array containing invalid prototypes.
     func testDecodeInvalidObjectPrototypeContainingArray() {
 
         let method = JSFunction<[MockTarget]>("tester.textDifferentObjectPrototypes")
@@ -726,6 +658,7 @@ extension JSExecutionTests {
 
             method.evaluate(in: webView) {
                 result in
+                assert(Thread.isMainThread)
                 resultExpectation.fulfill()
                 self.assertInvalidTypeError(result, expectedFailingValue: expectedFailingValue)
             }
@@ -739,7 +672,7 @@ extension JSExecutionTests {
 
 // MARK: - Asserts
 
-extension JSExecutionTests {
+extension ExecutionTests {
 
     ///
     /// S'assure que le résultat est un succès contenant la valeur donnée.
@@ -812,6 +745,10 @@ extension JSExecutionTests {
             case .unexpectedResult:
                 XCTFail("Une erreur de type `unexpectedResult` a été retournée alors qu'une erreur de type `invalidReturnType` était attendue.")
 
+            case .invalidExpression(_):
+                XCTFail("Une erreur de type `invalidExpression` a été retournée alors qu'une erreur de type `invalidReturnType` était attendue.")
+
+
             }
 
         }
@@ -840,6 +777,9 @@ extension JSExecutionTests {
 
             case .unexpectedResult:
                 XCTFail("Une erreur de type `unexpectedResult` a été retournée alors qu'une erreur de type `invalidReturnType` était attendue.")
+
+            case .invalidExpression(_):
+                XCTFail("Une erreur de type `unexpectedResult` a été retournée alors qu'une erreur de type `invalidExpression` était attendue.")
 
             }
 
@@ -870,6 +810,10 @@ extension JSExecutionTests {
             case .unexpectedResult:
                 XCTFail("Une erreur de type `unexpectedResult` a été retournée alors qu'une erreur de type `invalidReturnType` était attendue.")
 
+            case .invalidExpression(_):
+                XCTFail("Une erreur de type `invalidExpression` a été retournée alors qu'une erreur de type `invalidReturnType` était attendue.")
+
+
             }
 
         }
@@ -899,6 +843,9 @@ extension JSExecutionTests {
             case .unexpectedResult:
                 XCTFail("Une erreur de type `unexpectedResult` a été retournée alors qu'une erreur de type `executionError` était attendue.")
 
+            case .invalidExpression(_):
+                XCTFail("Une erreur de type `invalidExpression` a été retournée alors qu'une erreur de type `executionError` était attendue.")
+
             }
 
         }
@@ -927,6 +874,9 @@ extension JSExecutionTests {
             case .unexpectedResult:
                 XCTAssertEqual(error.nsError.domain, JSErrorDomain.identifier, "L'erreur ne provient pas du domaine attendu.")
 
+            case .invalidExpression(_):
+                XCTFail("Une erreur de type `invalidExpression` a été retournée alors qu'une erreur de type `unexpectedResult` était attendue.")
+
             }
 
         }
@@ -938,7 +888,7 @@ extension JSExecutionTests {
 
 // MARK: - Web View Support
 
-extension JSExecutionTests: WKNavigationDelegate {
+extension ExecutionTests: WKNavigationDelegate {
 
     ///
     /// Éxécute un test dans la WebView.
