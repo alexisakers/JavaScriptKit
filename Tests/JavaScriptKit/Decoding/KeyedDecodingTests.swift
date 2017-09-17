@@ -19,7 +19,7 @@ class KeyedDecodingTests: XCTestCase {
             "country": "United States"
         ]
 
-        let decoder = JSResultDecoder()
+        let decoder = JavaScriptDecoder()
         let decodedAddress: Address = try decoder.decode(jsonAddress)
 
         let expectedAddress = Address(line1: "Apple Inc.",
@@ -42,7 +42,7 @@ class KeyedDecodingTests: XCTestCase {
             "country": "United States"
         ]
 
-        let decoder = JSResultDecoder()
+        let decoder = JavaScriptDecoder()
         let decodedAddress: Address = try decoder.decode(jsonAddress)
 
         let expectedAddress = Address(line1: "1 Infinite Loop",
@@ -80,7 +80,7 @@ class KeyedDecodingTests: XCTestCase {
             ]
         ]
 
-        let decoder = JSResultDecoder()
+        let decoder = JavaScriptDecoder()
         let decodedApple: Company = try decoder.decode(jsonObject)
 
         // Expected values
@@ -147,7 +147,7 @@ class KeyedDecodingTests: XCTestCase {
             ],
         ]
 
-        let decoder = JSResultDecoder()
+        let decoder = JavaScriptDecoder()
         let decodedCompanies: [Company] = try decoder.decode(jsonArray)
 
         // Expected values

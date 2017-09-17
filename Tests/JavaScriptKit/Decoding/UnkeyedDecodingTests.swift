@@ -11,7 +11,7 @@ class UnkeyedDecoderTests: XCTestCase {
     /// Tests decoding an array of Strings.
     func testDecodeStringArray() throws {
 
-        let decoder = JSResultDecoder()
+        let decoder = JavaScriptDecoder()
         let array = ["abc", "def", "ghi"]
 
         let decodedArray: [String] = try decoder.decode(array)
@@ -27,7 +27,7 @@ class UnkeyedDecoderTests: XCTestCase {
             ["hello", "world"]
         ]
 
-        let decoder = JSResultDecoder()
+        let decoder = JavaScriptDecoder()
         let decodedArray: [[String]] = try decoder.decode(array)
 
         XCTAssertEqual(decodedArray.count, array.count)
@@ -52,7 +52,7 @@ class UnkeyedDecoderTests: XCTestCase {
             ]
         ]
 
-        let decoder = JSResultDecoder()
+        let decoder = JavaScriptDecoder()
         let decodedArray: [[User]] = try decoder.decode(encodedUsers)
 
         let expectedUsers = [

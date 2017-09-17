@@ -15,8 +15,10 @@ import Result
 /// - `JSFunction` to call a function
 /// - `JSScript` to run a custom script
 ///
-/// To implement this protocol, you first need to determine the return type of the expression. The
-/// return value needs to conform to the `Decodable` protocol. This includes:
+/// You don't need to implement this protocol yourself.
+///
+/// Expressions are specialized with the `ReturnType` associated type. Expressions can return any
+/// `Decodable` type. This includes:
 ///
 /// - `JSVoid` for expressions that do not return a value
 /// - Primitive values (Strings, Numbers, Booleans, ...)
@@ -26,11 +28,6 @@ import Result
 /// - Arrays of enumeration cases
 /// - Arrays of objects
 /// - Native dictionaries
-///
-/// Set the chosen return type by setting the `ReturnType` associated type.
-///
-/// Then, implement the `makeExpressionString` method, that must return the text of the expression
-/// to evaluate.
 ///
 
 public protocol JSExpression {
@@ -58,9 +55,6 @@ public protocol JSExpression {
 /// The strategies to decode a value.
 ///
 /// Strategies are used to determine whether the evaluation result sent by the web view is valid or not.
-///
-/// Usually, you don't need to specify a strategy, as the correct one is automatically selected
-/// for compatible return types.
 ///
 
 public enum JSDecodingStrategy<ReturnType> {
@@ -114,7 +108,7 @@ extension JSExpression {
     /// Evaluates the expression inside of a web view's JavaScript context.
     ///
     /// - parameter webView: The web view to execute the code in.
-    /// - parameter completionHandler: The code to execute with the parsed execution results.
+    /// - parameter completionHandler: The code to execute with the execution result.
     /// - parameter result: The result of the evaluation. Will be `.success(ReturnType)` if a valid
     /// return value was parsed ; or `.error(JSErrorDomain)` if an error was thrown by the web view
     /// when evaluating the script.
@@ -181,7 +175,7 @@ extension JSExpression {
                                             _ resultError: Error?,
                                             _ completionHandler: ((_ result: Result<ReturnType, JSErrorDomain>) -> Void)?) {
 
-        let decoder = JSResultDecoder()
+        let decoder = JavaScriptDecoder()
 
         switch (resultValue, resultError) {
 
@@ -189,13 +183,13 @@ extension JSExpression {
 
             guard decodingStrategy.expectsReturnValue else {
                 let typeError = JSErrorDomain.invalidReturnType(value: value)
-                completionHandler?(.failure(typeError))
+                completeEvaluation(completionHandler, .failure(typeError))
                 return
             }
 
             guard let decodedValue: ReturnType = try? decoder.decode(value) else {
                 let typeError = JSErrorDomain.invalidReturnType(value: value)
-                completionHandler?(.failure(typeError))
+                completeEvaluation(completionHandler, .failure(typeError))
                 return
             }
 
@@ -237,8 +231,7 @@ extension JSExpression {
 
 }
 
-
-// MARK: - Void
+// MARK: - Void Support
 
 extension JSExpression where ReturnType == JSVoid {
 

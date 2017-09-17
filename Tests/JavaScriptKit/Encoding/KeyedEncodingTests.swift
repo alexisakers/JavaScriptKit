@@ -11,7 +11,7 @@ class KeyedEncodingTests: XCTestCase {
     /// Tests encoding a JSON object.
     func testEncodeObject() throws {
 
-        let encoder = JSArgumentEncoder()
+        let encoder = JavaScriptEncoder()
 
         let address = Address(line1: "Apple Inc.",
                               line2: "1 Infinite Loop",
@@ -41,7 +41,7 @@ class KeyedEncodingTests: XCTestCase {
     /// Tests encoding a JSON object that contains optional fields.
     func testEncodeObjectWithOptionalFields() throws {
 
-        let encoder = JSArgumentEncoder()
+        let encoder = JavaScriptEncoder()
 
         let address = Address(line1: "1 Infinite Loop",
                               line2: nil,
@@ -92,7 +92,7 @@ class KeyedEncodingTests: XCTestCase {
 
         apple.childCompanies.append(appleFrance)
 
-        let encoder = JSArgumentEncoder()
+        let encoder = JavaScriptEncoder()
         let encodedGraph = try encoder.encode(apple).data(using: .utf8)!
 
         guard let jsonObjectGraph = try JSONSerialization.jsonObject(with: encodedGraph, options: []) as? [String: Any] else {
@@ -153,7 +153,7 @@ class KeyedEncodingTests: XCTestCase {
 
         let facebook = Company(name: "Facebook", address: facebookHQ, childCompanies: [])
 
-        let encoder = JSArgumentEncoder()
+        let encoder = JavaScriptEncoder()
         let encodedGraph = try encoder.encode([apple, google, facebook]).data(using: .utf8)!
 
         guard let jsonObjectList = try JSONSerialization.jsonObject(with: encodedGraph, options: []) as? NSArray else {

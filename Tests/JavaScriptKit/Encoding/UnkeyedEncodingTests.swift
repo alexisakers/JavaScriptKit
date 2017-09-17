@@ -12,7 +12,7 @@ class UnkeyedEncodingTests: XCTestCase {
     func testEncodeStringArray() throws {
 
         let stringArray = ["abc", "def", "ghi"]
-        let encoder = JSArgumentEncoder()
+        let encoder = JavaScriptEncoder()
         let encodedArray = try encoder.encode(stringArray)
 
         let expectedEncodedArray = "[\"abc\",\"def\",\"ghi\"]"
@@ -28,7 +28,7 @@ class UnkeyedEncodingTests: XCTestCase {
             ["hello", "world"]
         ]
 
-        let encoder = JSArgumentEncoder()
+        let encoder = JavaScriptEncoder()
         let encodedArray = try encoder.encode(array)
 
         let expectedEncodedArray = "[[\"foo\",\"bar\"],[\"hello\",\"world\"]]"
@@ -44,7 +44,7 @@ class UnkeyedEncodingTests: XCTestCase {
             [User(displayName: "Tim Cook", handle: "tim_cook")]
         ]
 
-        let encoder = JSArgumentEncoder()
+        let encoder = JavaScriptEncoder()
         let encodedArray = try encoder.encode(users)
 
         let expectedEncodedArray = "[[{\"displayName\":\"Elon Musk\",\"handle\":\"elon_musk\"}],[{\"displayName\":\"Tim Cook\",\"handle\":\"tim_cook\"}]]"

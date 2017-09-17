@@ -12,7 +12,7 @@ class SingleValueDecodingTests: XCTestCase {
     func testDecodeString() throws {
 
         let string = "Hello, world!"
-        let decodedString: String = try JSResultDecoder().decode(string)
+        let decodedString: String = try JavaScriptDecoder().decode(string)
         XCTAssertEqual(decodedString, string)
 
     }
@@ -21,11 +21,11 @@ class SingleValueDecodingTests: XCTestCase {
     func testDecodeBool() throws {
 
         let falseBool = false
-        let decodedFalse: Bool = try JSResultDecoder().decode(falseBool)
+        let decodedFalse: Bool = try JavaScriptDecoder().decode(falseBool)
         XCTAssertEqual(decodedFalse, falseBool)
 
         let trueBool = true
-        let decodedTrue: Bool = try JSResultDecoder().decode(trueBool)
+        let decodedTrue: Bool = try JavaScriptDecoder().decode(trueBool)
         XCTAssertEqual(decodedTrue, trueBool)
 
     }
@@ -33,7 +33,7 @@ class SingleValueDecodingTests: XCTestCase {
     /// Tests decoding integers.
     func testDecodeIntegers() throws {
 
-        let decoder = JSResultDecoder()
+        let decoder = JavaScriptDecoder()
 
         let int = Int(-500)
         let decodedInt: Int = try decoder.decode(int)
@@ -84,7 +84,7 @@ class SingleValueDecodingTests: XCTestCase {
     /// Tests that decoding a number that doesn't fit into the requested type throws an error.
     func testMaxIntegerOverflowDecodingError() {
 
-        let decoder = JSResultDecoder()
+        let decoder = JavaScriptDecoder()
         let failureExpectation = expectation(description: "decoding a number that doesn't fit into the requested type")
         let deadline = DispatchTime.now() + DispatchTimeInterval.seconds(2)
 
@@ -107,7 +107,7 @@ class SingleValueDecodingTests: XCTestCase {
     /// Tests that decoding a number that doesn't fit into the requested type throws an error.
     func testMinIntegerOverflowDecodingError() {
 
-        let decoder = JSResultDecoder()
+        let decoder = JavaScriptDecoder()
         let failureExpectation = expectation(description: "decoding a number that doesn't fit into the requested type")
         let deadline = DispatchTime.now() + DispatchTimeInterval.seconds(2)
 
@@ -130,7 +130,7 @@ class SingleValueDecodingTests: XCTestCase {
     /// Tests decoding a Date.
     func testDecodeDate() throws {
 
-        let decoder = JSResultDecoder()
+        let decoder = JavaScriptDecoder()
 
         let intTimeInterval: Int = 1504602844000
         let decodedIntDate: Date = try decoder.decode(intTimeInterval)
@@ -153,7 +153,7 @@ class SingleValueDecodingTests: XCTestCase {
     /// Tests decoding a URL.
     func testDecodeURL() throws {
 
-        let decoder = JSResultDecoder()
+        let decoder = JavaScriptDecoder()
 
         let urlString = "https://developer.apple.com/reference/JavaScriptCore"
         let decodedURL: URL = try decoder.decode(urlString)
@@ -164,7 +164,7 @@ class SingleValueDecodingTests: XCTestCase {
     /// Tests decoding a UUID.
     func testDecodeUUID() throws {
 
-        let decoder = JSResultDecoder()
+        let decoder = JavaScriptDecoder()
 
         let uuidString = "B011902E-0D68-4889-A459-77AE18E8616E"
         let decodedUUID: UUID = try decoder.decode(uuidString)
@@ -175,7 +175,7 @@ class SingleValueDecodingTests: XCTestCase {
     /// Tests decoding a CGFloat.
     func testDecodeCGFloat() throws {
 
-        let decoder = JSResultDecoder()
+        let decoder = JavaScriptDecoder()
 
         let float: Float = 1604602844000
         let decodedFloat: CGFloat = try decoder.decode(float)
@@ -187,7 +187,7 @@ class SingleValueDecodingTests: XCTestCase {
     /// Tests that an error is thrown when the decoded type does not match the encoded value type.
     func testTypeError() {
 
-        let decoder = JSResultDecoder()
+        let decoder = JavaScriptDecoder()
         let failureExpectation = expectation(description: "An error is thrown when the decoded type does not match the encoded value type.")
         let deadline = DispatchTime.now() + DispatchTimeInterval.seconds(2)
 

@@ -6,13 +6,13 @@
 import Foundation
 
 ///
-/// Decodes JavaScript expression return values to a `Decodable` value.
+/// Decodes a JavaScript expression result to a `Decodable` value.
 ///
 
-final class JSResultDecoder {
+final class JavaScriptDecoder {
 
     ///
-    /// Decodes a value returned by a JavaScript expression and returns decodes it into the expected
+    /// Decodes a value returned by a JavaScript expression and decodes it as a the specified
     /// `Decodable` type.
     ///
     /// - parameter value: The value returned by the JavaScript expression.
@@ -21,25 +21,10 @@ final class JSResultDecoder {
 
     func decode<T: Decodable>(_ value: Any) throws -> T {
 
-        //==== I- Serialize the top container ====//
-
-        let container: JSCodingContainer
-
-        if let dictionary = value as? NSDictionary {
-            let storage = DictionaryStorage(dictionary)
-            container = .keyed(storage)
-        } else if let array = value as? NSArray {
-            let storage = ArrayStorage(array)
-            container = .unkeyed(storage)
-        } else {
-            let storage = try SingleValueStorage(storedValue: value)
-            container = .singleValue(storage)
-        }
-
-        //==== II- Decode the container ====//
-
+        let container = try JavaScriptDecoder.makeContainer(with: value)
         let decoder = JSStructureDecoder(container: container)
 
+        // Date and URL Decodable implementations are not compatible with JavaScript.
         if T.self == URL.self || T.self == Date.self {
             let singleValueContainer = try decoder.singleValueContainer()
             return try singleValueContainer.decode(T.self)
@@ -48,13 +33,29 @@ final class JSResultDecoder {
         return try T(from: decoder)
 
     }
+
+    /// Creates a Coding Container from a value.
+    fileprivate static func makeContainer(with value: Any) throws -> JSCodingContainer {
+
+        if let dictionary = value as? NSDictionary {
+            let storage = DictionaryStorage(dictionary)
+            return .keyed(storage)
+        } else if let array = value as? NSArray {
+            let storage = ArrayStorage(array)
+            return .unkeyed(storage)
+        } else {
+            let storage = try SingleValueStorage(storedValue: value)
+            return .singleValue(storage)
+        }
+
+    }
     
 }
 
 // MARK: - Structure Decoder
 
 ///
-/// An object that decodes the structure of a JS value.
+/// An object that decodes the structure of a JavaScript value.
 ///
 
 private class JSStructureDecoder: Decoder {
@@ -257,11 +258,30 @@ private class JSUnkeyedDecodingContainer: UnkeyedDecodingContainer {
 
     // MARK: Decoding
 
+    /// Get the value at the current index, converted to the specified type.
+    func getNextValue<T>() throws -> T {
+
+        guard !isAtEnd else {
+            throw DecodingError.valueNotFound(Decoder.self,
+                                              DecodingError.Context(codingPath: self.codingPath,
+                                                                    debugDescription: "Cannot get value: unkeyed container is at end."))
+        }
+
+        guard let value = self.storage[currentIndex] as? T else {
+            throw DecodingError.valueNotFound(Decoder.self,
+                                              DecodingError.Context(codingPath: self.codingPath,
+                                                                    debugDescription: "Cannot get value: unexpected type."))
+        }
+
+        currentIndex += 1
+
+        return value
+
+    }
+
     /// Decode the value at the current index.
     func decodeAtCurrentIndex<T>(_ unboxer: (SingleValueStorage) throws -> T) throws -> T {
-        guard !self.isAtEnd else { throw indexArrayOutOfBounds }
-        let valueStorage = try SingleValueStorage(storedValue: storage[currentIndex])
-        currentIndex += 1
+        let valueStorage = try SingleValueStorage(storedValue: getNextValue())
         return try unboxer(valueStorage)
     }
 
@@ -338,74 +358,23 @@ private class JSUnkeyedDecodingContainer: UnkeyedDecodingContainer {
 
     func nestedContainer<NestedKey>(keyedBy type: NestedKey.Type) throws -> KeyedDecodingContainer<NestedKey> where NestedKey : CodingKey {
 
-        guard !isAtEnd else {
-            throw DecodingError.valueNotFound(Decoder.self,
-                                              DecodingError.Context(codingPath: self.codingPath,
-                                                                    debugDescription: "Cannot get nestedContainer() -- unkeyed container is at end."))
-        }
-
-        guard let value = self.storage[currentIndex] as? NSDictionary else {
-            throw DecodingError.valueNotFound(Decoder.self,
-                                              DecodingError.Context(codingPath: self.codingPath,
-                                                                    debugDescription: "Cannot get nestedContainer() -- current value is not a dictionary."))
-        }
-
-        currentIndex += 1
-
-        let dictionaryStorage = DictionaryStorage(value)
-        let decodingContainer = JSKeyedDecodingContainer<NestedKey>(referencing: decoder, storage: dictionaryStorage, codingPath: codingPath)
+        let dictionaryStorage = try DictionaryStorage(getNextValue())
+        let decodingContainer = JSKeyedDecodingContainer<NestedKey>(referencing: decoder,
+                                                                    storage: dictionaryStorage,
+                                                                    codingPath: codingPath)
 
         return KeyedDecodingContainer(decodingContainer)
 
     }
 
     func nestedUnkeyedContainer() throws -> UnkeyedDecodingContainer {
-
-        guard !isAtEnd else {
-            throw DecodingError.valueNotFound(Decoder.self,
-                                              DecodingError.Context(codingPath: self.codingPath,
-                                                                    debugDescription: "Cannot get nestedUnkeyedContainer() -- unkeyed container is at end."))
-        }
-
-        guard let value = self.storage[currentIndex] as? NSArray else {
-            throw DecodingError.valueNotFound(Decoder.self,
-                                              DecodingError.Context(codingPath: self.codingPath,
-                                                                    debugDescription: "Cannot get nestedUnkeyedContainer() -- current value is not an array."))
-        }
-
-        currentIndex += 1
-
-        let arrayStorage = ArrayStorage(value)
+        let arrayStorage = try ArrayStorage(getNextValue())
         return JSUnkeyedDecodingContainer(referencing: decoder, storage: arrayStorage, codingPath: codingPath)
-
     }
 
     func superDecoder() throws -> Decoder {
-
-        guard !isAtEnd else {
-            throw DecodingError.valueNotFound(Decoder.self,
-                                              DecodingError.Context(codingPath: self.codingPath,
-                                                                    debugDescription: "Cannot get superDecoder() -- unkeyed container is at end."))
-        }
-
-        let value = self.storage[currentIndex]
-        currentIndex += 1
-
-        let container: JSCodingContainer
-
-        if let dictionary = value as? NSDictionary {
-            let storage = DictionaryStorage(dictionary)
-            container = .keyed(storage)
-        } else if let array = value as? NSArray {
-            let storage = ArrayStorage(array)
-            container = .unkeyed(storage)
-        } else {
-            let storage = try SingleValueStorage(storedValue: value)
-            container = .singleValue(storage)
-        }
-
+        let container = try JavaScriptDecoder.makeContainer(with: getNextValue())
         return JSStructureDecoder(container: container, codingPath: decoder.codingPath, userInfo: decoder.userInfo)
-
     }
 
     // MARK: Error
@@ -448,7 +417,7 @@ private class JSKeyedDecodingContainer<K: CodingKey>: KeyedDecodingContainerProt
 
     init(referencing decoder: JSStructureDecoder, storage: DictionaryStorage, codingPath: [CodingKey] = []) {
 
-        allKeys = storage.dictionary.keys.flatMap { K(stringValue: "\($0.base)") }
+        allKeys = storage.keys.flatMap { K(stringValue: "\($0.base)") }
 
         self.decoder = decoder
         self.storage = storage
@@ -548,6 +517,8 @@ private class JSKeyedDecodingContainer<K: CodingKey>: KeyedDecodingContainerProt
 
     }
 
+    // MARK: Nested Containers
+
     func nestedContainer<NestedKey>(keyedBy type: NestedKey.Type, forKey key: K) throws -> KeyedDecodingContainer<NestedKey> where NestedKey : CodingKey {
 
         guard let value = storage[key.stringValue] as? NSDictionary else {
@@ -584,19 +555,7 @@ private class JSKeyedDecodingContainer<K: CodingKey>: KeyedDecodingContainerProt
                                                                     debugDescription: "Could not find a super decoder for key super."))
         }
 
-        let container: JSCodingContainer
-
-        if let dictionary = value as? NSDictionary {
-            let storage = DictionaryStorage(dictionary)
-            container = .keyed(storage)
-        } else if let array = value as? NSArray {
-            let storage = ArrayStorage(array)
-            container = .unkeyed(storage)
-        } else {
-            let storage = try SingleValueStorage(storedValue: value)
-            container = .singleValue(storage)
-        }
-
+        let container = try JavaScriptDecoder.makeContainer(with: value)
         return JSStructureDecoder(container: container, codingPath: decoder.codingPath, userInfo: decoder.userInfo)
 
     }
@@ -609,19 +568,7 @@ private class JSKeyedDecodingContainer<K: CodingKey>: KeyedDecodingContainerProt
                                                                     debugDescription: "Could not find a super decoder for key \(key)."))
         }
 
-        let container: JSCodingContainer
-
-        if let dictionary = value as? NSDictionary {
-            let storage = DictionaryStorage(dictionary)
-            container = .keyed(storage)
-        } else if let array = value as? NSArray {
-            let storage = ArrayStorage(array)
-            container = .unkeyed(storage)
-        } else {
-            let storage = try SingleValueStorage(storedValue: value)
-            container = .singleValue(storage)
-        }
-
+        let container = try JavaScriptDecoder.makeContainer(with: value)
         return JSStructureDecoder(container: container, codingPath: decoder.codingPath, userInfo: decoder.userInfo)
 
     }
@@ -842,22 +789,8 @@ extension JSStructureDecoder {
     }
 
     func unboxDecodableValue<T: Decodable>(_ value: Any) throws -> T {
-
-        let container: JSCodingContainer
-
-        if let dictionary = value as? NSDictionary {
-            let storage = DictionaryStorage(dictionary)
-            container = .keyed(storage)
-        } else if let array = value as? NSArray {
-            let storage = ArrayStorage(array)
-            container = .unkeyed(storage)
-        } else {
-            let storage = try SingleValueStorage(storedValue: value)
-            return try unboxDecodable(storage)
-        }
-
+        let container = try JavaScriptDecoder.makeContainer(with: value)
         return try unboxDecodable(in: container)
-
     }
 
     func unboxDecodable<T: Decodable>(_ storage: SingleValueStorage) throws -> T {
@@ -892,7 +825,7 @@ extension JSStructureDecoder {
     /// Tries to decode a fixed width integer and reports an error on overflow.
     func decodeInteger<T: BinaryInteger & FixedWidthInteger>(_ integer: AnyInteger) throws -> T {
 
-        guard let integer: T = integer.convertingType() else {
+        guard let integer: T = integer.makeSpecializedInteger() else {
             let context = DecodingError.Context(codingPath: codingPath, debugDescription: "Integer type `\(T.self)` is too small to store the bits of the decoded value.")
             throw DecodingError.dataCorrupted(context)
         }

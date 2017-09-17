@@ -7,7 +7,7 @@ import Foundation
 import CoreGraphics
 
 ///
-/// An object that represents the `Void` return value.
+/// The `Void` return value.
 ///
 
 public final class JSVoid: Decodable {

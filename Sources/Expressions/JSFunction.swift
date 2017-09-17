@@ -63,7 +63,7 @@ public final class JSFunction<T>: JSExpression where T: Decodable {
 
     public func makeExpressionString() throws -> String {
 
-        let encoder = JSArgumentEncoder()
+        let encoder = JavaScriptEncoder()
 
         let argumentsList = try arguments.reduce("") {
             partialResult, argument in

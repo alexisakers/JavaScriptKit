@@ -20,11 +20,11 @@ enum JSCodingContainer {
 
         switch self {
         case .singleValue(_):
-            return "single value"
+            return "a single value"
         case .unkeyed(_):
-            return "unkeyed"
+            return "an unkeyed"
         case .keyed(_):
-            return "keyed"
+            return "a keyed"
         }
 
     }
@@ -126,7 +126,7 @@ enum SingleValueStorage {
 
         } else {
 
-            let context = DecodingError.Context(codingPath: [], debugDescription: "Could not decode \(storedValue) because its type is not supported. Supported types include null, booleans, strings, dates and numbers.")
+            let context = DecodingError.Context(codingPath: [], debugDescription: "Could not decode \(storedValue) because its type is not supported. Supported types include null, booleans, strings, numbers and dates.")
             throw DecodingError.dataCorrupted(context)
 
         }
@@ -144,8 +144,8 @@ enum SingleValueStorage {
 
 class ArrayStorage {
 
-    /// The underlying object.
-    var array: [Any]
+    /// The underlying array object.
+    private var array: [Any]
 
     // MARK: Initialization
 
@@ -154,7 +154,7 @@ class ArrayStorage {
         array = [Any]()
     }
 
-    /// Creates an array from an existing copy.
+    /// Creates an array storage by copying the contents of an existing array.
     init(_ array: NSArray) {
         self.array = array as! [Any]
     }
@@ -171,14 +171,21 @@ class ArrayStorage {
         array.append(element)
     }
 
-    /// Inserts an element in the array at the given index.
-    func insert(_ value: Any, at index: Int) {
-        array.insert(value, at: index)
-    }
-
     /// Get the value at the given index.
     subscript(index: Int) -> Any {
-        return array[index]
+        get {
+            return array[index]
+        }
+        set {
+            array[index] = newValue
+        }
+    }
+
+    // MARK: Contents
+
+    /// An immutable reference to the contents of the array storage.
+    var body: [Any] {
+        return array
     }
 
 }
@@ -193,7 +200,7 @@ class ArrayStorage {
 class DictionaryStorage {
 
     /// The underlying dictionary.
-    var dictionary: [AnyHashable: Any]
+    private var dictionary: [AnyHashable: Any]
 
     // MARK: Initialization
 
@@ -202,7 +209,7 @@ class DictionaryStorage {
         dictionary = [AnyHashable: Any]()
     }
 
-    /// Creates a dictionary storage from an existing copy.
+    /// Creates a dictionary storage by copying the contents of an existing dictionary.
     init(_ dictionary: NSDictionary) {
         self.dictionary = dictionary as! [AnyHashable: Any]
     }
@@ -217,6 +224,18 @@ class DictionaryStorage {
         set {
             dictionary[key] = newValue
         }
+    }
+
+    // MARK: Contents
+
+    /// An immutable reference to the contents of the dictionary storage.
+    var body: [AnyHashable: Any] {
+        return dictionary
+    }
+
+    /// The keys indexing the storage contents.
+    var keys: Dictionary<AnyHashable, Any>.Keys {
+        return dictionary.keys
     }
 
 }
@@ -257,7 +276,7 @@ class AnyInteger {
 
     /// Converts the integer to another integer type or returns `nil` if the target type is too
     /// small to contain the `intValue`.
-    func convertingType<T: BinaryInteger & FixedWidthInteger>() -> T? {
+    func makeSpecializedInteger<T: BinaryInteger & FixedWidthInteger>() -> T? {
 
         let intValue = self.intValue
 

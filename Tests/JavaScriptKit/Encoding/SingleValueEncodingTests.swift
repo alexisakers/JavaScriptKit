@@ -11,7 +11,7 @@ class SingleValueEncodingTests: XCTestCase {
     /// Tests encoding a `nil` value.
     func testEncodeNil() throws {
 
-        let encoder = JSArgumentEncoder()
+        let encoder = JavaScriptEncoder()
 
         let null: String? = nil
         let encodedNull = try encoder.encode(null)
@@ -26,7 +26,7 @@ class SingleValueEncodingTests: XCTestCase {
     /// Tests encoding Boolean values.
     func testEncodeBool() throws {
 
-        let encoder = JSArgumentEncoder()
+        let encoder = JavaScriptEncoder()
 
         let trueValue = true
         let encodedTrue = try encoder.encode(trueValue)
@@ -41,7 +41,7 @@ class SingleValueEncodingTests: XCTestCase {
     /// Tests encoding integer values.
     func testEncodeIntegers() throws {
 
-        let encoder = JSArgumentEncoder()
+        let encoder = JavaScriptEncoder()
 
         let int = Int(-500)
         let encodedInt = try encoder.encode(int)
@@ -92,7 +92,7 @@ class SingleValueEncodingTests: XCTestCase {
     /// Tests encoding Float values.
     func testEncodeFloat() throws {
 
-        let encoder = JSArgumentEncoder()
+        let encoder = JavaScriptEncoder()
 
         let positiveFloat: Float = 255
         let encodedPositiveFloat = try encoder.encode(positiveFloat)
@@ -119,7 +119,7 @@ class SingleValueEncodingTests: XCTestCase {
     /// Tests encoding Double values.
     func testEncodeDouble() throws {
 
-        let encoder = JSArgumentEncoder()
+        let encoder = JavaScriptEncoder()
 
         let positiveDouble: Double = 255
         let encodedPositiveDouble = try encoder.encode(positiveDouble)
@@ -147,7 +147,7 @@ class SingleValueEncodingTests: XCTestCase {
     func testEncodeString() throws {
 
         let string = "'Hello, world !'"
-        let encoder = JSArgumentEncoder()
+        let encoder = JavaScriptEncoder()
         let encodedString = try encoder.encode(string)
 
         XCTAssertEqual(encodedString, doubleQuote("\\u{27}Hello, world !\\u{27}"))
@@ -158,7 +158,7 @@ class SingleValueEncodingTests: XCTestCase {
     func testEncodeURL() throws {
 
         let url = URL(string: "https://developer.apple.com/reference/WebKit")!
-        let encoder = JSArgumentEncoder()
+        let encoder = JavaScriptEncoder()
         let encodedURL = try encoder.encode(url)
         XCTAssertEqual(encodedURL, doubleQuote("https://developer.apple.com/reference/WebKit"))
 
@@ -168,7 +168,7 @@ class SingleValueEncodingTests: XCTestCase {
     func testEncodeDate() throws {
 
         let date = Date(timeIntervalSince1970: 928274520)
-        let encoder = JSArgumentEncoder()
+        let encoder = JavaScriptEncoder()
         let encodedDate = try encoder.encode(date)
         XCTAssertEqual(encodedDate, "new Date(928274520000)")
 
@@ -178,7 +178,7 @@ class SingleValueEncodingTests: XCTestCase {
     func testEncodeEmptyObject() throws {
 
         let emptyObject = EmptyObject()
-        let encoder = JSArgumentEncoder()
+        let encoder = JavaScriptEncoder()
         let encodedObject = try encoder.encode(emptyObject)
         XCTAssertEqual(encodedObject, "{}")
 
@@ -188,7 +188,7 @@ class SingleValueEncodingTests: XCTestCase {
     func testNoEncodedValue() {
 
         let void = EmptyObject.Void()
-        let encoder = JSArgumentEncoder()
+        let encoder = JavaScriptEncoder()
 
         let errorExpectation = expectation(description: "Encoding an object that doesn't encode a value throws an error")
         let deadline = DispatchTime.now() + DispatchTimeInterval.seconds(1)

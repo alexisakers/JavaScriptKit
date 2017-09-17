@@ -6,23 +6,24 @@
 import Foundation
 
 ///
-/// `JSArgumentEncoder` generates the JavaScript representation of `Encodable` arguments.
+/// Generates the JavaScript representation of `Encodable` arguments.
 ///
 
-final class JSArgumentEncoder {
+final class JavaScriptEncoder {
 
     ///
     /// Encodes an argument for use in JavaScript function expressions.
     ///
-    /// - parameter argument: The argument to encode to JS.
-    /// - returns: The JavaScript text representing the value.
+    /// - parameter argument: The argument to encode to JavaScript.
+    /// - returns: The JavaScript literal representing the value.
     ///
 
     internal func encode(_ argument: Encodable) throws -> String {
 
         let structureEncoder = JSStructureEncoder()
 
-        //==== I- Encode value into an encoding container ====//
+
+        /*** I- Encode the structure of the value ***/
 
         // Date and URL Encodable implementations are not compatible with JavaScript.
         if argument is Date {
@@ -37,29 +38,32 @@ final class JSArgumentEncoder {
             try argument.encode(to: structureEncoder)
         }
 
-        //==== II- Get the encoded value and convert it to JavaScript ====//
+
+        /*** II- Get the encoded value and convert it to a JavaScript literal ***/
 
         guard let topLevelContainer = structureEncoder.container else {
-            let errorContext = EncodingError.Context(codingPath: structureEncoder.codingPath,
-                                                     debugDescription: "Top-level argument did not encode any values.")
-            throw EncodingError.invalidValue(argument, errorContext)
+            throw EncodingError.invalidValue(argument,
+                                             EncodingError.Context(codingPath: structureEncoder.codingPath,
+                                                                   debugDescription: "Top-level argument did not encode any values."))
         }
 
         switch topLevelContainer {
         case .singleValue(let storage):
-            return jsEncodeSingleValue(storage)
+            return encodeJSSingleValue(storage)
 
         case .unkeyed(let storage):
-            return try jsEncodeObject(storage.array)
+            return try encodeJSObject(storage.body)
 
         case .keyed(let storage):
-            return try jsEncodeObject(storage.dictionary)
+            return try encodeJSObject(storage.body)
         }
 
     }
 
-    /// Encodes the content of a single-value container storage to a JavaScript literal.
-    private func jsEncodeSingleValue(_ storage: SingleValueStorage) -> String {
+    // MARK: Helpers
+
+    /// Encodes the content of a single-value container storage as a JavaScript literal.
+    private func encodeJSSingleValue(_ storage: SingleValueStorage) -> String {
 
         switch storage {
         case .null:
@@ -90,8 +94,8 @@ final class JSArgumentEncoder {
 
     }
 
-    /// Encodes the contents of an unkeyed or a keyed container storage into a JSON literal.
-    private func jsEncodeObject<T: Sequence>(_ object: T) throws -> String {
+    /// Encodes the contents of an unkeyed or a keyed container storage as a JSON literal.
+    private func encodeJSObject<T: Sequence>(_ object: T) throws -> String {
         let jsonData = try JSONSerialization.data(withJSONObject: object, options: [])
         return String(data: jsonData, encoding: .utf8)!
     }
@@ -447,10 +451,10 @@ private class JSUnkeyedEncodingContainer: UnkeyedEncodingContainer {
             switch newContainer {
             case .singleValue(let value):
                 storage.append(value.storedValue)
-            case .unkeyed(let arrayRef):
-                storage.append(arrayRef.array)
-            case .keyed(let dictionaryRef):
-                storage.append(dictionaryRef.dictionary)
+            case .unkeyed(let arrayStorage):
+                storage.append(arrayStorage.body)
+            case .keyed(let dictionaryStorage):
+                storage.append(dictionaryStorage.body)
             }
 
         }
@@ -502,11 +506,11 @@ private class JSUnkeyedEncodingContainer: UnkeyedEncodingContainer {
     deinit {
 
         for (index, unkeyedContainerStorage) in nestedUnkeyedContainers {
-            storage.array[index] = unkeyedContainerStorage.array
+            storage[index] = unkeyedContainerStorage.body
         }
 
-        for (index, keyedContainerStorage) in nestedKeyedContainers {
-            storage.array[index] = keyedContainerStorage.dictionary
+        for (key, keyedContainerStorage) in nestedKeyedContainers {
+            storage[key] = keyedContainerStorage.body
         }
 
     }
@@ -608,12 +612,12 @@ private class JSKeyedEncodingContainer<K: CodingKey>: KeyedEncodingContainerProt
             let newContainer = try self.encoder.parseValue(value)
 
             switch newContainer {
-            case .keyed(let dictionaryRef):
-                storage[key.stringValue] = dictionaryRef.dictionary
+            case .keyed(let storage):
+                storage[key.stringValue] = storage.body
             case .singleValue(let value):
                 storage[key.stringValue] = value.storedValue
-            case .unkeyed(let arrayRef):
-                storage[key.stringValue] = arrayRef.array
+            case .unkeyed(let storage):
+                storage.append(storage.body)
             }
 
         }
@@ -654,11 +658,11 @@ private class JSKeyedEncodingContainer<K: CodingKey>: KeyedEncodingContainerProt
     deinit {
 
         for (key, unkeyedContainerStorage) in nestedUnkeyedContainers {
-            storage.dictionary[key] = unkeyedContainerStorage.array
+            storage[key] = unkeyedContainerStorage.body
         }
 
         for (key, keyedContainerStorage) in nestedKeyedContainers {
-            storage.dictionary[key] = keyedContainerStorage.dictionary
+            storage[key] = keyedContainerStorage.body
         }
 
     }
@@ -801,18 +805,18 @@ private class JSReferencingEncoder: JSStructureEncoder {
             value = storage.storedValue
 
         case .unkeyed(let storage)?:
-            value = storage.array
+            value = storage.body
 
         case .keyed(let storage)?:
-            value = storage.dictionary
+            value = storage.body
         }
 
         switch reference {
         case .array(let remoteStorage, let index):
-            remoteStorage.array[index] = value
+            remoteStorage[index] = value
 
         case .dictionary(let remoteStorage, let key):
-            remoteStorage.dictionary[key] = value
+            remoteStorage[key] = value
         }
         
     }
