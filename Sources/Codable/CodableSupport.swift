@@ -211,60 +211,6 @@ class DictionaryStorage {
 
 }
 
-// MARK: - AnyInteger
-
-///
-/// An object that wraps a generic integer value.
-///
-
-class AnyInteger {
-
-    private let stringGenerator: () -> String
-    private let intGenerator: () -> Int
-
-    /// Creates a wrapper from a base integer.
-    init<T: FixedWidthInteger>(_ base: T) {
-
-        stringGenerator = {
-            return String(base, radix: 10, uppercase: false)
-        }
-
-        intGenerator = {
-            return Int(base)
-        }
-
-    }
-
-    /// The `String` representation of the integer.
-    var stringValue: String {
-        return stringGenerator()
-    }
-
-    /// The `Int` representation of the integer.
-    var rawValue: Int {
-        return intGenerator()
-    }
-
-    /// Converts the integer to another integer type or returns `nil` if the target type is too
-    /// small to contain the `intValue`.
-    func makeSpecializedInteger<T: BinaryInteger & FixedWidthInteger>() -> T? {
-
-        let intValue = self.rawValue
-
-        guard T.bitWidth <= Int.bitWidth else {
-            return nil
-        }
-
-        guard intValue >= T.min && intValue <= T.max else {
-            return nil
-        }
-
-        return T(intValue)
-
-    }
-
-}
-
 // MARK: - Escaping
 
 extension String {
