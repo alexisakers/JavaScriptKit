@@ -6,7 +6,7 @@ import Foundation
 /// Tests encoding objects inside a keyed container.
 ///
 
-class JSKeyedEncodingTests: XCTestCase {
+class KeyedEncodingTests: XCTestCase {
 
     /// Tests encoding a JSON object.
     func testEncodeObject() throws {

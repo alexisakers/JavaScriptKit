@@ -6,7 +6,7 @@ import Foundation
 /// Tests decoding single values.
 ///
 
-class JSSingleValueDecoderTests: XCTestCase {
+class SingleValueDecodingTests: XCTestCase {
 
     /// Tests decoding a String.
     func testDecodeString() throws {

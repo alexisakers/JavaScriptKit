@@ -6,7 +6,7 @@ import Foundation
 /// Tests decoding unkeyed sequences from JavaScript.
 ///
 
-class JSUnkeyedDecoderTests: XCTestCase {
+class UnkeyedDecoderTests: XCTestCase {
 
     /// Tests decoding an array of Strings.
     func testDecodeStringArray() throws {

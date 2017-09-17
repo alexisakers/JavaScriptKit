@@ -6,7 +6,7 @@ import Foundation
 /// Tests encoding a single value inside a JavaScript encoder.
 ///
 
-class SingleValueEncoderTests: XCTestCase {
+class SingleValueEncodingTests: XCTestCase {
 
     /// Tests encoding a `nil` value.
     func testEncodeNil() throws {

@@ -6,7 +6,7 @@ import Foundation
 /// Tests encoding a list inside a JavaScript encoder.
 ///
 
-class JSUnkeyedEncoderTests: XCTestCase {
+class UnkeyedEncodingTests: XCTestCase {
 
     /// Tests encoding an array of Strings.
     func testEncodeStringArray() throws {
