@@ -94,13 +94,13 @@ class SingleValueEncodingTests: XCTestCase {
 
         let encoder = JavaScriptEncoder()
 
-        let positiveFloat: Float = 255
+        let positiveFloat: Float = 255.8765
         let encodedPositiveFloat = try encoder.encode(positiveFloat)
-        XCTAssertEqual(encodedPositiveFloat, "255.0")
+        XCTAssertEqual(encodedPositiveFloat, "255.8765")
 
         let negativeFloat: Float = -2567
         let encodedNegativeFloat = try encoder.encode(negativeFloat)
-        XCTAssertEqual(encodedNegativeFloat, "-2567.0")
+        XCTAssertEqual(encodedNegativeFloat, "-2567")
 
         let positiveInfinity: Float = Float.infinity
         let encodedPositiveInfinity = try encoder.encode(positiveInfinity)
@@ -121,13 +121,13 @@ class SingleValueEncodingTests: XCTestCase {
 
         let encoder = JavaScriptEncoder()
 
-        let positiveDouble: Double = 255
+        let positiveDouble: Double = 255.87654
         let encodedPositiveDouble = try encoder.encode(positiveDouble)
-        XCTAssertEqual(encodedPositiveDouble, "255.0")
+        XCTAssertEqual(encodedPositiveDouble, "255.87654")
 
-        let negativeDouble: Double = -2567
+        let negativeDouble: Double = -2567.34560
         let encodedNegativeDouble = try encoder.encode(negativeDouble)
-        XCTAssertEqual(encodedNegativeDouble, "-2567.0")
+        XCTAssertEqual(encodedNegativeDouble, "-2567.3456")
 
         let positiveInfinity: Double = Double.infinity
         let encodedPositiveInfinity = try encoder.encode(positiveInfinity)

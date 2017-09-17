@@ -81,52 +81,6 @@ class SingleValueDecodingTests: XCTestCase {
 
     }
 
-    /// Tests that decoding a number that doesn't fit into the requested type throws an error.
-    func testMaxIntegerOverflowDecodingError() {
-
-        let decoder = JavaScriptDecoder()
-        let failureExpectation = expectation(description: "decoding a number that doesn't fit into the requested type")
-        let deadline = DispatchTime.now() + DispatchTimeInterval.seconds(2)
-
-        DispatchQueue.main.asyncAfter(deadline: deadline) {
-
-            do {
-                let int: Int = 500
-                let int8: Int8 = try decoder.decode(int)
-                XCTFail("Int value shouldn't be decoded because it cannot fit into Int8 (\(int8)).")
-            } catch {
-                failureExpectation.fulfill()
-            }
-
-        }
-
-        wait(for: [failureExpectation], timeout: 5)
-
-    }
-
-    /// Tests that decoding a number that doesn't fit into the requested type throws an error.
-    func testMinIntegerOverflowDecodingError() {
-
-        let decoder = JavaScriptDecoder()
-        let failureExpectation = expectation(description: "decoding a number that doesn't fit into the requested type")
-        let deadline = DispatchTime.now() + DispatchTimeInterval.seconds(2)
-
-        DispatchQueue.main.asyncAfter(deadline: deadline) {
-
-            do {
-                let int: Int = -100
-                let uint8: UInt8 = try decoder.decode(int)
-                XCTFail("Int value shouldn't be decoded because it cannot fit into Int8 (\(uint8)).")
-            } catch {
-                failureExpectation.fulfill()
-            }
-
-        }
-
-        wait(for: [failureExpectation], timeout: 5)
-
-    }
-
     /// Tests decoding a Date.
     func testDecodeDate() throws {
 

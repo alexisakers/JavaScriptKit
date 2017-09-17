@@ -38,14 +38,6 @@ public protocol JSExpression {
     /// Creates the JavaScript text of the expression.
     func makeExpressionString() throws -> String
 
-    ///
-    /// The decoding strategy to use to evaluate the validity of the result.
-    ///
-    /// Do not customize this, as it is automatically chosen based on `ReturnType`.
-    ///
-
-    var decodingStrategy: JSDecodingStrategy<ReturnType> { get }
-
 }
 
 
@@ -100,8 +92,14 @@ public enum JSDecodingStrategy<ReturnType> {
 extension JSExpression {
 
     /// The decoding strategy to use to evaluate the validity of the result.
-    public var decodingStrategy: JSDecodingStrategy<ReturnType> {
-        return .returnValueMandatory
+    private var decodingStrategy: JSDecodingStrategy<ReturnType> {
+
+        if ReturnType.self == JSVoid.self {
+            return .noReturnValue(defaultValue: JSVoid() as! ReturnType)
+        } else {
+            return .returnValueMandatory
+        }
+
     }
 
     ///
@@ -187,6 +185,12 @@ extension JSExpression {
                 return
             }
 
+            do {
+                let typeError: ReturnType = try decoder.decode(value)
+            } catch {
+                dump(error)
+            }
+
             guard let decodedValue: ReturnType = try? decoder.decode(value) else {
                 let typeError = JSErrorDomain.invalidReturnType(value: value)
                 completeEvaluation(completionHandler, .failure(typeError))
@@ -227,17 +231,6 @@ extension JSExpression {
             completionHandler?(result)
         }
         
-    }
-
-}
-
-// MARK: - Void Support
-
-extension JSExpression where ReturnType == JSVoid {
-
-    /// The decoding strategy to use to evaluate the validity of the result.
-    public var decodingStrategy: JSDecodingStrategy<ReturnType> {
-        return .noReturnValue(defaultValue: JSVoid())
     }
 
 }

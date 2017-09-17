@@ -68,26 +68,17 @@ final class JavaScriptEncoder {
         switch storage {
         case .null:
             return "null"
-
+        case .string(let string):
+            return string
         case .boolean(let bool):
             return String(bool)
 
-        case .string(let string):
-            return string
-
-        case .integer(let integer):
-            return integer.stringValue
-
-        case .float(let float):
-            return String(float)
-
-        case .double(let double):
-            return String(double)
+        case .number(let number):
+            return number.stringValue
 
         case .date(let date):
             let timestamp = Int(date.timeIntervalSince1970) * 1000
             return "new Date(\(timestamp))"
-            
         case .emptyObject:
             return "{}"
         }
@@ -275,62 +266,52 @@ extension JSStructureEncoder: SingleValueEncodingContainer {
 
     func encode(_ value: Int) throws {
         assertCanEncodeSingleValue()
-        let anyInteger = AnyInteger(value)
-        container = .singleValue(.integer(anyInteger))
+        container = .singleValue(.number(value as NSNumber))
     }
 
     func encode(_ value: Int8) throws {
         assertCanEncodeSingleValue()
-        let anyInteger = AnyInteger(value)
-        container = .singleValue(.integer(anyInteger))
+        container = .singleValue(.number(value as NSNumber))
     }
 
     func encode(_ value: Int16) throws {
         assertCanEncodeSingleValue()
-        let anyInteger = AnyInteger(value)
-        container = .singleValue(.integer(anyInteger))
+        container = .singleValue(.number(value as NSNumber))
     }
 
     func encode(_ value: Int32) throws {
         assertCanEncodeSingleValue()
-        let anyInteger = AnyInteger(value)
-        container = .singleValue(.integer(anyInteger))
+        container = .singleValue(.number(value as NSNumber))
     }
 
     func encode(_ value: Int64) throws {
         assertCanEncodeSingleValue()
-        let anyInteger = AnyInteger(value)
-        container = .singleValue(.integer(anyInteger))
+        container = .singleValue(.number(value as NSNumber))
     }
 
     func encode(_ value: UInt) throws {
         assertCanEncodeSingleValue()
-        let anyInteger = AnyInteger(value)
-        container = .singleValue(.integer(anyInteger))
+        container = .singleValue(.number(value as NSNumber))
     }
 
     func encode(_ value: UInt8) throws {
         assertCanEncodeSingleValue()
-        let anyInteger = AnyInteger(value)
-        container = .singleValue(.integer(anyInteger))
+        container = .singleValue(.number(value as NSNumber))
     }
 
     func encode(_ value: UInt16) throws {
         assertCanEncodeSingleValue()
-        let anyInteger = AnyInteger(value)
-        container = .singleValue(.integer(anyInteger))
+        container = .singleValue(.number(value as NSNumber))
     }
 
     func encode(_ value: UInt32) throws {
         assertCanEncodeSingleValue()
-        let anyInteger = AnyInteger(value)
-        container = .singleValue(.integer(anyInteger))
+        container = .singleValue(.number(value as NSNumber))
     }
 
     func encode(_ value: UInt64) throws {
         assertCanEncodeSingleValue()
-        let anyInteger = AnyInteger(value)
-        container = .singleValue(.integer(anyInteger))
+        container = .singleValue(.number(value as NSNumber))
     }
 
     func encode(_ value: Float) throws {
@@ -680,32 +661,32 @@ extension JSStructureEncoder {
     }
 
     /// Returns the correct representation of the Float for JavaScript.
-    func parseFloat(_ float: Float) -> SingleValueStorage {
+    func parseFloat(_ value: Float) -> SingleValueStorage {
 
-        if float == Float.infinity {
+        if value == Float.infinity {
             return .string("Number.POSITIVE_INFINITY")
-        } else if float == -Float.infinity {
+        } else if value == -Float.infinity {
             return .string("Number.NEGATIVE_INFINITY")
-        } else if float.isNaN {
+        } else if value.isNaN {
             return .string("Number.NaN")
         }
 
-        return .float(float)
+        return .number(value as NSNumber)
 
     }
 
     /// Returns the correct representation of the Double for JavaScript.
-    func parseDouble(_ double: Double) -> SingleValueStorage {
+    func parseDouble(_ value: Double) -> SingleValueStorage {
 
-        if double == Double.infinity {
+        if value == Double.infinity {
             return .string("Number.POSITIVE_INFINITY")
-        } else if double == -Double.infinity {
+        } else if value == -Double.infinity {
             return .string("Number.NEGATIVE_INFINITY")
-        } else if double.isNaN {
+        } else if value.isNaN {
             return .string("Number.NaN")
         }
 
-        return .double(double)
+        return .number(value as NSNumber)
 
     }
 
@@ -721,7 +702,7 @@ extension JSStructureEncoder {
             }
 
             let timestamp = Int(date.timeIntervalSince1970) * 1000
-            return .singleValue(.integer(AnyInteger(timestamp)))
+            return .singleValue(.number(timestamp as NSNumber))
 
         } else if T.self == URL.self {
             return .singleValue(parseString((value as! URL).absoluteString))

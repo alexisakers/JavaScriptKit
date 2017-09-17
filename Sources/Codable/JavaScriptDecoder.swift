@@ -595,6 +595,15 @@ extension JSStructureDecoder {
         switch storage {
         case .boolean(let bool):
             return bool
+
+        case .number(let number):
+
+            guard (number == kCFBooleanTrue) || (number == kCFBooleanFalse) else {
+                try throwTypeError(storedType: storage.storedType, expected: "Bool")
+            }
+
+            return number.boolValue
+
         default:
             try throwTypeError(storedType: storage.storedType, expected: "Bool")
         }
@@ -604,8 +613,8 @@ extension JSStructureDecoder {
     func unboxInt(_ storage: SingleValueStorage) throws -> Int {
 
         switch storage {
-        case .integer(let integer):
-            return integer.intValue
+        case .number(let number):
+            return number.intValue
         default:
             try throwTypeError(storedType: storage.storedType, expected: "Int")
         }
@@ -615,8 +624,8 @@ extension JSStructureDecoder {
     func unboxInt8(_ storage: SingleValueStorage) throws -> Int8 {
 
         switch storage {
-        case .integer(let integer):
-            return try decodeInteger(integer)
+        case .number(let number):
+            return number.int8Value
         default:
             try throwTypeError(storedType: storage.storedType, expected: "Int8")
         }
@@ -626,8 +635,8 @@ extension JSStructureDecoder {
     func unboxInt16(_ storage: SingleValueStorage) throws -> Int16 {
 
         switch storage {
-        case .integer(let integer):
-            return try decodeInteger(integer)
+        case .number(let number):
+            return number.int16Value
         default:
             try throwTypeError(storedType: storage.storedType, expected: "Int16")
         }
@@ -637,8 +646,8 @@ extension JSStructureDecoder {
     func unboxInt32(_ storage: SingleValueStorage) throws -> Int32 {
 
         switch storage {
-        case .integer(let integer):
-            return try decodeInteger(integer)
+        case .number(let number):
+            return number.int32Value
         default:
             try throwTypeError(storedType: storage.storedType, expected: "Int32")
         }
@@ -648,8 +657,8 @@ extension JSStructureDecoder {
     func unboxInt64(_ storage: SingleValueStorage) throws -> Int64 {
 
         switch storage {
-        case .integer(let integer):
-            return try decodeInteger(integer)
+        case .number(let number):
+            return number.int64Value
         default:
             try throwTypeError(storedType: storage.storedType, expected: "Int64")
         }
@@ -659,8 +668,8 @@ extension JSStructureDecoder {
     func unboxUInt(_ storage: SingleValueStorage) throws -> UInt {
 
         switch storage {
-        case .integer(let integer):
-            return try decodeInteger(integer)
+        case .number(let number):
+            return number.uintValue
         default:
             try throwTypeError(storedType: storage.storedType, expected: "UInt")
         }
@@ -670,8 +679,8 @@ extension JSStructureDecoder {
     func unboxUInt8(_ storage: SingleValueStorage) throws -> UInt8 {
 
         switch storage {
-        case .integer(let integer):
-            return try decodeInteger(integer)
+        case .number(let number):
+            return number.uint8Value
         default:
             try throwTypeError(storedType: storage.storedType, expected: "UInt8")
         }
@@ -681,8 +690,8 @@ extension JSStructureDecoder {
     func unboxUInt16(_ storage: SingleValueStorage) throws -> UInt16 {
 
         switch storage {
-        case .integer(let integer):
-            return try decodeInteger(integer)
+        case .number(let number):
+            return number.uint16Value
         default:
             try throwTypeError(storedType: storage.storedType, expected: "UInt16")
         }
@@ -692,8 +701,8 @@ extension JSStructureDecoder {
     func unboxUInt32(_ storage: SingleValueStorage) throws -> UInt32 {
 
         switch storage {
-        case .integer(let integer):
-            return try decodeInteger(integer)
+        case .number(let number):
+            return number.uint32Value
         default:
             try throwTypeError(storedType: storage.storedType, expected: "UInt32")
         }
@@ -703,8 +712,8 @@ extension JSStructureDecoder {
     func unboxUInt64(_ storage: SingleValueStorage) throws -> UInt64 {
 
         switch storage {
-        case .integer(let integer):
-            return try decodeInteger(integer)
+        case .number(let number):
+            return number.uint64Value
         default:
             try throwTypeError(storedType: storage.storedType, expected: "UInt64")
         }
@@ -714,12 +723,8 @@ extension JSStructureDecoder {
     func unboxFloat(_ storage: SingleValueStorage) throws -> Float {
 
         switch storage {
-        case .float(let float):
-            return float
-        case .double(let double):
-            return Float(double)
-        case .integer(let integer):
-            return Float(integer.intValue)
+        case .number(let number):
+            return Float(number.doubleValue)
         default:
             try throwTypeError(storedType: storage.storedType, expected: "Float")
         }
@@ -729,12 +734,8 @@ extension JSStructureDecoder {
     func unboxDouble(_ storage: SingleValueStorage) throws -> Double {
 
         switch storage {
-        case .float(let float):
-            return Double(float)
-        case .double(let double):
-            return double
-        case .integer(let integer):
-            return Double(integer.intValue)
+        case .number(let number):
+            return number.doubleValue
         default:
             try throwTypeError(storedType: storage.storedType, expected: "Float")
         }
@@ -757,14 +758,8 @@ extension JSStructureDecoder {
         switch storage {
         case .date(let date):
             return date
-        case .double(let timeInterval):
-            return Date(timeIntervalSince1970: timeInterval / 1000)
-        case .float(let timeInterval):
-            let timestamp = Double(timeInterval) / 1000
-            return Date(timeIntervalSince1970: timestamp)
-        case .integer(let anyInterger):
-            let timestamp = Double(anyInterger.intValue) / 1000
-            return Date(timeIntervalSince1970: timestamp)
+        case .number(let number):
+            return Date(timeIntervalSince1970: number.doubleValue / 1000)
         default:
             try throwTypeError(storedType: storage.storedType, expected: "Date")
         }
@@ -820,18 +815,6 @@ extension JSStructureDecoder {
     func throwTypeError(storedType: Any.Type, expected: String) throws -> Never {
         let errorContext = DecodingError.Context(codingPath: codingPath, debugDescription: "Cannot decode `\(expected)` because value is of type `\(storedType)`.")
         throw DecodingError.typeMismatch(storedType, errorContext)
-    }
-
-    /// Tries to decode a fixed width integer and reports an error on overflow.
-    func decodeInteger<T: BinaryInteger & FixedWidthInteger>(_ integer: AnyInteger) throws -> T {
-
-        guard let integer: T = integer.makeSpecializedInteger() else {
-            let context = DecodingError.Context(codingPath: codingPath, debugDescription: "Integer type `\(T.self)` is too small to store the bits of the decoded value.")
-            throw DecodingError.dataCorrupted(context)
-        }
-
-        return integer
-
     }
 
 }

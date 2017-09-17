@@ -42,22 +42,16 @@ enum SingleValueStorage {
     /// A `null` value.
     case null
 
-    /// A Boolean value.
-    case boolean(Bool)
-
     /// A String value.
     case string(String)
 
-    /// An integer value.
-    case integer(AnyInteger)
+    /// A Bool value.
+    case boolean(Bool)
 
-    /// A Float value.
-    case float(Float)
+    /// A number value.
+    case number(NSNumber)
 
-    /// A Double value.
-    case double(Double)
-
-    /// A Date value.
+    /// A date value.
     case date(Date)
 
     /// An empty object.
@@ -69,16 +63,12 @@ enum SingleValueStorage {
         switch self {
         case .null:
             return NSNull()
-        case .boolean(let bool):
-            return bool
         case .string(let string):
             return string
-        case .integer(let integer):
-            return integer.intValue
-        case .float(let float):
-            return float
-        case .double(let double):
-            return double
+        case .boolean(let bool):
+            return bool
+        case .number(let number):
+            return number
         case .date(let date):
             return date
         case .emptyObject:
@@ -103,27 +93,8 @@ enum SingleValueStorage {
             self = .string(storedValue as! String)
         } else if storedValue is Date {
             self = .date(storedValue as! Date)
-        } else if storedValue is Bool {
-            self = .boolean(storedValue as! Bool)
         } else if storedValue is NSNumber {
-
-            let nsNumber = storedValue as! NSNumber
-
-            if nsNumber == kCFBooleanTrue || nsNumber == kCFBooleanFalse {
-                self = .boolean(nsNumber.boolValue)
-                return
-            }
-
-            let doubleValue = nsNumber.doubleValue
-
-            if doubleValue.truncatingRemainder(dividingBy: 1) == 0 {
-                let anyInteger = AnyInteger(nsNumber.intValue)
-                self = .integer(anyInteger)
-                return
-            }
-
-            self = .double(doubleValue)
-
+            self = .number(storedValue as! NSNumber)
         } else {
 
             let context = DecodingError.Context(codingPath: [], debugDescription: "Could not decode \(storedValue) because its type is not supported. Supported types include null, booleans, strings, numbers and dates.")
@@ -270,7 +241,7 @@ class AnyInteger {
     }
 
     /// The `Int` representation of the integer.
-    var intValue: Int {
+    var rawValue: Int {
         return intGenerator()
     }
 
@@ -278,7 +249,7 @@ class AnyInteger {
     /// small to contain the `intValue`.
     func makeSpecializedInteger<T: BinaryInteger & FixedWidthInteger>() -> T? {
 
-        let intValue = self.intValue
+        let intValue = self.rawValue
 
         guard T.bitWidth <= Int.bitWidth else {
             return nil
