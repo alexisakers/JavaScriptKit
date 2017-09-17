@@ -71,6 +71,20 @@ private class JSStructureDecoder: Decoder {
     /// Contextual user-provided information for use during decoding.
     var userInfo: [CodingUserInfoKey : Any]
 
+    /// The type of the container (for debug printing)
+    var containerType: String {
+
+        switch container {
+        case .singleValue:
+            return "a single value"
+        case .unkeyed:
+            return "an unkeyed"
+        case .keyed:
+            return "a keyed"
+        }
+
+    }
+
     // MARK: Initilization
 
     init(container: JSCodingContainer, codingPath: [CodingKey] = [], userInfo: [CodingUserInfoKey: Any] = [:]) {
@@ -89,7 +103,7 @@ private class JSStructureDecoder: Decoder {
             return KeyedDecodingContainer(decodingContainer)
 
         default:
-            let errorContext = DecodingError.Context(codingPath: codingPath, debugDescription: "Attempt to decode the result using a keyed container container, but the data is encoded as a \(container.debugType) container.")
+            let errorContext = DecodingError.Context(codingPath: codingPath, debugDescription: "Attempt to decode the result using a keyed container container, but the data is encoded as \(containerType) container.")
             throw DecodingError.dataCorrupted(errorContext)
         }
 
@@ -102,7 +116,7 @@ private class JSStructureDecoder: Decoder {
             return JSUnkeyedDecodingContainer(referencing: self, storage: storage)
 
         default:
-            let errorContext = DecodingError.Context(codingPath: codingPath, debugDescription: "Attempt to decode the result using an unkeyed container container, but the data is encoded as a \(container.debugType) container.")
+            let errorContext = DecodingError.Context(codingPath: codingPath, debugDescription: "Attempt to decode the result using an unkeyed container container, but the data is encoded as \(containerType) container.")
             throw DecodingError.dataCorrupted(errorContext)
         }
 
@@ -115,7 +129,7 @@ private class JSStructureDecoder: Decoder {
             return JSSingleValueDecodingContainer(referencing: self, storage: storage, codingPath: codingPath)
 
         default:
-            let errorContext = DecodingError.Context(codingPath: codingPath, debugDescription: "Attempt to decode the result using a single value container, but the data is encoded as a \(container.debugType) container.")
+            let errorContext = DecodingError.Context(codingPath: codingPath, debugDescription: "Attempt to decode the result using a single value container, but the data is encoded as \(containerType) container.")
             throw DecodingError.dataCorrupted(errorContext)
         }
 

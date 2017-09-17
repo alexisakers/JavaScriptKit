@@ -15,20 +15,6 @@ enum JSCodingContainer {
     /// A keyed value container associated with a reference to a dictionary storage.
     case keyed(DictionaryStorage)
 
-    /// The type of the container (for debug printing)
-    var debugType: String {
-
-        switch self {
-        case .singleValue(_):
-            return "a single value"
-        case .unkeyed(_):
-            return "an unkeyed"
-        case .keyed(_):
-            return "a keyed"
-        }
-
-    }
-
 }
 
 // MARK: - Single Value Storage
@@ -79,7 +65,16 @@ enum SingleValueStorage {
 
     /// The type of the stored value.
     var storedType: Any.Type {
-        return type(of: storedValue)
+
+        switch self {
+        case .null: return NSNull.self
+        case .string: return String.self
+        case .boolean: return Bool.self
+        case .number: return NSNumber.self
+        case .date: return Date.self
+        case .emptyObject: return Dictionary<String, Any>.self
+        }
+
     }
 
     // MARK: Initialization

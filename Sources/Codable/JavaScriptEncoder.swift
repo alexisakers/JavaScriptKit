@@ -125,6 +125,22 @@ private class JSStructureEncoder: Encoder {
 
     // MARK: Options
 
+    /// The type of the container (for debug printing)
+    var containerType: String {
+
+        switch container {
+        case .singleValue?:
+            return "a single value"
+        case .unkeyed?:
+            return "an unkeyed"
+        case .keyed?:
+            return "a keyed"
+        case nil:
+            return "an invalid"
+        }
+
+    }
+
     /// The string literal quoting strategy.
     let stringLiteralQuoting: StringLiteralQuoting
 
@@ -179,8 +195,7 @@ private class JSStructureEncoder: Encoder {
     func assertCanRequestNewContainer() {
 
         guard self.container == nil else {
-            let previousContainerType = self.container!.debugType
-            preconditionFailure("Attempt to encode value with a new container when it has already been encoded with a \(previousContainerType) container.")
+            preconditionFailure("Attempt to encode value with a new container when it has already been encoded with \(containerType) container.")
         }
 
         guard !containsFailures else {
@@ -246,7 +261,7 @@ extension JSStructureEncoder: SingleValueEncodingContainer {
             preconditionFailure("Attempt to encode multiple values in a single value container.")
 
         case .keyed(_)?, .unkeyed(_)?:
-            preconditionFailure("Attempt to encode value with a new container when it has already been encoded with a \(container!.debugType) container.")
+            preconditionFailure("Attempt to encode value with a new container when it has already been encoded with \(containerType) container.")
 
         case nil:
             return
