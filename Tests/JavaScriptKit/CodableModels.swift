@@ -25,13 +25,19 @@ class EmptyObject: Codable {
 // MARK: - User
 
 /// A simple structure
-struct User: Codable, Equatable {
+struct User: Codable, Hashable {
+
     let displayName: String
     let handle: String
+
+    var hashValue: Int {
+        return displayName.hashValue & handle.hashValue
+    }
 
     static func == (lhs: User, rhs: User) -> Bool {
         return (lhs.displayName == rhs.displayName) && (lhs.handle == rhs.handle)
     }
+
 }
 
 // MARK: - Person

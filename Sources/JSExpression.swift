@@ -185,12 +185,6 @@ extension JSExpression {
                 return
             }
 
-            do {
-                let typeError: ReturnType = try decoder.decode(value)
-            } catch {
-                dump(error)
-            }
-
             guard let decodedValue: ReturnType = try? decoder.decode(value) else {
                 let typeError = JSErrorDomain.invalidReturnType(value: value)
                 completeEvaluation(completionHandler, .failure(typeError))

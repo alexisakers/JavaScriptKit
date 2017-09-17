@@ -30,11 +30,7 @@ class UnkeyedDecoderTests: XCTestCase {
         let decoder = JavaScriptDecoder()
         let decodedArray: [[String]] = try decoder.decode(array)
 
-        XCTAssertEqual(decodedArray.count, array.count)
-
-        for (decoded, base) in zip(decodedArray, array) {
-            XCTAssertEqual(decoded, base)
-        }
+        XCTAssertDeepEqual(decodedArray, array)
 
     }
 
@@ -66,11 +62,7 @@ class UnkeyedDecoderTests: XCTestCase {
             ]
         ]
 
-        XCTAssertEqual(decodedArray.count, expectedUsers.count)
-
-        for (decoded, expected) in zip(decodedArray, expectedUsers) {
-            XCTAssertEqual(decoded, expected)
-        }
+        XCTAssertDeepEqual(decodedArray, expectedUsers)
 
     }
 

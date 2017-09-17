@@ -122,7 +122,7 @@ class KeyedEncodingTests: XCTestCase {
             ]
         ]
 
-        XCTAssertEqual(jsonObjectGraph, expectedGraph)
+        XCTAssertDeepEqual(jsonObjectGraph, expectedGraph)
 
     }
 
@@ -156,7 +156,7 @@ class KeyedEncodingTests: XCTestCase {
         let encoder = JavaScriptEncoder()
         let encodedGraph = try encoder.encode([apple, google, facebook]).data(using: .utf8)!
 
-        guard let jsonObjectList = try JSONSerialization.jsonObject(with: encodedGraph, options: []) as? NSArray else {
+        guard let jsonObjectList = try JSONSerialization.jsonObject(with: encodedGraph, options: []) as? [Any] else {
             XCTFail("Encoded didn't encode a valid JSON array literal for the object graph.")
             return
         }
@@ -194,7 +194,7 @@ class KeyedEncodingTests: XCTestCase {
             ],
         ]
 
-        XCTAssertTrue(jsonObjectList.isEqual(to: expectedList))
+        XCTAssertDeepEqual(jsonObjectList, expectedList)
 
     }
 
