@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
   s.name         = "JavaScriptKit"
-  s.version      = "0.0.1"
+  s.version      = "1.0.0"
   s.summary      = "JavaScriptCore replacement for WKWebView"
 
   s.description  =
@@ -22,4 +22,6 @@ DESC
 
   s.frameworks = "Foundation", "WebKit"
   s.dependency "Result", "~> 3.1"
+
+  s.documentation_url = "https://alexaubry.github.io/JavaScriptKit"
 end
