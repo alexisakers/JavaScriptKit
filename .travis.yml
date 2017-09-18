@@ -6,10 +6,6 @@ env:
     - PROJECT="JavaScriptKit.xcodeproj"
   matrix:
     - SCHEME="JavaScriptKit-macOS" DESTINATION="platform=OS X,arch=x86_64" PLATFORM="macOS"
-    - SCHEME="JavaScriptKit-iOS" DESTINATION="platform=iOS Simulator,name=iPhone 6,OS=8.1" PLATFORM="iOS"
-    - SCHEME="JavaScriptKit-iOS" DESTINATION="platform=iOS Simulator,name=iPhone 6,OS=8.2" PLATFORM="iOS"
-    - SCHEME="JavaScriptKit-iOS" DESTINATION="platform=iOS Simulator,name=iPhone 6,OS=8.3" PLATFORM="iOS"
-    - SCHEME="JavaScriptKit-iOS" DESTINATION="platform=iOS Simulator,name=iPhone 6,OS=8.4" PLATFORM="iOS"
     - SCHEME="JavaScriptKit-iOS" DESTINATION="platform=iOS Simulator,name=iPhone 6,OS=9.0" PLATFORM="iOS"
     - SCHEME="JavaScriptKit-iOS" DESTINATION="platform=iOS Simulator,name=iPhone 6,OS=9.1" PLATFORM="iOS"
     - SCHEME="JavaScriptKit-iOS" DESTINATION="platform=iOS Simulator,name=iPhone 6,OS=9.2" PLATFORM="iOS"
@@ -30,6 +26,6 @@ before_script:
   - carthage bootstrap --platform $PLATFORM
 
 script:
-  - xcodebuild test -project "$PROJECT" -scheme "$SCHEME" -destination "$DESTINATION" | xcpretty && exit ${PIPESTATUS[0]}
+  - set -o pipefail && xcodebuild test -project "$PROJECT" -scheme "$SCHEME" -destination "$DESTINATION" | xcpretty
   - carthage build --platform $PLATFORM --no-skip-current
   - pod lib lint --verbose
