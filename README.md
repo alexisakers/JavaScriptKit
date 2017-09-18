@@ -30,7 +30,7 @@ To use Carthage, add the following to your Cartfile:
 ```ogdl
 github "alexaubry/JavaScriptKit" ~> 1.0
 ```
-## Version
+## Versions
 
 | | 1.0.x |
 |---|---|
@@ -44,4 +44,4 @@ Alexis Aubry, me@alexaubry.fr <[@_alexaubry](https://twitter.com/_alexaubry)>
 
 ## License
 
-JavaScriptKit is available under the MIT license. See the LICENSE file for more info.
+JavaScriptKit is available under the MIT license. See the [LICENSE](LICENSE) file for more info.
