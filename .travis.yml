@@ -13,7 +13,7 @@ env:
     - SCHEME="JavaScriptKit-iOS" DESTINATION="platform=iOS Simulator,name=iPhone 6,OS=10.0" PLATFORM="iOS"
     - SCHEME="JavaScriptKit-iOS" DESTINATION="platform=iOS Simulator,name=iPhone 6,OS=10.1" PLATFORM="iOS"
     - SCHEME="JavaScriptKit-iOS" DESTINATION="platform=iOS Simulator,name=iPhone 6,OS=10.2" PLATFORM="iOS"
-    - SCHEME="JavaScriptKit-iOS" DESTINATION="platform=iOS Simulator,name=iPhone 6,OS=10.3" PLATFORM="iOS"
+    - SCHEME="JavaScriptKit-iOS" DESTINATION="platform=iOS Simulator,name=iPhone 6,OS=10.3.1" PLATFORM="iOS"
     - SCHEME="JavaScriptKit-iOS" DESTINATION="platform=iOS Simulator,name=iPhone 6,OS=11.0" PLATFORM="iOS"
 
 before_install:
