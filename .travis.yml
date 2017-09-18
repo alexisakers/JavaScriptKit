@@ -1,0 +1,32 @@
+osx_image: xcode9
+language: objective-c
+
+env:
+  global:
+    - PROJECT="JavaScriptKit.xcodeproj"
+  matrix:
+    - SCHEME="JavaScriptKit-macOS" DESTINATION="platform=OS X,arch=x86_64" PLATFORM="macOS"
+    - SCHEME="JavaScriptKit-iOS" DESTINATION="platform=iOS Simulator,name=iPhone 6,OS=8.1" PLATFORM="iOS"
+    - SCHEME="JavaScriptKit-iOS" DESTINATION="platform=iOS Simulator,name=iPhone 6,OS=8.2" PLATFORM="iOS"
+    - SCHEME="JavaScriptKit-iOS" DESTINATION="platform=iOS Simulator,name=iPhone 6,OS=8.3" PLATFORM="iOS"
+    - SCHEME="JavaScriptKit-iOS" DESTINATION="platform=iOS Simulator,name=iPhone 6,OS=8.4" PLATFORM="iOS"
+    - SCHEME="JavaScriptKit-iOS" DESTINATION="platform=iOS Simulator,name=iPhone 6,OS=9.0" PLATFORM="iOS"
+    - SCHEME="JavaScriptKit-iOS" DESTINATION="platform=iOS Simulator,name=iPhone 6,OS=9.1" PLATFORM="iOS"
+    - SCHEME="JavaScriptKit-iOS" DESTINATION="platform=iOS Simulator,name=iPhone 6,OS=9.2" PLATFORM="iOS"
+    - SCHEME="JavaScriptKit-iOS" DESTINATION="platform=iOS Simulator,name=iPhone 6,OS=9.3" PLATFORM="iOS"
+    - SCHEME="JavaScriptKit-iOS" DESTINATION="platform=iOS Simulator,name=iPhone 6,OS=10.0" PLATFORM="iOS"
+    - SCHEME="JavaScriptKit-iOS" DESTINATION="platform=iOS Simulator,name=iPhone 6,OS=10.1" PLATFORM="iOS"
+    - SCHEME="JavaScriptKit-iOS" DESTINATION="platform=iOS Simulator,name=iPhone 6,OS=10.2" PLATFORM="iOS"
+    - SCHEME="JavaScriptKit-iOS" DESTINATION="platform=iOS Simulator,name=iPhone 6,OS=10.3" PLATFORM="iOS"
+    - SCHEME="JavaScriptKit-iOS" DESTINATION="platform=iOS Simulator,name=iPhone 6,OS=11.0" PLATFORM="iOS"
+
+before_install:
+  - brew update
+  - brew outdated carthage || brew upgrade carthage
+  - gem install xcpretty
+
+script:
+  - open -b com.apple.iphonesimulator
+  - xcodebuild test -project="$PROJECT" -scheme "$SCHEME" -destination "$DESTINATION" | xcpretty && exit ${PIPESTATUS[0]} 
+  - carthage build --platform $PLATFORM --no-skip-current
+  - pod lib lint --verbose
