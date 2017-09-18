@@ -63,6 +63,7 @@ public final class JSFunction<T>: JSExpression where T: Decodable {
         self.arguments = arguments
     }
 
+    /// Creates the JavaScript text of the expression.
     public func makeExpressionString() throws -> String {
 
         let encoder = JavaScriptEncoder()

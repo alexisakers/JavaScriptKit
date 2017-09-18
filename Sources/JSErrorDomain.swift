@@ -30,8 +30,10 @@ public enum JSErrorDomain {
 
 extension JSErrorDomain: LocalizedError {
 
+    /// The identifier of the error domain.
     public static var identifier = "fr.alexaubry.JavaScriptKit.JSErrorDomain"
 
+    /// The code of the error.
     public var code: Int {
 
         switch self {
@@ -47,6 +49,7 @@ extension JSErrorDomain: LocalizedError {
 
     }
 
+    /// The localized description of the error.
     public var localizedDescription: String {
 
         switch self {
@@ -65,6 +68,7 @@ extension JSErrorDomain: LocalizedError {
 
     }
 
+    /// The error that caused this error to be thrown.
     public var underlyingError: NSError? {
 
         switch self {
@@ -89,6 +93,7 @@ extension JSErrorDomain: LocalizedError {
 
     }
 
+    /// The localized description of the error.
     public var errorDescription: String {
         return localizedDescription
     }

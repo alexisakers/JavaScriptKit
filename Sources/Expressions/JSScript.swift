@@ -65,6 +65,7 @@ public final class JSScript<T>: JSExpression where T: Decodable {
         self.javaScriptString = javaScriptString
     }
 
+    /// Creates the JavaScript text of the expression.
     public func makeExpressionString() -> String {
         return javaScriptString
     }

@@ -55,6 +55,7 @@ public final class JSVariable<T>: JSExpression where T: Decodable {
         self.keyPath = keyPath
     }
 
+    /// Creates the JavaScript text of the expression.
     public func makeExpressionString() -> String {
         return "this.\(keyPath);"
     }

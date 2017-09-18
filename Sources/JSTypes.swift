@@ -11,5 +11,8 @@ import CoreGraphics
 ///
 
 public struct JSVoid: Equatable, Decodable {
+
+    /// Compares two Void values. Always evaluates to `true`.
     public static func == (lhs: JSVoid, rhs: JSVoid) -> Bool { return true }
+
 }
