@@ -27,6 +27,6 @@ before_install:
 
 script:
   - open -b com.apple.iphonesimulator
-  - xcodebuild test -project="$PROJECT" -scheme "$SCHEME" -destination "$DESTINATION" | xcpretty && exit ${PIPESTATUS[0]} 
+  - xcodebuild test -project "$PROJECT" -scheme "$SCHEME" -destination "$DESTINATION" | xcpretty && exit ${PIPESTATUS[0]}
   - carthage build --platform $PLATFORM --no-skip-current
   - pod lib lint --verbose
