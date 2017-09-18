@@ -1,6 +1,6 @@
 # JavaScriptKit
 
-[![CI Status](https://img.shields.io/travis/alexaubry/JavaScriptKit.svg?style=flat)](https://travis-ci.org/alexaubry/JavaScriptKit)
+[![CI Status](https://travis-ci.org/alexaubry/JavaScriptKit.svg?branch=master)](https://travis-ci.org/alexaubry/JavaScriptKit)
 [![Version](https://img.shields.io/cocoapods/v/JavaScriptKit.svg?style=flat)](http://cocoapods.org/pods/JavaScriptKit)
 [![License](https://img.shields.io/cocoapods/l/JavaScriptKit.svg?style=flat)](http://cocoapods.org/pods/JavaScriptKit)
 [![Platform](https://img.shields.io/cocoapods/p/JavaScriptKit.svg?style=flat)](http://cocoapods.org/pods/JavaScriptKit)
