@@ -185,13 +185,13 @@ script.evaluate(in: webView) { result in
 
 ## Contributing
 
-Contributions are welcome and appreciated! Here's how you should sumbit code contributions:
+Contributions are welcome and appreciated! Here's how you should submit contributions:
 
 - Fork and clone the repository
 - Create a new branch for your fixes (ex: `git checkout -b [your branch name]`)
 - Get the development dependencies by running `carthage bootstrap`
-- Code your changes and commit them to your branch
-- Submit a PR to the `main` branch
+- Add your changes and commit them to your branch
+- Submit a PR to the `master` branch
 
 If you find a bug or think a feature is missing, please [submit an issue](https://github.com/alexaubry/JavaScriptKit/issues).
 
