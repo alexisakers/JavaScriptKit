@@ -7,13 +7,6 @@ env:
   matrix:
     - SCHEME="JavaScriptKit-macOS" DESTINATION="platform=OS X,arch=x86_64" PLATFORM="macOS"
     - SCHEME="JavaScriptKit-iOS" DESTINATION="platform=iOS Simulator,name=iPhone 6,OS=9.0" PLATFORM="iOS"
-    - SCHEME="JavaScriptKit-iOS" DESTINATION="platform=iOS Simulator,name=iPhone 6,OS=9.1" PLATFORM="iOS"
-    - SCHEME="JavaScriptKit-iOS" DESTINATION="platform=iOS Simulator,name=iPhone 6,OS=9.2" PLATFORM="iOS"
-    - SCHEME="JavaScriptKit-iOS" DESTINATION="platform=iOS Simulator,name=iPhone 6,OS=9.3" PLATFORM="iOS"
-    - SCHEME="JavaScriptKit-iOS" DESTINATION="platform=iOS Simulator,name=iPhone 6,OS=10.0" PLATFORM="iOS"
-    - SCHEME="JavaScriptKit-iOS" DESTINATION="platform=iOS Simulator,name=iPhone 6,OS=10.1" PLATFORM="iOS"
-    - SCHEME="JavaScriptKit-iOS" DESTINATION="platform=iOS Simulator,name=iPhone 6,OS=10.2" PLATFORM="iOS"
-    - SCHEME="JavaScriptKit-iOS" DESTINATION="platform=iOS Simulator,name=iPhone 6,OS=10.3.1" PLATFORM="iOS"
     - SCHEME="JavaScriptKit-iOS" DESTINATION="platform=iOS Simulator,name=iPhone 6,OS=11.0" PLATFORM="iOS"
 
 before_install:
@@ -28,4 +21,4 @@ before_script:
 script:
   - set -o pipefail && xcodebuild test -project "$PROJECT" -scheme "$SCHEME" -destination "$DESTINATION" | xcpretty
   - carthage build --platform $PLATFORM --no-skip-current
-  - pod lib lint --verbose
+  - pod lib lint
