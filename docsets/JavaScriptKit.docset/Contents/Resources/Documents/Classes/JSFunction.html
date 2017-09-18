@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>JSFunction Class Reference</title>
+    <link rel="stylesheet" type="text/css" href="../css/jazzy.css" />
+    <link rel="stylesheet" type="text/css" href="../css/highlight.css" />
+    <meta charset='utf-8'>
+    <script src="../js/jquery.min.js" defer></script>
+    <script src="../js/jazzy.js" defer></script>
+    
+  </head>
+  <body>
+    <a name="//apple_ref/swift/Class/JSFunction" class="dashAnchor"></a>
+    <a title="JSFunction Class Reference"></a>
+    <header>
+      <div class="content-wrapper">
+        <p><a href="../index.html">JavaScriptKit Docs</a> (100% documented)</p>
+        <p class="header-right"><a href="https://github.com/alexaubry/JavaScriptKit"><img src="../img/gh.png"/>View on GitHub</a></p>
+        <p class="header-right"><a href="dash-feed://https%3A%2F%2Falexaubry%2Egithub%2Eio%2Fdocsets%2FJavaScriptKit%2Exml"><img src="../img/dash.png"/>Install in Dash</a></p>
+      </div>
+    </header>
+    <div class="content-wrapper">
+      <p id="breadcrumbs">
+        <a href="../index.html">JavaScriptKit Reference</a>
+        <img id="carat" src="../img/carat.png" />
+        JSFunction Class Reference
+      </p>
+    </div>
+    <div class="content-wrapper">
+      <nav class="sidebar">
+        <ul class="nav-groups">
+          <li class="nav-group-name">
+            <a href="../Classes.html">Classes</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a href="../Classes/JSFunction.html">JSFunction</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/JSScript.html">JSScript</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/JSVariable.html">JSVariable</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-group-name">
+            <a href="../Enums.html">Enums</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a href="../Enums/JSDecodingStrategy.html">JSDecodingStrategy</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Enums/JSErrorDomain.html">JSErrorDomain</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-group-name">
+            <a href="../Protocols.html">Protocols</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a href="../Protocols/JSExpression.html">JSExpression</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-group-name">
+            <a href="../Structs.html">Structs</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a href="../Structs/JSVoid.html">JSVoid</a>
+              </li>
+            </ul>
+          </li>
+        </ul>
+      </nav>
+      <article class="main-content">
+        <section>
+          <section class="section">
+            <h1>JSFunction</h1>
+              <div class="declaration">
+                <div class="language">
+                  <pre class="highlight"><code><span class="kd">public</span> <span class="kd">final</span> <span class="kd">class</span> <span class="kt">JSFunction</span><span class="o">&lt;</span><span class="kt">T</span><span class="o">&gt;</span><span class="p">:</span> <span class="kt"><a href="../Protocols/JSExpression.html">JSExpression</a></span> <span class="k">where</span> <span class="kt">T</span><span class="p">:</span> <span class="kt">Decodable</span></code></pre>
+
+                </div>
+              </div>
+            <p>A JavaScript expression that executes a function in the current JavaScript <code>this</code>. The
+function variable is referenced by a key path relative to the current <code>this</code>.</p>
+
+<p>For instance, to present an alert:</p>
+<pre class="highlight swift"><code><span class="k">let</span> <span class="nv">alert</span> <span class="o">=</span> <span class="kt">JSFunction</span><span class="o">&lt;</span><span class="kt">JSVoid</span><span class="o">&gt;</span><span class="p">(</span><span class="s">"window.alert"</span><span class="p">,</span> <span class="nv">arguments</span><span class="p">:</span> <span class="s">"Hello from Swift!"</span><span class="p">)</span>
+<span class="c1">// equivalent to the JS script: `this.window.alert("Hello from Swift!");`</span>
+</code></pre>
+
+<p>Instances of this class are specialized with the <code>T</code> generic parameter. It must be set to the
+return type of the JavaScript function to execute. Check the documentation of the JavaScript
+function to know what to set the parameter to.</p>
+
+<p><code>T</code> must be a <code>Decodable</code> type. This includes:</p>
+
+<ul>
+<li><code><a href="../Structs/JSVoid.html">JSVoid</a></code> for functions that do not return a value</li>
+<li>Primitive values (Strings, Numbers, Booleans, &hellip;)</li>
+<li>Decodable enumerations</li>
+<li>Objects decodable from JSON</li>
+<li>Arrays of primitive values</li>
+<li>Arrays of enumeration cases</li>
+<li>Arrays of objects</li>
+<li>Native dictionaries</li>
+</ul>
+
+          </section>
+          <section class="section task-group-section">
+            <div class="task-group">
+              <ul>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:13JavaScriptKit10JSFunctionC7keyPathSSv"></a>
+                    <a name="//apple_ref/swift/Property/keyPath" class="dashAnchor"></a>
+                    <a class="token" href="#/s:13JavaScriptKit10JSFunctionC7keyPathSSv">keyPath</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>The key path to the function to execute, relative the current <code>this</code> object tree.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="k">let</span> <span class="nv">keyPath</span><span class="p">:</span> <span class="kt">String</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div class="slightly-smaller">
+                        <a href="https://github.com/alexaubry/JavaScriptKit/tree/master/Sources/Expressions/JSFunction.swift#L40">Show on GitHub</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:13JavaScriptKit10JSFunctionC9argumentsSays9Encodable_pGv"></a>
+                    <a name="//apple_ref/swift/Property/arguments" class="dashAnchor"></a>
+                    <a class="token" href="#/s:13JavaScriptKit10JSFunctionC9argumentsSays9Encodable_pGv">arguments</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>The arguments to pass to the function.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="k">let</span> <span class="nv">arguments</span><span class="p">:</span> <span class="p">[</span><span class="kt">Encodable</span><span class="p">]</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div class="slightly-smaller">
+                        <a href="https://github.com/alexaubry/JavaScriptKit/tree/master/Sources/Expressions/JSFunction.swift#L43">Show on GitHub</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:13JavaScriptKit10JSFunctionCACyxGSS_Says9Encodable_pG9argumentsdtcfc"></a>
+                    <a name="//apple_ref/swift/Method/init(_:arguments:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:13JavaScriptKit10JSFunctionCACyxGSS_Says9Encodable_pG9argumentsdtcfc">init(_:arguments:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Creates a new method description.</p>
+
+<p>For instance, to present an alert:</p>
+<pre class="highlight swift"><code><span class="k">let</span> <span class="nv">alert</span> <span class="o">=</span> <span class="kt">JSFunction</span><span class="o">&lt;</span><span class="kt">JSVoid</span><span class="o">&gt;</span><span class="p">(</span><span class="s">"window.alert"</span><span class="p">,</span> <span class="nv">arguments</span><span class="p">:</span> <span class="s">"Hello from Swift!"</span><span class="p">)</span>
+<span class="c1">// equivalent to the JS script: `this.window.alert("Hello from Swift!");`</span>
+</code></pre>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="nf">init</span><span class="p">(</span><span class="n">_</span> <span class="nv">keyPath</span><span class="p">:</span> <span class="kt">String</span><span class="p">,</span> <span class="nv">arguments</span><span class="p">:</span> <span class="kt">Encodable</span><span class="o">...</span><span class="p">)</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div>
+                        <h4>Parameters</h4>
+                        <table class="graybox">
+                          <tbody>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>keyPath</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>A dot-separated key path to the function to execute, relative the
+current <code>this</code> object tree.</p>
+                                </div>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>arguments</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>The arguments to pass to the function. You can omit this paramter if
+the JavaScript function you are calling takes no arguments.</p>
+                                </div>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                      <div class="slightly-smaller">
+                        <a href="https://github.com/alexaubry/JavaScriptKit/tree/master/Sources/Expressions/JSFunction.swift#L61-L64">Show on GitHub</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:13JavaScriptKit10JSFunctionC20makeExpressionStringSSyKF"></a>
+                    <a name="//apple_ref/swift/Method/makeExpressionString()" class="dashAnchor"></a>
+                    <a class="token" href="#/s:13JavaScriptKit10JSFunctionC20makeExpressionStringSSyKF">makeExpressionString()</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Creates the JavaScript text of the expression.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">makeExpressionString</span><span class="p">()</span> <span class="k">throws</span> <span class="o">-&gt;</span> <span class="kt">String</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div class="slightly-smaller">
+                        <a href="https://github.com/alexaubry/JavaScriptKit/tree/master/Sources/Expressions/JSFunction.swift#L67-L80">Show on GitHub</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+              </ul>
+            </div>
+          </section>
+        </section>
+        <section id="footer">
+          <p>Copyright © 2017 Alexis Aubry. Available under the MIT License.</p>
+          <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external">jazzy ♪♫ v0.8.3</a>, a <a class="link" href="http://realm.io" target="_blank" rel="external">Realm</a> project.</p>
+        </section>
+      </article>
+    </div>
+  </body>
+</div>
+</html>

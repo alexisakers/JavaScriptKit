@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Protocols  Reference</title>
+    <link rel="stylesheet" type="text/css" href="css/jazzy.css" />
+    <link rel="stylesheet" type="text/css" href="css/highlight.css" />
+    <meta charset='utf-8'>
+    <script src="js/jquery.min.js" defer></script>
+    <script src="js/jazzy.js" defer></script>
+    
+  </head>
+  <body>
+    <a title="Protocols  Reference"></a>
+    <header>
+      <div class="content-wrapper">
+        <p><a href="index.html">JavaScriptKit Docs</a> (100% documented)</p>
+        <p class="header-right"><a href="https://github.com/alexaubry/JavaScriptKit"><img src="img/gh.png"/>View on GitHub</a></p>
+        <p class="header-right"><a href="dash-feed://https%3A%2F%2Falexaubry%2Egithub%2Eio%2Fdocsets%2FJavaScriptKit%2Exml"><img src="img/dash.png"/>Install in Dash</a></p>
+      </div>
+    </header>
+    <div class="content-wrapper">
+      <p id="breadcrumbs">
+        <a href="index.html">JavaScriptKit Reference</a>
+        <img id="carat" src="img/carat.png" />
+        Protocols  Reference
+      </p>
+    </div>
+    <div class="content-wrapper">
+      <nav class="sidebar">
+        <ul class="nav-groups">
+          <li class="nav-group-name">
+            <a href="Classes.html">Classes</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a href="Classes/JSFunction.html">JSFunction</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Classes/JSScript.html">JSScript</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Classes/JSVariable.html">JSVariable</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-group-name">
+            <a href="Enums.html">Enums</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a href="Enums/JSDecodingStrategy.html">JSDecodingStrategy</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Enums/JSErrorDomain.html">JSErrorDomain</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-group-name">
+            <a href="Protocols.html">Protocols</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a href="Protocols/JSExpression.html">JSExpression</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-group-name">
+            <a href="Structs.html">Structs</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a href="Structs/JSVoid.html">JSVoid</a>
+              </li>
+            </ul>
+          </li>
+        </ul>
+      </nav>
+      <article class="main-content">
+        <section>
+          <section class="section">
+            <h1>Protocols</h1>
+            <p>The following protocols are available globally.</p>
+
+          </section>
+          <section class="section task-group-section">
+            <div class="task-group">
+              <ul>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:13JavaScriptKit12JSExpressionP"></a>
+                    <a name="//apple_ref/swift/Protocol/JSExpression" class="dashAnchor"></a>
+                    <a class="token" href="#/s:13JavaScriptKit12JSExpressionP">JSExpression</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>A JavaScript expression that can be evaluated inside of a web view (<code>WKWebView</code>).</p>
+
+<p>The library provides ready-to-use expression implementations:</p>
+
+<ul>
+<li><code><a href="Classes/JSVariable.html">JSVariable</a></code> to access a variable</li>
+<li><code><a href="Classes/JSFunction.html">JSFunction</a></code> to call a function</li>
+<li><code><a href="Classes/JSScript.html">JSScript</a></code> to run a custom script</li>
+</ul>
+
+<p>You don&rsquo;t need to implement this protocol yourself.</p>
+
+<p>Expressions are specialized with the <code>ReturnType</code> associated type. Expressions can return any
+<code>Decodable</code> type. This includes:</p>
+
+<ul>
+<li><code><a href="Structs/JSVoid.html">JSVoid</a></code> for expressions that do not return a value</li>
+<li>Primitive values (Strings, Numbers, Booleans, &hellip;)</li>
+<li>Decodable enumerations</li>
+<li>Objects decodable from JSON</li>
+<li>Arrays of primitive values</li>
+<li>Arrays of enumeration cases</li>
+<li>Arrays of objects</li>
+<li>Native dictionaries</li>
+</ul>
+
+                        <a href="Protocols/JSExpression.html" class="slightly-smaller">See more</a>
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">protocol</span> <span class="kt">JSExpression</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div class="slightly-smaller">
+                        <a href="https://github.com/alexaubry/JavaScriptKit/tree/master/Sources/JSExpression.swift#L33-L41">Show on GitHub</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+              </ul>
+            </div>
+          </section>
+        </section>
+        <section id="footer">
+          <p>Copyright © 2017 Alexis Aubry. Available under the MIT License.</p>
+          <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external">jazzy ♪♫ v0.8.3</a>, a <a class="link" href="http://realm.io" target="_blank" rel="external">Realm</a> project.</p>
+        </section>
+      </article>
+    </div>
+  </body>
+</div>
+</html>

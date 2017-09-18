@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>JavaScriptKit  Reference</title>
+    <link rel="stylesheet" type="text/css" href="css/jazzy.css" />
+    <link rel="stylesheet" type="text/css" href="css/highlight.css" />
+    <meta charset='utf-8'>
+    <script src="js/jquery.min.js" defer></script>
+    <script src="js/jazzy.js" defer></script>
+    
+  </head>
+  <body>
+    <a title="JavaScriptKit  Reference"></a>
+    <header>
+      <div class="content-wrapper">
+        <p><a href="index.html">JavaScriptKit Docs</a> (100% documented)</p>
+        <p class="header-right"><a href="https://github.com/alexaubry/JavaScriptKit"><img src="img/gh.png"/>View on GitHub</a></p>
+        <p class="header-right"><a href="dash-feed://https%3A%2F%2Falexaubry%2Egithub%2Eio%2Fdocsets%2FJavaScriptKit%2Exml"><img src="img/dash.png"/>Install in Dash</a></p>
+      </div>
+    </header>
+    <div class="content-wrapper">
+      <p id="breadcrumbs">
+        <a href="index.html">JavaScriptKit Reference</a>
+        <img id="carat" src="img/carat.png" />
+        JavaScriptKit  Reference
+      </p>
+    </div>
+    <div class="content-wrapper">
+      <nav class="sidebar">
+        <ul class="nav-groups">
+          <li class="nav-group-name">
+            <a href="Classes.html">Classes</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a href="Classes/JSFunction.html">JSFunction</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Classes/JSScript.html">JSScript</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Classes/JSVariable.html">JSVariable</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-group-name">
+            <a href="Enums.html">Enums</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a href="Enums/JSDecodingStrategy.html">JSDecodingStrategy</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Enums/JSErrorDomain.html">JSErrorDomain</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-group-name">
+            <a href="Protocols.html">Protocols</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a href="Protocols/JSExpression.html">JSExpression</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-group-name">
+            <a href="Structs.html">Structs</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a href="Structs/JSVoid.html">JSVoid</a>
+              </li>
+            </ul>
+          </li>
+        </ul>
+      </nav>
+      <article class="main-content">
+        <section>
+          <section class="section">
+            
+            <h1 id='javascriptkit' class='heading'>JavaScriptKit</h1>
+
+<p><a href="https://travis-ci.org/alexaubry/JavaScriptKit"><img src="https://travis-ci.org/alexaubry/JavaScriptKit.svg?branch=master" alt="CI Status"></a>
+<a href="http://cocoapods.org/pods/JavaScriptKit"><img src="https://img.shields.io/cocoapods/v/JavaScriptKit.svg?style=flat" alt="Version"></a>
+<a href="http://cocoapods.org/pods/JavaScriptKit"><img src="https://img.shields.io/cocoapods/l/JavaScriptKit.svg?style=flat" alt="License"></a>
+<a href="http://cocoapods.org/pods/JavaScriptKit"><img src="https://img.shields.io/cocoapods/p/JavaScriptKit.svg?style=flat" alt="Platform"></a></p>
+
+<p>JavaScriptKit is a powerful replacement for JavaScriptCore to use with your WebKit web views. Supports iOS and macOS.</p>
+<h2 id='features' class='heading'>Features</h2>
+
+<ul>
+<li>Generate and evaluate type-safe JavaScript expressions in WKWebView</li>
+<li>Automatically encode and decode values, JSON objects and enumerations to and from JavaScript</li>
+<li>Easy error handling</li>
+<li><a href="https://alexaubry.github.io/JavaScriptKit">Documented</a></li>
+</ul>
+<h2 id='installation' class='heading'>Installation</h2>
+<h3 id='cocoapods' class='heading'>CocoaPods</h3>
+
+<p>To use CocoaPods, add the following to your Podfile:</p>
+<pre class="highlight ruby"><code><span class="n">pod</span> <span class="s1">'JavaScriptKit'</span><span class="p">,</span> <span class="s1">'~&gt; 1.0'</span>
+</code></pre>
+<h3 id='carthage' class='heading'>Carthage</h3>
+
+<p>To use Carthage, add the following to your Cartfile:</p>
+<pre class="highlight plaintext"><code>github "alexaubry/JavaScriptKit" ~&gt; 1.0
+</code></pre>
+<h2 id='versions' class='heading'>Versions</h2>
+
+<table><thead>
+<tr>
+<th></th>
+<th>1.0.x</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>Minimum iOS Version</td>
+<td>8.0</td>
+</tr>
+<tr>
+<td>Minimum macOS Version</td>
+<td>10.10</td>
+</tr>
+<tr>
+<td>Supported Swift Version(s)</td>
+<td>4.0.x</td>
+</tr>
+</tbody></table>
+<h2 id='how-it-works' class='heading'>How it works</h2>
+
+<p>The library is structured around the <code>JSExpression</code> protocol. Expressions can be represented as a JavaScript expression string, and have their return type defined at compile-time for better type safety.</p>
+
+<p>You can evaluate expressions inside of a <code>WKWebView</code>. You provide a callback block that will be called with a <code>Result</code> object, containing either the value returned on success, or the error thrown by the web view on failure. Callback blocks are always executed on the main thread.</p>
+
+<p>When the web view returns the result, <code>JavaScriptKit</code> uses a custom <a href="https://developer.apple.com/documentation/swift/decoder"><code>Decoder</code></a> to decode it into the return type you specified. This allows you to set the return type to any <a href="https://developer.apple.com/documentation/swift/decodable"><code>Decodable</code></a> type (structures, classes, primitive types, enumeration, array, dictionary, &hellip;).</p>
+<h2 id='usage' class='heading'>Usage</h2>
+<h3 id='get-the-value-of-a-variable' class='heading'>Get the value of a variable</h3>
+
+<p>Use the <code>JSVariable</code> expression type to get the value of a variable at the specified key path.</p>
+<h4 id='example-1-1' class='heading'>Example 1.1</h4>
+
+<blockquote>
+<p>Get the title of the current document</p>
+</blockquote>
+<pre class="highlight swift"><code><span class="k">let</span> <span class="nv">titleVariable</span> <span class="o">=</span> <span class="kt">JSVariable</span><span class="o">&lt;</span><span class="kt">String</span><span class="o">&gt;</span><span class="p">(</span><span class="s">"document.title"</span><span class="p">)</span>
+
+<span class="n">titleVariable</span><span class="o">.</span><span class="nf">evaluate</span><span class="p">(</span><span class="nv">in</span><span class="p">:</span> <span class="n">webView</span><span class="p">)</span> <span class="p">{</span> <span class="n">result</span> <span class="k">in</span>
+
+    <span class="k">switch</span> <span class="n">result</span> <span class="p">{</span>
+    <span class="k">case</span> <span class="o">.</span><span class="nf">success</span><span class="p">(</span><span class="k">let</span> <span class="nv">title</span><span class="p">):</span>
+        <span class="c1">// do something with the `title` string</span>
+
+    <span class="k">case</span> <span class="o">.</span><span class="nf">failure</span><span class="p">(</span><span class="k">let</span> <span class="nv">error</span><span class="p">):</span>
+        <span class="c1">// handle error</span>
+    <span class="p">}</span>
+
+<span class="p">}</span>
+</code></pre>
+
+<ul>
+<li>The <code>title</code> value provided on success is a <code>String</code>.</li>
+</ul>
+<h3 id='call-a-function' class='heading'>Call a function</h3>
+
+<p>Use the <code>JSFunction</code> expression type to call a function at the specified key path. You can pass as many arguments as needed. They must conform to the <code>Encodable</code> protocol to be converted to a JavaScript representation.</p>
+
+<p>When the function does not return a value, use the <code>JSVoid</code> return type.</p>
+<h4 id='example-2-1' class='heading'>Example 2.1</h4>
+
+<blockquote>
+<p>URI-Encode a String</p>
+</blockquote>
+<pre class="highlight swift"><code><span class="k">let</span> <span class="nv">encodeURI</span> <span class="o">=</span> <span class="kt">JSFunction</span><span class="o">&lt;</span><span class="kt">String</span><span class="o">&gt;</span><span class="p">(</span><span class="s">"window.encodeURI"</span><span class="p">,</span> <span class="nv">arguments</span><span class="p">:</span> <span class="s">"Hello world"</span><span class="p">)</span>
+
+<span class="n">encodeURI</span><span class="o">.</span><span class="nf">evaluate</span><span class="p">(</span><span class="nv">in</span><span class="p">:</span> <span class="n">webView</span><span class="p">)</span> <span class="p">{</span> <span class="n">result</span> <span class="k">in</span>
+
+    <span class="k">switch</span> <span class="n">result</span> <span class="p">{</span>
+    <span class="k">case</span> <span class="o">.</span><span class="nf">success</span><span class="p">(</span><span class="k">let</span> <span class="nv">encodedURI</span><span class="p">):</span>
+        <span class="c1">// do something with the `encodedURI` string</span>
+
+    <span class="k">case</span> <span class="o">.</span><span class="nf">failure</span><span class="p">(</span><span class="k">let</span> <span class="nv">error</span><span class="p">):</span>
+        <span class="c1">// handle error</span>
+    <span class="p">}</span>
+
+<span class="p">}</span>
+</code></pre>
+
+<ul>
+<li>The <code>alert</code> expression will be converted to: <code>&quot;this.window.encodeURI(&quot;Hello world&quot;);&quot;</code>.</li>
+<li>The <code>encodedURI</code> value provided on success is a <code>String</code>.</li>
+</ul>
+<h4 id='example-2-2' class='heading'>Example 2.2</h4>
+
+<blockquote>
+<p>Show an alert</p>
+</blockquote>
+<pre class="highlight swift"><code><span class="k">let</span> <span class="nv">alert</span> <span class="o">=</span> <span class="kt">JSFunction</span><span class="o">&lt;</span><span class="kt">JSVoid</span><span class="o">&gt;</span><span class="p">(</span><span class="s">"window.alert"</span><span class="p">,</span> <span class="nv">arguments</span><span class="p">:</span> <span class="s">"Hello from Swift!"</span><span class="p">)</span>
+
+<span class="n">alert</span><span class="o">.</span><span class="nf">evaluate</span><span class="p">(</span><span class="nv">in</span><span class="p">:</span> <span class="n">webView</span><span class="p">,</span> <span class="nv">completionHandler</span><span class="p">:</span> <span class="kc">nil</span><span class="p">)</span>
+</code></pre>
+
+<ul>
+<li>The <code>alert</code> expression will be converted to: <code>&quot;this.window.alert(&quot;Hello from Swift!&quot;);&quot;</code>.</li>
+<li>To ignore the result of the expression, pass <code>nil</code> for the <code>completionHandler</code> argument.</li>
+</ul>
+<h4 id='example-2-3' class='heading'>Example 2.3</h4>
+
+<blockquote>
+<p>Reload the window</p>
+</blockquote>
+<pre class="highlight swift"><code><span class="k">let</span> <span class="nv">reload</span> <span class="o">=</span> <span class="kt">JSFunction</span><span class="o">&lt;</span><span class="kt">JSVoid</span><span class="o">&gt;</span><span class="p">(</span><span class="s">"location.reload"</span><span class="p">)</span>
+
+<span class="n">reload</span><span class="o">.</span><span class="nf">evaluate</span><span class="p">(</span><span class="nv">in</span><span class="p">:</span> <span class="n">webView</span><span class="p">,</span> <span class="nv">completionHandler</span><span class="p">:</span> <span class="kc">nil</span><span class="p">)</span>
+</code></pre>
+
+<ul>
+<li>You can omit the <code>arguments</code> parameter if the function takes no arguments.</li>
+</ul>
+<h3 id='run-your-custom-scripts' class='heading'>Run your custom scripts</h3>
+
+<p>Use the <code>JSScript</code> expression type to run your custom scripts. To create custom scripts, you define a <code>String</code> that contains the script to run and define the return value.</p>
+
+<p>The last evaluated statement in your script will be used as the return value. Do not use <code>return</code> at the end of the script, as it would yield an invalid value.</p>
+<h4 id='example-3-1' class='heading'>Example 3.1</h4>
+
+<blockquote>
+<p>Get the time of the day from a time string in the document</p>
+</blockquote>
+<pre class="highlight swift"><code><span class="kd">enum</span> <span class="kt">TimeOfDay</span><span class="p">:</span> <span class="kt">String</span><span class="p">,</span> <span class="kt">Decodable</span> <span class="p">{</span>
+    <span class="k">case</span> <span class="n">night</span><span class="p">,</span> <span class="n">morning</span><span class="p">,</span> <span class="n">afternoon</span><span class="p">,</span> <span class="n">evening</span>
+<span class="p">}</span>
+
+<span class="k">let</span> <span class="nv">scriptBody</span> <span class="o">=</span> <span class="s">"""
+function getTimeOfDay(hour) {
+
+    if (hour &gt;= 0 &amp;&amp; hour &lt; 6) {
+        return "</span><span class="n">night</span><span class="s">";
+    } else if (hour &gt;= 6 &amp;&amp; hour &lt; 12) {
+        return "</span><span class="n">morning</span><span class="s">"
+    } else if (hour &gt;= 12 &amp;&amp; hour &lt; 18) {
+        return "</span><span class="n">afternoon</span><span class="s">"
+    } else if (hour &gt;= 18 &amp;&amp; hour &gt; 0) {
+        return "</span><span class="n">evening</span><span class="s">"
+    }
+
+}
+
+var postPublishDate = document.getElementById("</span><span class="n">publish</span><span class="o">-</span><span class="n">date</span><span class="s">").innerHTML
+var hours = new Date(postPublishDate).getHours();
+
+getTimeOfDay(hours);
+"""</span>
+
+<span class="k">let</span> <span class="nv">script</span> <span class="o">=</span> <span class="kt">JSScript</span><span class="o">&lt;</span><span class="kt">TimeOfDay</span><span class="o">&gt;</span><span class="p">(</span><span class="n">scriptBody</span><span class="p">)</span>
+
+<span class="n">script</span><span class="o">.</span><span class="nf">evaluate</span><span class="p">(</span><span class="nv">in</span><span class="p">:</span> <span class="n">webView</span><span class="p">)</span> <span class="p">{</span> <span class="n">result</span> <span class="k">in</span>
+
+    <span class="k">switch</span> <span class="n">result</span> <span class="p">{</span>
+    <span class="k">case</span> <span class="o">.</span><span class="nf">success</span><span class="p">(</span><span class="k">let</span> <span class="nv">timeOfDay</span><span class="p">):</span>
+        <span class="c1">// do something with the `timeOfDay` object</span>
+
+    <span class="k">case</span> <span class="o">.</span><span class="nf">failure</span><span class="p">(</span><span class="k">let</span> <span class="nv">error</span><span class="p">):</span>
+        <span class="c1">// handle error</span>
+    <span class="p">}</span>
+
+<span class="p">}</span>
+</code></pre>
+
+<ul>
+<li>The <code>timeOfDay</code> value provided on success is a case of <code>TimeOfDay</code>.</li>
+<li><code>TimeOfDay</code> is a supported return type because it implements the <code>Decodable</code> protocol.</li>
+</ul>
+<h2 id='contributing' class='heading'>Contributing</h2>
+
+<p>Contributions are welcome and appreciated! Here&rsquo;s how you should submit contributions:</p>
+
+<ul>
+<li>Fork and clone the repository</li>
+<li>Create a new branch for your fixes (ex: <code>git checkout -b [your branch name]</code>)</li>
+<li>Get the development dependencies by running <code>carthage bootstrap</code></li>
+<li>Add your changes and commit them to your branch</li>
+<li>Submit a PR to the <code>master</code> branch</li>
+</ul>
+
+<p>If you find a bug or think a feature is missing, please <a href="https://github.com/alexaubry/JavaScriptKit/issues">submit an issue</a>.</p>
+<h2 id='authors' class='heading'>Authors</h2>
+
+<p>Alexis Aubry, <a href="mailto:me@alexaubry.fr">me@alexaubry.fr</a> &lt;<a href="https://twitter.com/_alexaubry">@_alexaubry</a>&gt;</p>
+<h2 id='license' class='heading'>License</h2>
+
+<p>JavaScriptKit is available under the MIT license. See the <a href="LICENSE">LICENSE</a> file for more info.</p>
+
+          </section>
+        </section>
+        <section id="footer">
+          <p>Copyright © 2017 Alexis Aubry. Available under the MIT License.</p>
+          <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external">jazzy ♪♫ v0.8.3</a>, a <a class="link" href="http://realm.io" target="_blank" rel="external">Realm</a> project.</p>
+        </section>
+      </article>
+    </div>
+  </body>
+</div>
+</html>
