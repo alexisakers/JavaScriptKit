@@ -25,8 +25,11 @@ before_install:
   - brew outdated carthage || brew upgrade carthage
   - gem install xcpretty
 
-script:
+before_script:
   - open -b com.apple.iphonesimulator
+  - carthage bootstrap --platform $PLATFORM
+
+script:
   - xcodebuild test -project "$PROJECT" -scheme "$SCHEME" -destination "$DESTINATION" | xcpretty && exit ${PIPESTATUS[0]}
   - carthage build --platform $PLATFORM --no-skip-current
   - pod lib lint --verbose
