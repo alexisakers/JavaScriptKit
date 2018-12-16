@@ -20,7 +20,6 @@ final class JavaScriptDecoder {
     ///
 
     func decode<T: Decodable>(_ value: Any) throws -> T {
-
         let container = try JavaScriptDecoder.makeContainer(with: value)
         let decoder = JSStructureDecoder(container: container)
 
@@ -31,7 +30,6 @@ final class JavaScriptDecoder {
         }
 
         return try T(from: decoder)
-
     }
 
     /// Creates a Coding Container from a value.
@@ -430,13 +428,11 @@ private class JSKeyedDecodingContainer<K: CodingKey>: KeyedDecodingContainerProt
     // MARK: Initialization
 
     init(referencing decoder: JSStructureDecoder, storage: DictionaryStorage, codingPath: [CodingKey] = []) {
-
-        allKeys = storage.keys.flatMap { K(stringValue: "\($0.base)") }
+        allKeys = storage.keys.compactMap { K(stringValue: "\($0.base)") }
 
         self.decoder = decoder
         self.storage = storage
         self.codingPath = codingPath
-
     }
 
     // MARK: Decoding

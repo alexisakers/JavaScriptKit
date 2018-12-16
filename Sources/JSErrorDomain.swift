@@ -1,13 +1,13 @@
-/**
- *  JavaScriptKit
- *  Copyright (c) 2017 Alexis Aubry. Licensed under the MIT license.
- */
+//
+//  JavaScriptKit
+//  Copyright (c) 2017 - present Alexis Aubry. Licensed under the MIT license.
+//
 
 import Foundation
 
-///
-/// JavaScript execution errors.
-///
+/**
+ * JavaScript execution errors.
+ */
 
 public enum JSErrorDomain {
 
@@ -35,76 +35,80 @@ extension JSErrorDomain: LocalizedError {
 
     /// The code of the error.
     public var code: Int {
-
         switch self {
-        case .invalidReturnType(_):
+        case .invalidReturnType:
             return 2000
-        case .executionError(_):
+        case .executionError:
             return 2001
         case .unexpectedResult:
             return 2002
-        case .invalidExpression(_):
+        case .invalidExpression:
             return 2003
         }
-
     }
 
     /// The localized description of the error.
     public var localizedDescription: String {
-
         switch self {
-        case .invalidReturnType(_):
+        case .invalidReturnType:
             return LocalizedStrings.invalidReturnType.localizedValue
 
-        case .executionError(_):
+        case .executionError:
             return LocalizedStrings.executionError.localizedValue
 
         case .unexpectedResult:
             return LocalizedStrings.unexpectedResult.localizedValue
 
-        case .invalidExpression(_):
+        case .invalidExpression:
             return LocalizedStrings.invalidExpression.localizedValue
         }
-
     }
 
     /// The error that caused this error to be thrown.
     public var underlyingError: NSError? {
-
         switch self {
         case .executionError(let error), .invalidExpression(let error):
             return error
         default:
             return nil
         }
-
-    }
-
-    /// Creates an NSError describing the receiver.
-    public var nsError: NSError {
-
-        var userInfo = [String: Any]()
-        userInfo[NSLocalizedDescriptionKey] = localizedDescription
-        userInfo[NSUnderlyingErrorKey] = underlyingError
-
-        return NSError(domain: JSErrorDomain.identifier,
-                       code: code,
-                       userInfo: userInfo)
-
     }
 
     /// The localized description of the error.
-    public var errorDescription: String {
+    public var errorDescription: String? {
         return localizedDescription
     }
 
 }
 
+// MARK: - Bridging
+
+extension JSErrorDomain {
+
+    public var _domain: String {
+        return JSErrorDomain.identifier
+    }
+
+    public var _code: Int {
+        return code
+    }
+
+    public var _userInfo: AnyObject? {
+        var userInfo: [String: Any] = [
+            NSLocalizedDescriptionKey: localizedDescription,
+        ]
+
+        userInfo[NSUnderlyingErrorKey] = underlyingError
+        return userInfo as NSDictionary
+    }
+
+}
 
 // MARK: - Localization
 
 extension JSErrorDomain {
 
+    /// A set of localized error strings.
     private enum LocalizedStrings: String {
 
         static var localizationContainer = Bundle(identifier: "fr.alexaubry.JavaScriptKit")!
@@ -115,14 +119,9 @@ extension JSErrorDomain {
         case unexpectedResult = "JSErrorDomain.UnexpectedResult"
         case invalidExpression = "JSErrorDomain.InvalidExpression"
 
+        /// The localized error description.
         var localizedValue: String {
-
-            return NSLocalizedString(rawValue,
-                                     tableName: LocalizedStrings.localizationTableName,
-                                     bundle: LocalizedStrings.localizationContainer,
-                                     value: "",
-                                     comment: "")
-
+            return NSLocalizedString(rawValue, tableName: LocalizedStrings.localizationTableName, bundle: LocalizedStrings.localizationContainer, value: "", comment: "")
         }
 
     }
