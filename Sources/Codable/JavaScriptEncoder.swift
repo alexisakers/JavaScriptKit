@@ -1,45 +1,25 @@
-/**
- *  JavaScriptKit
- *  Copyright (c) 2017 Alexis Aubry. Licensed under the MIT license.
- */
+//
+//  JavaScriptKit
+//  Copyright (c) 2017 - present Alexis Aubry. Licensed under the MIT license.
+//
 
 import Foundation
 
-///
-/// Generates the JavaScript representation of `Encodable` arguments.
-///
+/**
+ * Generates the JavaScript representation of `Encodable` arguments.
+ */
 
-final class JavaScriptEncoder {
+class JavaScriptEncoder {
 
-    ///
-    /// Encodes an argument for use in JavaScript function expressions.
-    ///
-    /// - parameter argument: The argument to encode to JavaScript.
-    /// - returns: The JavaScript literal representing the value.
-    ///
+    /**
+     * Encodes an argument for use in JavaScript function expressions.
+     * - parameter argument: The argument to encode to JavaScript.
+     * - returns: The JavaScript literal representing the value.
+     */
 
-    internal func encode(_ argument: Encodable) throws -> String {
-
+    func encode(_ argument: Encodable) throws -> String {
         let structureEncoder = JSStructureEncoder()
-
-
-        /*** I- Encode the structure of the value ***/
-
-        // Date and URL Encodable implementations are not compatible with JavaScript.
-        if argument is Date {
-            var singleValueStorage = structureEncoder.singleValueContainer()
-            try singleValueStorage.encode(argument as! Date)
-
-        } else if argument is URL {
-            var singleValueStorage = structureEncoder.singleValueContainer()
-            try singleValueStorage.encode(argument as! URL)
-
-        } else {
-            try argument.encode(to: structureEncoder)
-        }
-
-
-        /*** II- Get the encoded value and convert it to a JavaScript literal ***/
+        try argument.encode(to: structureEncoder)
 
         guard let topLevelContainer = structureEncoder.container else {
             throw EncodingError.invalidValue(argument,
@@ -57,14 +37,12 @@ final class JavaScriptEncoder {
         case .keyed(let storage):
             return try encodeJSObject(storage.body)
         }
-
     }
 
     // MARK: Helpers
 
     /// Encodes the content of a single-value container storage as a JavaScript literal.
     private func encodeJSSingleValue(_ storage: SingleValueStorage) -> String {
-
         switch storage {
         case .null:
             return "null"
@@ -72,17 +50,14 @@ final class JavaScriptEncoder {
             return string
         case .boolean(let bool):
             return String(bool)
-
         case .number(let number):
             return number.stringValue
-
         case .date(let date):
             let timestamp = Int(date.timeIntervalSince1970) * 1000
             return "new Date(\(timestamp))"
         case .emptyObject:
             return "{}"
         }
-
     }
 
     /// Encodes the contents of an unkeyed or a keyed container storage as a JSON literal.
@@ -95,21 +70,19 @@ final class JavaScriptEncoder {
 
 // MARK: - Structure Encoder
 
-///
-/// A class that serializes the structure of arguments before JavaScript literal conversion.
-///
+/**
+ * A class that serializes the structure of arguments before JavaScript literal conversion.
+ */
 
 private class JSStructureEncoder: Encoder {
 
     /// The string literal quoting method.
     enum StringLiteralQuoting {
-
         /// The literal will be quoted if encoded inside a single value container (default).
         case automatic
 
         /// The literal will be quoted if the manual value is set to `true`.
         case manual(Bool)
-
     }
 
     // MARK: Properties
@@ -127,7 +100,6 @@ private class JSStructureEncoder: Encoder {
 
     /// The type of the container (for debug printing)
     var containerType: String {
-
         switch container {
         case .singleValue?:
             return "a single value"
@@ -138,7 +110,6 @@ private class JSStructureEncoder: Encoder {
         case nil:
             return "an invalid"
         }
-
     }
 
     /// The string literal quoting strategy.
@@ -151,19 +122,19 @@ private class JSStructureEncoder: Encoder {
 
     /// Indicates whether string literals should be quoted by the encoder.
     var shouldQuoteStringLiteral: Bool {
-
         switch stringLiteralQuoting {
         case .automatic:
             return canQuoteStringLiteral
-
         case .manual(let value):
             return value
         }
-
     }
 
-    /// Indicates whether it is possible to encoded dates as single values. This is only `true` if
-    /// we're in an empty single value container, as `NSDate` is not compatible with JSON serialization.
+    /**
+     * Indicates whether it is possible to encoded dates as single values. This is only `true` if
+     * we're in an empty single value container, as `NSDate` is not compatible with JSON serialization.
+     */
+
     var canEncodeSingleDateValues: Bool {
         return container == nil
     }
@@ -184,16 +155,15 @@ private class JSStructureEncoder: Encoder {
         return !codingPath.isEmpty
     }
 
-    ///
-    /// Asserts that it is possible for the encoded value to request a new container.
-    ///
-    /// The value can only request one container. If the storage contains more containers than the
-    /// encoder has coding keys, it means that the value is trying to request more than one container
-    /// which is invalid.
-    ///
+    /**
+     * Asserts that it is possible for the encoded value to request a new container.
+     *
+     * The value can only request one container. If the storage contains more containers than the
+     * encoder has coding keys, it means that the value is trying to request more than one container
+     * which is invalid.
+     */
 
     func assertCanRequestNewContainer() {
-
         guard self.container == nil else {
             preconditionFailure("Attempt to encode value with a new container when it has already been encoded with \(containerType) container.")
         }
@@ -201,18 +171,16 @@ private class JSStructureEncoder: Encoder {
         guard !containsFailures else {
             preconditionFailure("An error occured while encoding a value at coding path \(codingPath) and cannot be recovered.")
         }
-
     }
 
-    ///
-    /// Performs the given closure with the given key pushed onto the end of the current coding path.
-    ///
-    /// - parameter key: The key to push. May be nil for unkeyed containers.
-    /// - parameter work: The work to perform with the key in the path.
-    ///
-    /// If the `work` fails, `key` will be left in the coding path, which indicates a failure and
-    /// prevents requesting new containers.
-    ///
+    /**
+     * Performs the given closure with the specified key pushed onto the end of the current coding path.
+     * - parameter key: The key to push. May be nil for unkeyed containers.
+     * - parameter work: The work to perform with the key in the path.
+     *
+     * If the `work` fails, `key` will be left in the coding path, which indicates a failure and
+     * prevents requesting new cont ainers.
+     */
 
     fileprivate func with<T>(pushedKey key: CodingKey, _ work: () throws -> T) rethrows -> T {
         self.codingPath.append(key)
@@ -249,24 +217,20 @@ private class JSStructureEncoder: Encoder {
 
 extension JSStructureEncoder: SingleValueEncodingContainer {
 
-    ///
-    /// Asserts that a single value can be encoded into the container (i.e. that no value has
-    /// previously been encoded.
-    ///
+    /**
+     * Asserts that a single value can be encoded into the container (i.e. that no value has
+     * previously been encoded.
+     */
 
     func assertCanEncodeSingleValue() {
-
         switch container {
-        case .singleValue(_)?:
+        case .singleValue?:
             preconditionFailure("Attempt to encode multiple values in a single value container.")
-
-        case .keyed(_)?, .unkeyed(_)?:
+        case .keyed?, .unkeyed?:
             preconditionFailure("Attempt to encode value with a new container when it has already been encoded with \(containerType) container.")
-
         case nil:
             return
         }
-
     }
 
     func encodeNil() throws {
@@ -352,6 +316,10 @@ extension JSStructureEncoder: SingleValueEncodingContainer {
 }
 
 // MARK: - Unkeyed Container
+
+/**
+ * An array encoding container.
+ */
 
 private class JSUnkeyedEncodingContainer: UnkeyedEncodingContainer {
 
@@ -439,9 +407,7 @@ private class JSUnkeyedEncodingContainer: UnkeyedEncodingContainer {
     }
 
     func encode<T: Encodable>(_ value: T) throws  {
-
         try encoder.with(pushedKey: JSONKey.index(count)) {
-
             let newContainer = try self.encoder.parseValue(value)
 
             switch newContainer {
@@ -452,9 +418,7 @@ private class JSUnkeyedEncodingContainer: UnkeyedEncodingContainer {
             case .keyed(let dictionaryStorage):
                 storage.append(dictionaryStorage.body)
             }
-
         }
-
     }
 
     // MARK: Nested Containers
@@ -479,7 +443,6 @@ private class JSUnkeyedEncodingContainer: UnkeyedEncodingContainer {
     }
 
     func nestedUnkeyedContainer() -> UnkeyedEncodingContainer {
-
         let containerIndex = storage.count
         let nestedStorage = ArrayStorage()
 
@@ -487,7 +450,6 @@ private class JSUnkeyedEncodingContainer: UnkeyedEncodingContainer {
         nestedUnkeyedContainers[containerIndex] = nestedStorage
 
         return JSUnkeyedEncodingContainer(referencing: encoder, codingPath: codingPath, wrapping: nestedStorage)
-
     }
 
     func superEncoder() -> Encoder {
@@ -500,7 +462,6 @@ private class JSUnkeyedEncodingContainer: UnkeyedEncodingContainer {
 
     // Insert the contents of the nested containers into the array storage.
     deinit {
-
         for (index, unkeyedContainerStorage) in nestedUnkeyedContainers {
             storage[index] = unkeyedContainerStorage.body
         }
@@ -508,16 +469,15 @@ private class JSUnkeyedEncodingContainer: UnkeyedEncodingContainer {
         for (key, keyedContainerStorage) in nestedKeyedContainers {
             storage[key] = keyedContainerStorage.body
         }
-
     }
 
 }
 
 // MARK: - Keyed Encoding Container
 
-///
-/// A keyed encoding container for objects.
-///
+/**
+ * An keyed encoding container for object.
+ */
 
 private class JSKeyedEncodingContainer<K: CodingKey>: KeyedEncodingContainerProtocol {
     typealias Key = K
@@ -602,9 +562,7 @@ private class JSKeyedEncodingContainer<K: CodingKey>: KeyedEncodingContainerProt
     }
 
     func encode<T: Encodable>(_ value: T, forKey key: K) throws {
-
         try encoder.with(pushedKey: JSONKey.string(key.stringValue)) {
-
             let newContainer = try self.encoder.parseValue(value)
 
             switch newContainer {
@@ -615,9 +573,7 @@ private class JSKeyedEncodingContainer<K: CodingKey>: KeyedEncodingContainerProt
             case .unkeyed(let storage):
                 storage.append(storage.body)
             }
-
         }
-
     }
 
     // MARK: Nested Containers
@@ -652,7 +608,6 @@ private class JSKeyedEncodingContainer<K: CodingKey>: KeyedEncodingContainerProt
 
     // Insert the contents of the nested containers into the dictionary storage.
     deinit {
-
         for (key, unkeyedContainerStorage) in nestedUnkeyedContainers {
             storage[key] = unkeyedContainerStorage.body
         }
@@ -660,7 +615,6 @@ private class JSKeyedEncodingContainer<K: CodingKey>: KeyedEncodingContainerProt
         for (key, keyedContainerStorage) in nestedKeyedContainers {
             storage[key] = keyedContainerStorage.body
         }
-
     }
 
 }
@@ -677,7 +631,6 @@ extension JSStructureEncoder {
 
     /// Returns the correct representation of the Float for JavaScript.
     func parseFloat(_ value: Float) -> SingleValueStorage {
-
         if value == Float.infinity {
             return .string("Number.POSITIVE_INFINITY")
         } else if value == -Float.infinity {
@@ -687,12 +640,10 @@ extension JSStructureEncoder {
         }
 
         return .number(value as NSNumber)
-
     }
 
     /// Returns the correct representation of the Double for JavaScript.
     func parseDouble(_ value: Double) -> SingleValueStorage {
-
         if value == Double.infinity {
             return .string("Number.POSITIVE_INFINITY")
         } else if value == -Double.infinity {
@@ -702,16 +653,11 @@ extension JSStructureEncoder {
         }
 
         return .number(value as NSNumber)
-
     }
 
     /// Encodes the value and returns the container it has been encoded to.
     func parseValue<T: Encodable>(_ value: T) throws -> JSCodingContainer {
-
-        if T.self == Date.self {
-
-            let date = value as! Date
-
+        if let date = value as? Date {
             if canEncodeSingleDateValues {
                 return .singleValue(.date(date))
             }
@@ -719,36 +665,33 @@ extension JSStructureEncoder {
             let timestamp = Int(date.timeIntervalSince1970) * 1000
             return .singleValue(.number(timestamp as NSNumber))
 
-        } else if T.self == URL.self {
-            return .singleValue(parseString((value as! URL).absoluteString))
+        } else if let url = value as? URL {
+            return .singleValue(parseString(url.absoluteString))
         }
 
         let tempEncoder = JSStructureEncoder(stringQuoting: .manual(canQuoteStringLiteral))
         try value.encode(to: tempEncoder)
 
         return tempEncoder.container ?? .singleValue(.emptyObject)
-
     }
 
 }
 
 // MARK: - Reference
 
-///
-/// A structure encoder that references the contents of a sub-encoder.
-///
+/**
+ * A structure encoder that references the contents of a sub-encoder.
+ */
 
 private class JSReferencingEncoder: JSStructureEncoder {
 
     /// The kind of refrence.
     enum Reference {
-
         /// The encoder references an array at the given index.
         case array(ArrayStorage, Int)
 
         /// The encoder references a dictionary at the given key.
         case dictionary(DictionaryStorage, String)
-
     }
 
     // MARK: Properties
@@ -814,7 +757,6 @@ private class JSReferencingEncoder: JSStructureEncoder {
         case .dictionary(let remoteStorage, let key):
             remoteStorage[key] = value
         }
-        
     }
 
 }
