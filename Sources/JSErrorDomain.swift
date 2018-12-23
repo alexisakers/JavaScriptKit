@@ -25,8 +25,7 @@ public enum JSErrorDomain {
 
 }
 
-
-// MARK: - ErrorDomain
+// MARK: - LocalizedError
 
 extension JSErrorDomain: LocalizedError {
 

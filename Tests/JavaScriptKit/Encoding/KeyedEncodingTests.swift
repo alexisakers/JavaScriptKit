@@ -1,16 +1,20 @@
+//
+//  JavaScriptKit
+//  Copyright (c) 2017 - present Alexis Aubry. Licensed under the MIT license.
+//
+
 import XCTest
 import Foundation
 @testable import JavaScriptKit
 
-///
-/// Tests encoding objects inside a keyed container.
-///
+/**
+ * Tests encoding objects inside a keyed container.
+ */
 
 class KeyedEncodingTests: XCTestCase {
 
     /// Tests encoding a JSON object.
     func testEncodeObject() throws {
-
         let encoder = JavaScriptEncoder()
 
         let address = Address(line1: "Apple Inc.",
@@ -35,12 +39,10 @@ class KeyedEncodingTests: XCTestCase {
         ]
 
         XCTAssertTrue(encodedAddressJSON.isEqual(to: expectedJSONObject))
-
     }
 
     /// Tests encoding a JSON object that contains optional fields.
     func testEncodeObjectWithOptionalFields() throws {
-
         let encoder = JavaScriptEncoder()
 
         let address = Address(line1: "1 Infinite Loop",
@@ -64,12 +66,10 @@ class KeyedEncodingTests: XCTestCase {
         ]
 
         XCTAssertTrue(encodedAddressJSON.isEqual(to: expectedJSONObject))
-
     }
 
     /// Tests encoding a JSON object with nested objects.
     func testEncodeNestedObjects() throws {
-
         let campus = Address(line1: "1 Infinite Loop",
                              line2: nil,
                              zipCode: 95014,
@@ -123,12 +123,10 @@ class KeyedEncodingTests: XCTestCase {
         ]
 
         XCTAssertDeepEqual(jsonObjectGraph, expectedGraph)
-
     }
 
     /// Tests encoding an array of JSON objects.
     func testEncodeObjectList() throws {
-
         let appleCampus = Address(line1: "1 Infinite Loop",
                                   line2: nil,
                                   zipCode: 95014,
@@ -195,7 +193,6 @@ class KeyedEncodingTests: XCTestCase {
         ]
 
         XCTAssertDeepEqual(jsonObjectList, expectedList)
-
     }
 
 }

@@ -25,7 +25,7 @@ extension WKWebView {
                 DispatchQueue.main.async(execute: evaluationWorkItem)
             } catch {
                 let nsError = error as NSError
-                self.completeEvaluation(for: expression, completionHandler, .failure(.executionError(nsError)))
+                self.completeEvaluation(for: expression, completionHandler, .failure(.invalidExpression(nsError)))
             }
         }
     }

@@ -1,9 +1,14 @@
+//
+//  JavaScriptKit
+//  Copyright (c) 2017 - present Alexis Aubry. Licensed under the MIT license.
+//
+
 import XCTest
 @testable import JavaScriptKit
 
-///
-/// Tests generating scripts from expressions.
-///
+/**
+ * Tests generating scripts from expressions.
+ */
 
 class ScriptGenerationTests: XCTestCase {
 
@@ -44,7 +49,6 @@ class ScriptGenerationTests: XCTestCase {
 
     /// Tests generating a script for a custom script.
     func testCustomScript() throws {
-
         let javaScriptString = """
         function getRandom() {
             return Math.random();
@@ -55,7 +59,6 @@ class ScriptGenerationTests: XCTestCase {
 
         let script = JSScript<Double>(javaScriptString)
         try assertGeneratedScript(for: script, isEqualTo: javaScriptString)
-
     }
 
     // MARK: Helpers

@@ -1,10 +1,15 @@
+//
+//  JavaScriptKit
+//  Copyright (c) 2017 - present Alexis Aubry. Licensed under the MIT license.
+//
+
 import XCTest
 import Foundation
 @testable import JavaScriptKit
 
-///
-/// Tests Codable-supporting data structures and utilities.
-///
+/**
+ * Tests Codable-supporting data structures and utilities.
+ */
 
 class CodableSupportTests: XCTestCase {
 
@@ -12,14 +17,10 @@ class CodableSupportTests: XCTestCase {
 
     /// Tests creating a single value storage.
     func testCreateSingleValueStorage() throws {
-
         let nullStorage = try SingleValueStorage(storedValue: NSNull())
 
-        switch nullStorage {
-        case .null:
-            break
-        default:
-            XCTFail("Should create a null storage.")
+        guard case .null = nullStorage else {
+            return XCTFail("Should create a null storage.")
         }
 
         let stringStorage = try SingleValueStorage(storedValue: "Hello")
@@ -78,12 +79,10 @@ class CodableSupportTests: XCTestCase {
 
         let invalidStorage = try? SingleValueStorage(storedValue: ReaderFont.sanFrancisco)
         XCTAssertNil(invalidStorage)
-
     }
 
     /// Tests getting the stored value from a single value storage.
     func testGetSingleValueStorageStoredValue() {
-
         let nullStorage = SingleValueStorage.null
         XCTAssertTrue(nullStorage.storedValue is NSNull)
 
@@ -101,12 +100,10 @@ class CodableSupportTests: XCTestCase {
 
         let emptyStorage = SingleValueStorage.emptyObject
         XCTAssertTrue((emptyStorage.storedValue as? [String: Any])?.isEmpty == true)
-
     }
 
     /// Tests getting the stored type from a single value storage.
     func testGetSingleValueStorageStoredType() {
-
         let nullStorage = SingleValueStorage.null
         XCTAssertTrue(nullStorage.storedType == NSNull.self)
 
@@ -124,14 +121,12 @@ class CodableSupportTests: XCTestCase {
 
         let emptyStorage = SingleValueStorage.emptyObject
         XCTAssertTrue(emptyStorage.storedType == Dictionary<String, Any>.self)
-
     }
 
     // MARK: - JSONKey
 
     /// Tests internal JSON keys.
     func testJSONKey() {
-
         let superKey = JSONKey.super
         XCTAssertEqual(superKey.stringValue, "super")
         XCTAssertNil(superKey.intValue)
@@ -151,7 +146,6 @@ class CodableSupportTests: XCTestCase {
         let startIndexKey = JSONKey(intValue: 0)
         XCTAssertEqual(startIndexKey.stringValue, "Index 0")
         XCTAssertTrue(startIndexKey.intValue == 0)
-
     }
 
 }

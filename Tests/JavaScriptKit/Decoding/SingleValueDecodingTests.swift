@@ -1,25 +1,27 @@
+//
+//  JavaScriptKit
+//  Copyright (c) 2017 - present Alexis Aubry. Licensed under the MIT license.
+//
+
 import XCTest
 import Foundation
 @testable import JavaScriptKit
 
-///
-/// Tests decoding single values.
-///
+/**
+ * Tests decoding single values.
+ */
 
 class SingleValueDecodingTests: XCTestCase {
 
     /// Tests decoding a String.
     func testDecodeString() throws {
-
         let string = "Hello, world!"
         let decodedString: String = try JavaScriptDecoder().decode(string)
         XCTAssertEqual(decodedString, string)
-
     }
 
     /// Tests decoding a Boolean.
     func testDecodeBool() throws {
-
         let falseBool = false
         let decodedFalse: Bool = try JavaScriptDecoder().decode(falseBool)
         XCTAssertEqual(decodedFalse, falseBool)
@@ -27,12 +29,10 @@ class SingleValueDecodingTests: XCTestCase {
         let trueBool = true
         let decodedTrue: Bool = try JavaScriptDecoder().decode(trueBool)
         XCTAssertEqual(decodedTrue, trueBool)
-
     }
 
     /// Tests decoding integers.
     func testDecodeIntegers() throws {
-
         let decoder = JavaScriptDecoder()
 
         let int = Int(-500)
@@ -78,12 +78,10 @@ class SingleValueDecodingTests: XCTestCase {
             let decodedUInt64: UInt64 = try decoder.decode(uint64)
             XCTAssertEqual(decodedUInt64, uint64)
         #endif
-
     }
 
     /// Tests decoding a Date.
     func testDecodeDate() throws {
-
         let decoder = JavaScriptDecoder()
 
         let intTimeInterval: Int = 1504602844000
@@ -101,64 +99,54 @@ class SingleValueDecodingTests: XCTestCase {
         let date = Date()
         let decodedDate: Date = try decoder.decode(date)
         XCTAssertEqual(decodedDate, date)
-
     }
 
     /// Tests decoding a URL.
     func testDecodeURL() throws {
-
         let decoder = JavaScriptDecoder()
 
         let urlString = "https://developer.apple.com/reference/JavaScriptCore"
         let decodedURL: URL = try decoder.decode(urlString)
         XCTAssertEqual(decodedURL.absoluteString, urlString)
-
     }
 
     /// Tests decoding a UUID.
     func testDecodeUUID() throws {
-
         let decoder = JavaScriptDecoder()
 
         let uuidString = "B011902E-0D68-4889-A459-77AE18E8616E"
         let decodedUUID: UUID = try decoder.decode(uuidString)
         XCTAssertEqual(decodedUUID.uuidString, uuidString)
-
     }
 
     /// Tests decoding a CGFloat.
     func testDecodeCGFloat() throws {
-
         let decoder = JavaScriptDecoder()
 
         let float: Float = 1604602844000
         let decodedFloat: CGFloat = try decoder.decode(float)
 
         XCTAssertEqual(decodedFloat, CGFloat(float))
-
     }
 
     /// Tests that an error is thrown when the decoded type does not match the encoded value type.
     func testTypeError() {
-
         let decoder = JavaScriptDecoder()
-        let failureExpectation = expectation(description: "An error is thrown when the decoded type does not match the encoded value type.")
-        let deadline = DispatchTime.now() + DispatchTimeInterval.seconds(2)
 
-        DispatchQueue.main.asyncAfter(deadline: deadline) {
-
-            do {
-                let string = "Hello, world!"
-                let int: Int = try decoder.decode(string)
-                XCTFail("An error should have been thrown because the encoded type does not match the decoded type. \(int)")
-            } catch {
-                failureExpectation.fulfill()
-            }
-
+        let string = "Hello, world!"
+        let decode = {
+            let int: Int = try decoder.decode(string)
+            print(int)
         }
 
-        wait(for: [failureExpectation], timeout: 5)
+        XCTAssertThrowsError(try decode()) { error in
+            guard case let DecodingError.typeMismatch(attemptedType, context) = error else {
+                return XCTFail("Invalid error: \(error).")
+            }
 
+            XCTAssertTrue(attemptedType == String.self)
+            XCTAssertEqual(context.debugDescription, "Cannot decode `Int` because value is of type `String`.")
+        }
     }
 
 }

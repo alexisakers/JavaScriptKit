@@ -1,16 +1,20 @@
+//
+//  JavaScriptKit
+//  Copyright (c) 2017 - present Alexis Aubry. Licensed under the MIT license.
+//
+
 import XCTest
 import Foundation
 @testable import JavaScriptKit
 
-///
-/// Tests decoding objects inside a keyed container.
-///
+/**
+ * Tests decoding objects inside a keyed container.
+ */
 
 class KeyedDecodingTests: XCTestCase {
 
     /// Tests decoding a JSON object.
     func testDecodeObject() throws {
-
         let jsonAddress: [AnyHashable: Any] = [
             "line1": "Apple Inc.",
             "line2": "1 Infinite Loop",
@@ -29,12 +33,10 @@ class KeyedDecodingTests: XCTestCase {
                                       country: .unitedStates)
 
         XCTAssertEqual(decodedAddress, expectedAddress)
-
     }
 
     /// Tests decoding a JSON object that contains optional fields.
     func testEncodeObjectWithOptionalFields() throws {
-
         let jsonAddress: [AnyHashable: Any] = [
             "line1": "1 Infinite Loop",
             "zipCode": 95014,
@@ -52,12 +54,10 @@ class KeyedDecodingTests: XCTestCase {
                                       country: .unitedStates)
 
         XCTAssertEqual(decodedAddress, expectedAddress)
-
     }
 
     /// Tests decoding a JSON object with nested objects.
     func testDecodeNestedObjects() throws {
-
         let jsonObject: [String: Any] = [
             "name": "Apple",
             "address": [
@@ -108,12 +108,10 @@ class KeyedDecodingTests: XCTestCase {
         apple.childCompanies.append(appleFrance)
 
         XCTAssertEqual(decodedApple, apple)
-
     }
 
     /// Tests decoding an array of JSON objects.
     func testDecodeObjectList() throws {
-
         let jsonArray: [Any] = [
             [
                 "name": "Apple",
@@ -179,7 +177,6 @@ class KeyedDecodingTests: XCTestCase {
         let expectedCompanies = [apple, google, facebook]
 
         XCTAssertEqual(decodedCompanies, expectedCompanies)
-
     }
 
 }
