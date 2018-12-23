@@ -30,7 +30,3 @@ steps:
     artifactName: "Test logs"
   condition: succeededOrFailed()
   displayName: "Store Test Log"
-  
-- script: |
-    fastlane validate
-  displayName: "Validate with Package Managers"
