@@ -113,7 +113,6 @@
 		5530C2FC1F5D8429005A97C9 /* SingleValueDecodingTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SingleValueDecodingTests.swift; sourceTree = "<group>"; };
 		5530C2FF1F5DAC73005A97C9 /* KeyedEncodingTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeyedEncodingTests.swift; sourceTree = "<group>"; };
 		5538FC771F6F10280039AFD2 /* CodableSupportTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CodableSupportTests.swift; sourceTree = "<group>"; };
-		5538FC7E1F6FB2600039AFD2 /* .travis.yml */ = {isa = PBXFileReference; lastKnownFileType = text; path = .travis.yml; sourceTree = "<group>"; };
 		5543E48A1F57336D0057E28B /* JavaScriptKit.podspec */ = {isa = PBXFileReference; lastKnownFileType = text; path = JavaScriptKit.podspec; sourceTree = "<group>"; };
 		5543E48B1F57336D0057E28B /* LICENSE */ = {isa = PBXFileReference; lastKnownFileType = text; path = LICENSE; sourceTree = "<group>"; };
 		5543E48C1F57336D0057E28B /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
@@ -213,7 +212,6 @@
 			isa = PBXGroup;
 			children = (
 				556E88D21F54B0C50031476D /* .gitignore */,
-				5538FC7E1F6FB2600039AFD2 /* .travis.yml */,
 				5543E48B1F57336D0057E28B /* LICENSE */,
 				5543E48A1F57336D0057E28B /* JavaScriptKit.podspec */,
 				5543E48C1F57336D0057E28B /* README.md */,
