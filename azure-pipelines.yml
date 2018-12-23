@@ -4,7 +4,8 @@ pool:
 steps:
 - script: |
     sudo xcode-select -switch /Applications/Xcode_10.app
-  displayName: "Setup environment"
+    bundle install
+  displayName: "Setup Environment"
 
 - script: |
     fastlane ios build
@@ -16,7 +17,7 @@ steps:
     pathtoPublish: "build"
     artifactName: "Build logs"
   condition: succeededOrFailed()
-  displayName: "Store build log"
+  displayName: "Store Build Log"
 
 - script: |
     fastlane ios test
@@ -28,8 +29,8 @@ steps:
     pathtoPublish: "test"
     artifactName: "Test logs"
   condition: succeededOrFailed()
-  displayName: "Store test log"
+  displayName: "Store Test Log"
   
 - script: |
     fastlane validate
-  displayName: "Validate with package managers"
+  displayName: "Validate with Package Managers"
