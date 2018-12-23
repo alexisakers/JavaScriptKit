@@ -1,16 +1,20 @@
+//
+//  JavaScriptKit
+//  Copyright (c) 2017 - present Alexis Aubry. Licensed under the MIT license.
+//
+
 import XCTest
 import Foundation
 @testable import JavaScriptKit
 
-///
-/// Tests encoding a single value inside a JavaScript encoder.
-///
+/**
+ * Tests encoding a single value inside a JavaScript encoder.
+ */
 
 class SingleValueEncodingTests: XCTestCase {
 
     /// Tests encoding a `nil` value.
     func testEncodeNil() throws {
-
         let encoder = JavaScriptEncoder()
 
         let null: String? = nil
@@ -20,12 +24,10 @@ class SingleValueEncodingTests: XCTestCase {
         let nonNull: String? = "This is nil, this me, I'm exactly where I'm supposed to be 🎶"
         let encodedNonNull = try encoder.encode(nonNull)
         XCTAssertEqual(encodedNonNull, doubleQuote(nonNull!.escapingSpecialCharacters))
-
     }
 
     /// Tests encoding Boolean values.
     func testEncodeBool() throws {
-
         let encoder = JavaScriptEncoder()
 
         let trueValue = true
@@ -35,12 +37,10 @@ class SingleValueEncodingTests: XCTestCase {
         let falseValue = false
         let encodedFalse = try encoder.encode(falseValue)
         XCTAssertEqual(encodedFalse, "false")
-
     }
 
     /// Tests encoding integer values.
     func testEncodeIntegers() throws {
-
         let encoder = JavaScriptEncoder()
 
         let int = Int(-500)
@@ -86,12 +86,10 @@ class SingleValueEncodingTests: XCTestCase {
             let encodedUInt64 = try encoder.encode(uint64)
             XCTAssertEqual(encodedUInt64, "1234567890987654321")
         #endif
-
     }
 
     /// Tests encoding Float values.
     func testEncodeFloat() throws {
-
         let encoder = JavaScriptEncoder()
 
         let positiveFloat: Float = 255.8765
@@ -113,12 +111,10 @@ class SingleValueEncodingTests: XCTestCase {
         let NaN = Float(0) / Float(0)
         let encodedNaN = try encoder.encode(NaN)
         XCTAssertEqual(encodedNaN, "Number.NaN")
-
     }
 
     /// Tests encoding Double values.
     func testEncodeDouble() throws {
-
         let encoder = JavaScriptEncoder()
 
         let positiveDouble: Double = 255.87654
@@ -140,72 +136,53 @@ class SingleValueEncodingTests: XCTestCase {
         let NaN = Double(0) / Double(0)
         let encodedNaN = try encoder.encode(NaN)
         XCTAssertEqual(encodedNaN, "Number.NaN")
-
     }
 
     /// Tests encoding a String.
     func testEncodeString() throws {
-
         let string = "'Hello, world !'"
         let encoder = JavaScriptEncoder()
         let encodedString = try encoder.encode(string)
 
         XCTAssertEqual(encodedString, doubleQuote("\\u{27}Hello, world !\\u{27}"))
-
     }
 
     /// Tests encoding a URL.
     func testEncodeURL() throws {
-
         let url = URL(string: "https://developer.apple.com/reference/WebKit")!
         let encoder = JavaScriptEncoder()
         let encodedURL = try encoder.encode(url)
         XCTAssertEqual(encodedURL, doubleQuote("https://developer.apple.com/reference/WebKit"))
-
     }
 
     /// Tests encoding a Date.
     func testEncodeDate() throws {
-
         let date = Date(timeIntervalSince1970: 928274520)
         let encoder = JavaScriptEncoder()
         let encodedDate = try encoder.encode(date)
         XCTAssertEqual(encodedDate, "new Date(928274520000)")
-
     }
 
     /// Tests encoding an empty object.
     func testEncodeEmptyObject() throws {
-
         let emptyObject = EmptyObject()
         let encoder = JavaScriptEncoder()
         let encodedObject = try encoder.encode(emptyObject)
         XCTAssertEqual(encodedObject, "{}")
-
     }
 
     /// Tests that encoding an object that doesn't encode a value throws an error.
     func testNoEncodedValue() {
-
         let void = EmptyObject.Void()
         let encoder = JavaScriptEncoder()
 
-        let errorExpectation = expectation(description: "Encoding an object that doesn't encode a value throws an error")
-        let deadline = DispatchTime.now() + DispatchTimeInterval.seconds(1)
-
-        DispatchQueue.global().asyncAfter(deadline: deadline) {
-
-            do {
-                let _ = try encoder.encode(void)
-                XCTFail("An error should have been thrown because the `Encodable` implementation of `EmptyObject.Void` doesn't do anything.")
-            } catch {
-                errorExpectation.fulfill()
+        XCTAssertThrowsError(try encoder.encode(void)) { error in
+            guard case let EncodingError.invalidValue(_, context) = error else {
+                return XCTFail("Invalid error.")
             }
 
+            XCTAssertEqual(context.debugDescription, "Top-level argument did not encode any values.")
         }
-
-        wait(for: [errorExpectation], timeout: 10)
-
     }
 
     // MARK: - Utilities

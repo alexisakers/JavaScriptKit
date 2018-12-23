@@ -1,35 +1,38 @@
+//
+//  JavaScriptKit
+//  Copyright (c) 2017 - present Alexis Aubry. Licensed under the MIT license.
+//
+
 import XCTest
 import WebKit
-import Result
 @testable import JavaScriptKit
 
-///
-/// Tests executing JavaScript expressions inside a web view.
-///
-/// ## Usage
-/// To execute tests:
-///
-/// ~~~swift
-/// testInWebView {
-///     webView in
-///     // Run your tests in this block.
-/// }
-/// ~~~
-///
-/// You can also use expectations in `testInWebView`:
-///
-/// ~~~swift
-/// let callbackExpectation = expectation(description: "...")
-///
-/// testInWebView(expectations: [callbackExpectation] {
-///     webView in
-///     callbackExpectation.fullfill()
-/// }
-/// ~~~
-///
-/// The default timeout is 10s.
-///
-///
+/**
+ * Tests executing JavaScript expressions inside a web view.
+ *
+ * ## Usage
+ * To execute tests:
+ *
+ * ~~~swift
+ * testInWebView {
+ *     webView in
+ *     // Run your tests in this block.
+ * }
+ * ~~~
+ *
+ * You can also use expectations in `testInWebView`:
+ *
+ * ~~~swift
+ * let callbackExpectation = expectation(description: "...")
+ *
+ * testInWebView(expectations: [callbackExpectation] {
+ *     webView in
+ *     callbackExpectation.fullfill()
+ * }
+ * ~~~
+ *
+ * The default timeout is 10s.
+ **/
 
 class ExecutionTests: XCTestCase {
 
@@ -47,7 +50,6 @@ class ExecutionTests: XCTestCase {
     /// The pending action queue. Managaed by the test case, do not manipulate.
     var actionQueue = [(WKWebView) -> Void]()
 
-
     // MARK: - Lifecycle
 
     override func setUp() {
@@ -58,878 +60,274 @@ class ExecutionTests: XCTestCase {
     override func tearDown() {
         webView.navigationDelegate = nil
         webView = nil
+        actionQueue.removeAll()
     }
 
-}
-
-
-// MARK: - Test Expected Results
-
-extension ExecutionTests {
+    // MARK: - Test Expected Results
 
     /// Tests getting a property.
     func testProperty() {
-
         let property = JSVariable<String>("tester.title")
-        let resultExpectation = expectation(description: "Async execution callback is called")
-
-        testInWebView(expectations: [resultExpectation]) {
-            webView in
-
-            property.evaluate(in: webView) {
-                result in
-                assert(Thread.isMainThread)
-                resultExpectation.fulfill()
-                self.assertSuccess(result, expectedValue: "AppFoundation Tests")
-            }
-
-        }
-
+        checkEvaluationResult(property, expectedValue: "JavaScriptKit Tests")
     }
 
     /// Tests executing a function that returns a value of the expected type.
     func testSuccessReturnValue() {
-
         let method = JSFunction<Bool>("tester.refresh")
-        let resultExpectation = expectation(description: "Async execution callback is called")
-
-        testInWebView(expectations: [resultExpectation]) {
-            webView in
-
-            method.evaluate(in: webView) {
-                result in
-                assert(Thread.isMainThread)
-                resultExpectation.fulfill()
-                self.assertSuccess(result, expectedValue: true)
-            }
-
-        }
-
+        checkEvaluationResult(method, expectedValue: true)
     }
 
     /// Tests executing a function that returns Void.
     func testVoidSuccessValue() {
-
         let method = JSFunction<JSVoid>("tester.clearQueue")
-        let resultExpectation = expectation(description: "Async execution callback is called")
-
-        testInWebView(expectations: [resultExpectation]) {
-            webView in
-
-            method.evaluate(in: webView) {
-                result in
-                assert(Thread.isMainThread)
-                resultExpectation.fulfill()
-                self.assertSuccess(result, expectedValue: JSVoid())
-            }
-
-        }
-
+        checkEvaluationResult(method, expectedValue: JSVoid())
     }
 
     /// Tests that an error is thrown when the function does not exist.
     func testExpectedError() {
-
         let method = JSFunction<JSVoid>("yolo.refresh")
-        let resultExpectation = expectation(description: "Async execution callback is called")
-
-        testInWebView(expectations: [resultExpectation]) {
-            webView in
-
-            method.evaluate(in: webView) {
-                result in
-                assert(Thread.isMainThread)
-                resultExpectation.fulfill()
-                self.assertExecutionError(result)
-            }
-
-        }
-
+        checkEvaluationResult(method, expectedFailure: .executionError(NSError(domain: "", code: 1, userInfo: nil)))
     }
 
-}
-
-
-// MARK: - Test Invalid Value Handling
-
-extension ExecutionTests {
+    // MARK: - Test Invalid Value Handling
 
     /// Tests that an error is thrown when an argument cannot be encoded.
     func testHandleExpressionGenerationError() {
-
         let value = NotSoEncodable(name: "Error")
         let method = JSFunction<JSVoid>("tester.refresh", arguments: [value])
-        let resultExpectation = expectation(description: "Async execution callback is called")
-
-        testInWebView(expectations: [resultExpectation]) {
-            webView in
-
-            method.evaluate(in: webView) {
-                result in
-                assert(Thread.isMainThread)
-                resultExpectation.fulfill()
-                self.assertInvalidExpressionError(result)
-            }
-
-        }
-
+        checkEvaluationResult(method, expectedFailure: .invalidExpression(NSError(domain: "", code: 1, userInfo: nil)))
     }
 
     /// Tests that an error is thrown when a value is returned and Void is expected.
     func testHandleUnexpectedReturnValue() {
-
         let method = JSFunction<JSVoid>("tester.refresh")
-        let resultExpectation = expectation(description: "Async execution callback is called")
-
-        testInWebView(expectations: [resultExpectation]) {
-            webView in
-
-            method.evaluate(in: webView) {
-                result in
-                assert(Thread.isMainThread)
-                resultExpectation.fulfill()
-                self.assertInvalidTypeError(result, expectedFailingValue: true)
-            }
-
-        }
-
+        checkEvaluationResult(method, expectedFailure: .invalidReturnType(value: true))
     }
 
     /// Tests that an error is thrown when the type is mismatching.
     func testInvalidReturnValue() {
-
         let method = JSFunction<String>("tester.refresh")
-        let resultExpectation = expectation(description: "Async execution callback is called")
-
-        testInWebView(expectations: [resultExpectation]) {
-            webView in
-
-            method.evaluate(in: webView) {
-                result in
-                assert(Thread.isMainThread)
-                resultExpectation.fulfill()
-                self.assertInvalidTypeError(result, expectedFailingValue: true)
-            }
-
-        }
-
+        checkEvaluationResult(method, expectedFailure: .invalidReturnType(value: true))
     }
 
     /// Tests that an error is thrown when the function does not return a value.
     func testMissingReturnValue() {
-
         let method = JSFunction<Bool>("tester.clearQueue")
-        let resultExpectation = expectation(description: "Async execution callback is called")
-
-        testInWebView(expectations: [resultExpectation]) {
-            webView in
-
-            method.evaluate(in: webView) {
-                result in
-                assert(Thread.isMainThread)
-                resultExpectation.fulfill()
-                self.assertUnexpectedResultError(result)
-            }
-
-        }
-
+        checkEvaluationResult(method, expectedFailure: .unexpectedResult)
     }
 
-}
-
-
-// MARK: - Test JS to Native decoding
-
-extension ExecutionTests {
+    // MARK: - Test JS to Native decoding
 
     // MARK: Primitives
 
     /// Tests decoding a String.
     func testDecodeString() {
-
         let method = JSFunction<String>("tester.testString")
-        let resultExpectation = expectation(description: "Async execution callback is called")
-
-        testInWebView(expectations: [resultExpectation]) {
-            webView in
-
-            method.evaluate(in: webView) {
-                result in
-                assert(Thread.isMainThread)
-                resultExpectation.fulfill()
-                self.assertSuccess(result, expectedValue: "Hello, world!")
-            }
-
-        }
-
+        checkEvaluationResult(method, expectedValue: "Hello, world!")
     }
 
     /// Tests decoding a number.
     func testDecodeNumber() {
-
         let method = JSFunction<Int8>("tester.testNumber")
-        let resultExpectation = expectation(description: "Async execution callback is called")
-
-        testInWebView(expectations: [resultExpectation]) {
-            webView in
-
-            method.evaluate(in: webView) {
-                result in
-                assert(Thread.isMainThread)
-                resultExpectation.fulfill()
-                self.assertSuccess(result, expectedValue: 42)
-            }
-
-        }
-
+        checkEvaluationResult(method, expectedValue: 42)
     }
 
     /// Tests decoding a Bool.
     func testDecodeBool() {
-
         let method = JSFunction<Bool>("tester.testBool")
-        let resultExpectation = expectation(description: "Async execution callback is called")
-
-        testInWebView(expectations: [resultExpectation]) {
-            webView in
-
-            method.evaluate(in: webView) {
-                result in
-                assert(Thread.isMainThread)
-                resultExpectation.fulfill()
-                self.assertSuccess(result, expectedValue: true)
-            }
-
-        }
-
+        checkEvaluationResult(method, expectedValue: true)
     }
 
     /// Tests decoding a Date.
     func testDecodeDate() {
-
         let method = JSFunction<Date>("tester.testDate")
-        let resultExpectation = expectation(description: "Async execution callback is called")
-        let testDate = Date(timeIntervalSince1970: 1500)
-
-        testInWebView(expectations: [resultExpectation]) {
-            webView in
-
-            method.evaluate(in: webView) {
-                result in
-                assert(Thread.isMainThread)
-                resultExpectation.fulfill()
-                self.assertSuccess(result, expectedValue: testDate)
-            }
-
-        }
-
+        checkEvaluationResult(method, expectedValue: Date(timeIntervalSince1970: 1500))
     }
 
     // MARK: RawRepresentable
 
     /// Tests decoding a RawRepresentable.
     func testDecodeValidRawRepresentable() {
-
         let method = JSFunction<MockTargetType>("tester.testValidMockTargetType")
-        let resultExpectation = expectation(description: "Async execution callback is called")
-
-        testInWebView(expectations: [resultExpectation]) {
-            webView in
-
-            method.evaluate(in: webView) {
-                result in
-                assert(Thread.isMainThread)
-                resultExpectation.fulfill()
-                self.assertSuccess(result, expectedValue: .app)
-            }
-
-        }
-
+        checkEvaluationResult(method, expectedValue: .app)
     }
 
     /// Tests decoding an invalid RawRepresentable.
     func testDecodeInvalidRawRepresentable() {
-
         let method = JSFunction<MockTargetType>("tester.invalidTestMockTargetRawType")
-        let resultExpectation = expectation(description: "Async execution callback is called")
-
-        testInWebView(expectations: [resultExpectation]) {
-            webView in
-
-            method.evaluate(in: webView) {
-                result in
-                assert(Thread.isMainThread)
-                resultExpectation.fulfill()
-                self.assertInvalidTypeError(result, expectedFailingValue: 100)
-            }
-
-        }
-
+        checkEvaluationResult(method, expectedFailure: .invalidReturnType(value: 100))
     }
 
     // MARK: Objects
 
     /// Tests decoding an object.
     func testDecodeObject() {
-
         let method = JSFunction<MockTarget>("tester.testTarget")
-        let resultExpectation = expectation(description: "Async execution callback is called")
-
         let expectedTarget = MockTarget(name: "Client", targetType: .app, categories: ["News", "Entertainment"])
-
-        testInWebView(expectations: [resultExpectation]) {
-            webView in
-
-            method.evaluate(in: webView) {
-                result in
-                assert(Thread.isMainThread)
-                resultExpectation.fulfill()
-                self.assertSuccess(result, expectedValue: expectedTarget)
-            }
-
-        }
-
+        checkEvaluationResult(method, expectedValue: expectedTarget)
     }
 
     /// Tests failure when an object is expected but a primitive is returned.
     func testDecodeInvalidObject() {
-
         let method = JSFunction<MockTarget>("tester.invalidTestTarget")
-        let resultExpectation = expectation(description: "Async execution callback is called")
-
-        testInWebView(expectations: [resultExpectation]) {
-            webView in
-
-            method.evaluate(in: webView) {
-                result in
-                assert(Thread.isMainThread)
-                resultExpectation.fulfill()
-                self.assertInvalidTypeError(result, expectedFailingValue: false)
-            }
-
-        }
-
+        checkEvaluationResult(method, expectedFailure: .invalidReturnType(value: false))
     }
 
     /// Tests decoding failure.
     func testDecodeInvalidObjectPrototype() {
-
         let method = JSFunction<MockTarget>("tester.invalidTestTargetPrototype")
-        let resultExpectation = expectation(description: "Async execution callback is called")
-
         let expectedFailingPayload: [AnyHashable : Any] = [
             "name": "Client",
             "targetType": "app",
             "categories": NSNull()
         ]
 
-        testInWebView(expectations: [resultExpectation]) {
-            webView in
-
-            method.evaluate(in: webView) {
-                result in
-                assert(Thread.isMainThread)
-                resultExpectation.fulfill()
-                self.assertInvalidTypeError(result, expectedFailingValue: expectedFailingPayload)
-            }
-
-        }
-
+        checkEvaluationResult(method, expectedFailure: .invalidReturnType(value: expectedFailingPayload))
     }
 
     // MARK: Array of Primitives
 
     /// Tests decoding an array of primitives.
     func testDecodeArrayOfPrimitives() {
-
         let method = JSFunction<[UInt16]>("tester.testPrimitivesArray")
-        let resultExpectation = expectation(description: "Async execution callback is called")
-
-        let expectedArray: [UInt16] = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
-
-        testInWebView(expectations: [resultExpectation]) {
-            webView in
-
-            method.evaluate(in: webView) {
-                result in
-                assert(Thread.isMainThread)
-                resultExpectation.fulfill()
-                self.assertSuccess(result, expectedValue: expectedArray)
-            }
-
-        }
-
+        checkEvaluationResult(method, expectedValue: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9])
     }
 
     /// Tests decoding and invalid array of primitives.
     func testDecodeInvalidArrayOfPrimitives() {
-
         let method = JSFunction<[UInt16]>("tester.testInvalidPrimitivesArray")
-        let resultExpectation = expectation(description: "Async execution callback is called")
-
-        testInWebView(expectations: [resultExpectation]) {
-            webView in
-
-            method.evaluate(in: webView) {
-                result in
-                assert(Thread.isMainThread)
-                resultExpectation.fulfill()
-                self.assertInvalidTypeError(result, expectedFailingValue: "trolld")
-            }
-
-        }
-
+        checkEvaluationResult(method, expectedFailure: .invalidReturnType(value: "trolld"))
     }
 
     /// Tests decoding an array of invalid primitives (mixed types).
     func testDecodeInvalidMixedArrayOfPrimitives() {
-
         let method = JSFunction<[String]>("tester.testInvalidMixedPrimitivesArray")
-        let resultExpectation = expectation(description: "Async execution callback is called")
-
         let expectedFailingArray: [Any] = [1, "un", 2, "deux", 3, "trois"]
-
-        testInWebView(expectations: [resultExpectation]) {
-            webView in
-
-            method.evaluate(in: webView) {
-                result in
-                assert(Thread.isMainThread)
-                resultExpectation.fulfill()
-                self.assertInvalidTypeError(result, expectedFailingValue: expectedFailingArray)
-            }
-
-        }
-
+        checkEvaluationResult(method, expectedFailure: .invalidReturnType(value: expectedFailingArray))
     }
-
 
     // MARK: Array of RawRepresentable
 
     /// Tests decoding an array of Raw Representables.
     func testDecodeArrayOfRawRepresentable() {
-
         let method = JSFunction<[MockTargetType]>("tester.testMockTargetTypes")
-        let resultExpectation = expectation(description: "Async execution callback is called")
-
-        let expectedValue: [MockTargetType] = [.app, .executable]
-
-        testInWebView(expectations: [resultExpectation]) {
-            webView in
-
-            method.evaluate(in: webView) {
-                result in
-                assert(Thread.isMainThread)
-                resultExpectation.fulfill()
-                self.assertSuccess(result, expectedValue: expectedValue)
-            }
-
-        }
-
+        checkEvaluationResult(method, expectedValue: [.app, .executable])
     }
 
     /// Tests decoding an array of invalid raw representable values.
     func testDecodeInvalidArrayOfRawRepresentable() {
-
         let method = JSFunction<[MockTargetType]>("tester.testInvalidMockTargetTypes")
-        let resultExpectation = expectation(description: "Async execution callback is called")
-
-        testInWebView(expectations: [resultExpectation]) {
-            webView in
-
-            method.evaluate(in: webView) {
-                result in
-                assert(Thread.isMainThread)
-                resultExpectation.fulfill()
-                self.assertInvalidTypeError(result, expectedFailingValue: false)
-            }
-
-        }
-
+        checkEvaluationResult(method, expectedFailure: .invalidReturnType(value: false))
     }
 
     /// Tests decoding an array that doesnt match the expected raw type.
     func testDecodeInvalidRawTypesArray() {
-
         let method = JSFunction<[MockTargetType]>("tester.testInvalidRawMockTargetTypes")
-        let resultExpectation = expectation(description: "Async execution callback is called")
-
-        let expectedFailingArray = [1, 2, 3]
-
-        testInWebView(expectations: [resultExpectation]) {
-            webView in
-
-            method.evaluate(in: webView) {
-                result in
-                resultExpectation.fulfill()
-                self.assertInvalidTypeError(result, expectedFailingValue: expectedFailingArray)
-            }
-
-        }
-
+        checkEvaluationResult(method, expectedFailure: .invalidReturnType(value: [1, 2, 3]))
     }
 
     /// Tests decoding an unknown raw value.
     func testDecodeUnknownRawValue() {
-
         let method = JSFunction<[MockTargetType]>("tester.testUnknownRawMockTargetTypes")
-        let resultExpectation = expectation(description: "Async execution callback is called")
-
-        let expectedFailingArray = ["app", "kext"]
-
-        testInWebView(expectations: [resultExpectation]) {
-            webView in
-
-            method.evaluate(in: webView) {
-                result in
-                assert(Thread.isMainThread)
-                resultExpectation.fulfill()
-                self.assertInvalidTypeError(result, expectedFailingValue: expectedFailingArray)
-            }
-
-        }
-
+        checkEvaluationResult(method, expectedFailure: .invalidReturnType(value: ["app", "kext"]))
     }
 
     // MARK: Array of Object
 
     /// Tests decoding an array of objects.
     func testDecodeArrayOfObjects() {
-
         let method = JSFunction<[MockTarget]>("tester.testObjects")
-        let resultExpectation = expectation(description: "Async execution callback is called")
-
         let expectedArray: [MockTarget] = [
             MockTarget(name: "Client", targetType: .app, categories: ["News", "Entertainment"]),
             MockTarget(name: "ClientTests", targetType: .unitTest, categories: ["DT", "Tests"])
         ]
 
-        testInWebView(expectations: [resultExpectation]) {
-            webView in
-
-            method.evaluate(in: webView) {
-                result in
-                assert(Thread.isMainThread)
-                resultExpectation.fulfill()
-                self.assertSuccess(result, expectedValue: expectedArray)
-            }
-
-        }
-
+        checkEvaluationResult(method, expectedValue: expectedArray)
     }
 
     /// Tests decoding an invalid array of objects.
     func testDecodeInvalidArrayOfObjects() {
-
         let method = JSFunction<[MockTarget]>("tester.testInvalidObjects")
-        let resultExpectation = expectation(description: "Async execution callback is called")
-
-        testInWebView(expectations: [resultExpectation]) {
-            webView in
-
-            method.evaluate(in: webView) {
-                result in
-                assert(Thread.isMainThread)
-                resultExpectation.fulfill()
-                self.assertInvalidTypeError(result, expectedFailingValue: false)
-            }
-
-        }
-
+        checkEvaluationResult(method, expectedFailure: .invalidReturnType(value: false))
     }
 
     /// Tests failure when decoding an array of invalid objects.
     func testDecodeInvalidObjectContainingArray() {
-
         let method = JSFunction<[MockTarget]>("tester.textMixedObjects")
-        let resultExpectation = expectation(description: "Async execution callback is called")
-
         let expectedFailingValue: [AnyHashable] = [
             ["name": "Client", "targetType": "app", "categories": ["News"]] as NSDictionary,
             false
         ]
 
-        testInWebView(expectations: [resultExpectation]) {
-            webView in
-
-            method.evaluate(in: webView) {
-                result in
-                assert(Thread.isMainThread)
-                resultExpectation.fulfill()
-                self.assertInvalidTypeError(result, expectedFailingValue: expectedFailingValue)
-            }
-
-        }
-
+        checkEvaluationResult(method, expectedFailure: .invalidReturnType(value: expectedFailingValue))
     }
 
     /// Tests failure when the value is an array containing invalid prototypes.
     func testDecodeInvalidObjectPrototypeContainingArray() {
-
         let method = JSFunction<[MockTarget]>("tester.textDifferentObjectPrototypes")
-        let resultExpectation = expectation(description: "Async execution callback is called")
-
         let expectedFailingValue: [AnyHashable] = [
             ["name": "Client", "targetType": "app", "categories": ["News"]] as NSDictionary,
             ["name": "SpaceTravelKit"] as NSDictionary,
         ]
 
-        testInWebView(expectations: [resultExpectation]) {
-            webView in
-
-            method.evaluate(in: webView) {
-                result in
-                assert(Thread.isMainThread)
-                resultExpectation.fulfill()
-                self.assertInvalidTypeError(result, expectedFailingValue: expectedFailingValue)
-            }
-
-        }
-
+        checkEvaluationResult(method, expectedFailure: .invalidReturnType(value: expectedFailingValue))
     }
 
 }
-
-
-// MARK: - Asserts
-
-extension ExecutionTests {
-
-    /// Asserts that the result is a success containing the given value.
-    func assertSuccess<R: Equatable, E>(_ result: Result<R, E>, expectedValue: R) {
-
-        switch result {
-        case .success(let value):
-            XCTAssertEqual(value, expectedValue)
-
-        case .failure(let error):
-            XCTFail("Unexpected error : \(error)")
-        }
-
-    }
-
-    /// Asserts that the result is a success containing the given value.
-    func assertSuccess<R: Equatable, E>(_ result: Result<[R], E>, expectedValue: Array<R>) {
-
-        switch result {
-        case .success(let value):
-            XCTAssertEqual(value, expectedValue)
-
-        case .failure(let error):
-            XCTFail("Unexpected error : \(error)")
-        }
-
-    }
-
-    /// Asserts that the result is an invalid type error.
-    func assertInvalidTypeError<R, T: Equatable>(_ result: Result<R, JSErrorDomain>, expectedFailingValue: T) {
-
-        switch result {
-        case .success(_):
-            XCTFail("A value was returned but an `invalidReturnType` error was expected.")
-
-        case .failure(let error):
-
-            switch error {
-            case .invalidReturnType(let value):
-                XCTAssertTrue((value as? T) == expectedFailingValue, "A type error was thrown, but the associated value does not match the expected one.")
-                XCTAssertEqual(error.nsError.domain, JSErrorDomain.identifier, "Incorrect error domain.")
-                XCTAssertEqual(error.nsError.localizedDescription, error.errorDescription)
-
-            case .executionError(_):
-                XCTFail("An `executionError` error was thrown, expected`invalidReturnType` error.")
-
-            case .unexpectedResult:
-                XCTFail("An `unexpectedResult` error was thrown, expected `invalidReturnType` error.")
-
-            case .invalidExpression(_):
-                XCTFail("An `invalidExpression` error was thrown, expected `invalidReturnType` error.")
-
-            }
-
-        }
-
-    }
-
-    /// Asserts that the result is an invalid type error.
-    func assertInvalidTypeError<R>(_ result: Result<[R], JSErrorDomain>, expectedFailingValue: [Any]) {
-
-        switch result {
-        case .success(_):
-            XCTFail("A value was returned but an `invalidReturnType` error was expected.")
-
-        case .failure(let error):
-
-            switch error {
-            case .invalidReturnType(let value):
-                XCTAssertTrue((value as? NSArray)?.isEqual(to: expectedFailingValue) == true, "A type error was thrown, but the associated value does not match the expected one.")
-                XCTAssertEqual(error.nsError.domain, JSErrorDomain.identifier, "Incorrect error domain.")
-                XCTAssertEqual(error.nsError.localizedDescription, error.errorDescription)
-
-            case .executionError(_):
-                XCTFail("An `executionError` error was thrown, expected`invalidReturnType` error.")
-
-            case .unexpectedResult:
-                XCTFail("An `unexpectedResult` error was thrown, expected `invalidReturnType` error.")
-
-            case .invalidExpression(_):
-                XCTFail("An `unexpectedResult` error was thrown, expected `invalidExpression` error.")
-
-            }
-
-        }
-
-    }
-
-    /// Asserts that the result is an invalid type error.
-    func assertInvalidTypeError<R>(_ result: Result<R, JSErrorDomain>, expectedFailingValue: [AnyHashable : Any]) {
-
-        switch result {
-        case .success(_):
-            XCTFail("A value was returned but an `invalidReturnType` error was expected.")
-
-        case .failure(let error):
-
-            switch error {
-            case .invalidReturnType(let value):
-                XCTAssertTrue((value as? NSDictionary)?.isEqual(to: expectedFailingValue) == true, "A type error was thrown, but the associated value does not match the expected one.")
-                XCTAssertEqual(error.nsError.domain, JSErrorDomain.identifier, "Incorrect error domain.")
-                XCTAssertEqual(error.nsError.localizedDescription, error.errorDescription)
-
-            case .executionError(_):
-                XCTFail("An `executionError` error was thrown, expected`invalidReturnType` error.")
-
-            case .unexpectedResult:
-                XCTFail("An `unexpectedResult` error was thrown, expected `invalidReturnType` error.")
-
-            case .invalidExpression(_):
-                XCTFail("An `invalidExpression` error was thrown, expected `invalidReturnType` error.")
-
-
-            }
-
-        }
-
-    }
-
-
-    /// Asserts that the result is an execution error.
-    func assertExecutionError<R>(_ result: Result<R, JSErrorDomain>) {
-
-        switch result {
-        case .success(_):
-            XCTFail("A value was returned but an `executionError` error was expected.")
-
-        case .failure(let error):
-
-            switch error {
-            case .invalidReturnType(_):
-                XCTFail("An `invalidReturnType` error was thrown, expected `executionError` error.")
-
-            case .executionError(_):
-                XCTAssertEqual(error.nsError.domain, JSErrorDomain.identifier, "Incorrect error.")
-                XCTAssertEqual(error.nsError.localizedDescription, error.errorDescription)
-
-            case .unexpectedResult:
-                XCTFail("An `unexpectedResult` error was thrown, expected `executionError` error.")
-
-            case .invalidExpression(_):
-                XCTFail("An `invalidExpression` error was thrown, expected `executionError` error.")
-
-            }
-
-        }
-
-    }
-
-    /// Asserts that the result is an unexpected result error.
-    func assertUnexpectedResultError<R>(_ result: Result<R, JSErrorDomain>) {
-
-        switch result {
-        case .success(_):
-            XCTFail("A value was returned but an `unexpectedResult` error was expected.")
-
-        case .failure(let error):
-
-            switch error {
-            case .invalidReturnType(_):
-                XCTFail("An `invalidReturnType` error was thrown, expected`unexpectedResult` error.")
-
-            case .executionError(_):
-                XCTFail("An `executionError` error was thrown, expected`unexpectedResult` error.")
-
-            case .unexpectedResult:
-                XCTAssertEqual(error.nsError.domain, JSErrorDomain.identifier, "Incorrect error domain.")
-                XCTAssertEqual(error.nsError.localizedDescription, error.errorDescription)
-
-            case .invalidExpression(_):
-                XCTFail("An `invalidExpression` error was thrown, expected `unexpectedResult` error.")
-
-            }
-
-        }
-
-    }
-
-    /// Asserts that the result is an invalid expression error.
-    func assertInvalidExpressionError<R>(_ result: Result<R, JSErrorDomain>) {
-
-        switch result {
-        case .success(_):
-            XCTFail("A value was returned but an `invalidExpression` error was expected.")
-
-        case .failure(let error):
-
-            switch error {
-            case .invalidReturnType(_):
-                XCTFail("An `invalidReturnType` error was thrown, expected`invalidExpression` error.")
-
-            case .executionError(_):
-                XCTFail("An `executionError` error was thrown, expected `invalidExpression` error.")
-
-            case .unexpectedResult:
-                XCTFail("An `unexpectedResult` error was thrown, expected `invalidExpression` error.")
-
-            case .invalidExpression(let underlyingError):
-                XCTAssertEqual(error.nsError.domain, JSErrorDomain.identifier)
-                XCTAssertEqual(underlyingError.domain, NSCocoaErrorDomain)
-                XCTAssertEqual(error.nsError.localizedDescription, error.errorDescription)
-
-            }
-
-        }
-
-    }
-
-}
-
 
 // MARK: - Web View Support
 
 extension ExecutionTests: WKNavigationDelegate {
 
-    ///
-    /// Éxécute un test dans la WebView.
-    ///
-    /// Cette méthode ne doit être utilisée qu'une seule fois par fonction de test.
-    ///
-    /// - parameter expectations: Une éventuelle liste d'expectations utilisées dans le bloc de test.
-    /// - parameter timeout: Le timeout pour les `expecations`. Par défaut, 10 secondes.
-    /// - parameter webViewAction: Le bloc de test à éxécuter une fois que la WebView a fini de charger les
-    /// éléments de test.
-    ///
+    /// Checks that an expression returns the specified value.
+    func checkEvaluationResult<Expression: JSExpression>(_ expression: Expression, expectedValue: Expression.ReturnType, file: StaticString = #file, line: UInt = #line) where Expression.ReturnType: Equatable {
+        checkEvaluationResult(expression, file, line) { result in
+            switch result {
+            case .success(let successValue):
+                XCTAssertEqual(successValue, expectedValue, file: file, line: line)
+            case .failure(let error):
+                XCTFail("Unexpected error: \(error)", file: file, line: line)
+            }
+        }
+    }
 
-    func testInWebView(expectations: [XCTestExpectation] = [],
-                       timeout: TimeInterval = 10,
-                       _ webViewAction: @escaping (WKWebView) -> Void) {
+    /// Checks that an expression returns the specified error.
+    func checkEvaluationResult<Expression: JSExpression>(_ expression: Expression, expectedFailure: JSErrorDomain, file: StaticString = #file, line: UInt = #line) where Expression.ReturnType: Equatable {
+        checkEvaluationResult(expression, file, line) { result in
+            switch result {
+            case .success:
+                XCTFail("Expected an error, but the evaluation succeded.", file: file, line: line)
+            case .failure(let error):
+                XCTAssertEqual(error.errorCode, expectedFailure.errorCode, "Invalid error: \(error)", file: file, line: line)
+            }
+        }
+    }
 
+    /// Checks that an expression can be evaluated.
+    func checkEvaluationResult<Expression: JSExpression>(_ expression: Expression, _ file: StaticString = #file, _ line: UInt = #line, _ expectedResultChecker: @escaping (Result<Expression.ReturnType, JSErrorDomain>) -> Void) {
+        let expectation = self.expectation(description: "")
+
+        testInWebView(expectations: [expectation]) { webView in
+            webView.evaluate(expression: expression) { result in
+                expectedResultChecker(result)
+                expectation.fulfill()
+            }
+        }
+    }
+
+    func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
+        for action in actionQueue {
+            action(webView)
+        }
+    }
+
+    private func testInWebView(expectations: [XCTestExpectation] = [], timeout: TimeInterval = 10, _ webViewAction: @escaping (WKWebView) -> Void) {
         _queue(webViewAction)
         _launchActions()
 
         if expectations.count > 0 {
             wait(for: expectations, timeout: timeout)
         }
-
     }
 
     private func _queue(_ webViewAction: @escaping (WKWebView) -> Void) {
@@ -938,14 +336,6 @@ extension ExecutionTests: WKNavigationDelegate {
 
     private func _launchActions() {
         webView.loadFileURL(resources.html, allowingReadAccessTo: resources.supportBundle)
-    }
-
-    func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
-
-        for action in actionQueue {
-            action(webView)
-        }
-
     }
 
 }

@@ -1,8 +1,13 @@
+//
+//  JavaScriptKit
+//  Copyright (c) 2017 - present Alexis Aubry. Licensed under the MIT license.
+//
+
 import Foundation
 
-///
-/// An encoding container.
-///
+/**
+ * An encoding container.
+ */
 
 enum JSCodingContainer {
 
@@ -19,9 +24,9 @@ enum JSCodingContainer {
 
 // MARK: - Single Value Storage
 
-///
-/// A storage container for JavaScript encoder/decoder.
-///
+/**
+ * A storage container for JavaScript encoder/decoder.
+ */
 
 enum SingleValueStorage {
 
@@ -45,7 +50,6 @@ enum SingleValueStorage {
 
     /// The stored value.
     var storedValue: Any {
-
         switch self {
         case .null:
             return NSNull()
@@ -60,12 +64,10 @@ enum SingleValueStorage {
         case .emptyObject:
             return [String: Any]()
         }
-
     }
 
     /// The type of the stored value.
     var storedType: Any.Type {
-
         switch self {
         case .null: return NSNull.self
         case .string: return String.self
@@ -74,14 +76,12 @@ enum SingleValueStorage {
         case .date: return Date.self
         case .emptyObject: return Dictionary<String, Any>.self
         }
-
     }
 
     // MARK: Initialization
 
     /// Decodes the stored value.
     init(storedValue: Any) throws {
-
         if storedValue is NSNull {
             self = .null
         } else if storedValue is String {
@@ -91,22 +91,19 @@ enum SingleValueStorage {
         } else if storedValue is NSNumber {
             self = .number(storedValue as! NSNumber)
         } else {
-
             let context = DecodingError.Context(codingPath: [], debugDescription: "Could not decode \(storedValue) because its type is not supported. Supported types include null, booleans, strings, numbers and dates.")
             throw DecodingError.dataCorrupted(context)
-
         }
-
     }
 
 }
 
 // MARK: - Array Storage
 
-///
-/// An object that holds a reference to an array. Use this class when you need an Array with
-/// reference semantics.
-///
+/**
+ * An object that holds a reference to an array. Use this class when you need an Array with
+ * reference semantics.
+ */
 
 class ArrayStorage {
 
@@ -158,10 +155,10 @@ class ArrayStorage {
 
 // MARK: - Dictionary Storage
 
-///
-/// An object that holds a reference to a dictionary. Use this class when you need a Dictionary with
-/// reference semantics.
-///
+/**
+ * An object that holds a reference to a dictionary. Use this class when you need a Dictionary with
+ * reference semantics.
+ */
 
 class DictionaryStorage {
 
@@ -212,7 +209,6 @@ extension String {
 
     /// Escapes the JavaScript special characters.
     internal var escapingSpecialCharacters: String {
-
         let controlCharactersRange = UnicodeScalar(0x08) ... UnicodeScalar(0x0d)
         let escapablePuntuation = "\u{0022}\u{0027}\u{005C}"
 
@@ -225,7 +221,6 @@ extension String {
             let nextSequence = needsEscaping ? "\\u{\(String(scalar.value, radix: 16))}" : String(scalar)
             return current + nextSequence
         }
-
     }
 
 }

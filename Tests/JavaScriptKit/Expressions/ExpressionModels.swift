@@ -1,3 +1,8 @@
+//
+//  JavaScriptKit
+//  Copyright (c) 2017 - present Alexis Aubry. Licensed under the MIT license.
+//
+
 import Foundation
 
 /// A mock enum that lists fonts.
@@ -19,21 +24,13 @@ enum MockTargetType: String, Codable {
 
 /// A mock struct.
 struct MockTarget: Codable, Equatable {
-
-
     let name: String
     let targetType: MockTargetType
     let categories: [String]
-
-    static func ==(lhs: MockTarget, rhs: MockTarget) -> Bool {
-        return (lhs.name == rhs.name) && (lhs.targetType == rhs.targetType) && (lhs.categories == rhs.categories)
-    }
-
 }
 
 /// A structure that always fails encoding.
 struct NotSoEncodable: Encodable {
-
     let name: String
 
     func encode(to encoder: Encoder) throws {
@@ -41,5 +38,4 @@ struct NotSoEncodable: Encodable {
                                          EncodingError.Context(codingPath: [],
                                                                debugDescription: "NotSoEncodable structures cannot be encoded."))
     }
-
 }
