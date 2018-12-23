@@ -33,20 +33,6 @@ extension JSErrorDomain: LocalizedError {
     /// The identifier of the error domain.
     public static var identifier = "fr.alexaubry.JavaScriptKit.JSErrorDomain"
 
-    /// The code of the error.
-    public var code: Int {
-        switch self {
-        case .invalidReturnType:
-            return 2000
-        case .executionError:
-            return 2001
-        case .unexpectedResult:
-            return 2002
-        case .invalidExpression:
-            return 2003
-        }
-    }
-
     /// The localized description of the error.
     public var localizedDescription: String {
         switch self {
@@ -83,23 +69,32 @@ extension JSErrorDomain: LocalizedError {
 
 // MARK: - Bridging
 
-extension JSErrorDomain {
+extension JSErrorDomain: CustomNSError {
 
-    public var _domain: String {
+    public static var errorDomain: String {
         return JSErrorDomain.identifier
     }
 
-    public var _code: Int {
-        return code
+    public var errorCode: Int {
+        switch self {
+        case .invalidReturnType:
+            return 2000
+        case .executionError:
+            return 2001
+        case .unexpectedResult:
+            return 2002
+        case .invalidExpression:
+            return 2003
+        }
     }
 
-    public var _userInfo: AnyObject? {
+    public var errorUserInfo: [String: Any] {
         var userInfo: [String: Any] = [
             NSLocalizedDescriptionKey: localizedDescription,
         ]
 
         userInfo[NSUnderlyingErrorKey] = underlyingError
-        return userInfo as NSDictionary
+        return userInfo
     }
 
 }
