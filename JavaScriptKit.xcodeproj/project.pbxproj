@@ -173,7 +173,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				5543E49E1F57379E0057E28B /* Result.framework in Frameworks */,
 				55DAE6AD1F546C22009593AF /* JavaScriptKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -248,7 +247,7 @@
 			children = (
 				55DAE6C21F546C9F009593AF /* Sources */,
 				55DAE6EA1F546EDD009593AF /* Locales */,
-				55DAE6BD1F546C8B009593AF /* Config */,
+				55DAE6BD1F546C8B009593AF /* Configs */,
 				55DAE6CF1F546CB5009593AF /* Tests */,
 				5543E48D1F5733730057E28B /* Library Metadata */,
 				55DAE6A41F546C21009593AF /* Products */,
@@ -267,13 +266,13 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
-		55DAE6BD1F546C8B009593AF /* Config */ = {
+		55DAE6BD1F546C8B009593AF /* Configs */ = {
 			isa = PBXGroup;
 			children = (
 				55DAE6BF1F546C8B009593AF /* JavaScriptKit.plist */,
 				55DAE6BE1F546C8B009593AF /* JavaScriptKitTests.plist */,
 			);
-			path = Config;
+			path = Configs;
 			sourceTree = "<group>";
 		};
 		55DAE6C21F546C9F009593AF /* Sources */ = {
@@ -624,7 +623,7 @@
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
-				INFOPLIST_FILE = Config/JavaScriptKit.plist;
+				INFOPLIST_FILE = Configs/JavaScriptKit.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
@@ -651,7 +650,7 @@
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
-				INFOPLIST_FILE = Config/JavaScriptKit.plist;
+				INFOPLIST_FILE = Configs/JavaScriptKit.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
@@ -674,7 +673,7 @@
 				CODE_SIGN_IDENTITY = "";
 				CODE_SIGN_STYLE = Manual;
 				DEVELOPMENT_TEAM = "";
-				INFOPLIST_FILE = Config/JavaScriptKitTests.plist;
+				INFOPLIST_FILE = Configs/JavaScriptKitTests.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/../Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "fr.alexaubry.JavaScriptKit.Tests-macOS";
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -692,7 +691,7 @@
 				CODE_SIGN_IDENTITY = "";
 				CODE_SIGN_STYLE = Manual;
 				DEVELOPMENT_TEAM = "";
-				INFOPLIST_FILE = Config/JavaScriptKitTests.plist;
+				INFOPLIST_FILE = Configs/JavaScriptKitTests.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/../Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "fr.alexaubry.JavaScriptKit.Tests-macOS";
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -833,7 +832,7 @@
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
-				INFOPLIST_FILE = Config/JavaScriptKit.plist;
+				INFOPLIST_FILE = Configs/JavaScriptKit.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
@@ -858,7 +857,7 @@
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
-				INFOPLIST_FILE = Config/JavaScriptKit.plist;
+				INFOPLIST_FILE = Configs/JavaScriptKit.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
@@ -879,7 +878,7 @@
 				CODE_SIGN_IDENTITY = "";
 				CODE_SIGN_STYLE = Manual;
 				DEVELOPMENT_TEAM = "";
-				INFOPLIST_FILE = Config/JavaScriptKitTests.plist;
+				INFOPLIST_FILE = Configs/JavaScriptKitTests.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "fr.alexaubry.JavaScriptKit.Tests-iOS";
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -896,7 +895,7 @@
 				CODE_SIGN_IDENTITY = "";
 				CODE_SIGN_STYLE = Manual;
 				DEVELOPMENT_TEAM = "";
-				INFOPLIST_FILE = Config/JavaScriptKitTests.plist;
+				INFOPLIST_FILE = Configs/JavaScriptKitTests.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "fr.alexaubry.JavaScriptKit.Tests-iOS";
 				PRODUCT_NAME = "$(TARGET_NAME)";
