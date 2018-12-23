@@ -3,11 +3,11 @@ set -e
 
 MODULE_VERSION=$1
 OUTPUT=$2
-SWIFT_VERSION="4.0"
+SWIFT_VERSION="4.2"
 AUTHOR="Alexis Aubry"
 AUTHOR_URL="https://twitter.com/_alexaubry"
 MODULE_NAME="JavaScriptKit"
-COPYRIGHT="Copyright © 2017 $AUTHOR. Available under the MIT License."
+COPYRIGHT="Copyright © 2017 - present $AUTHOR. Available under the MIT License."
 GITHUB_URL="https://github.com/alexaubry/JavaScriptKit"
 GH_PAGES_URL="https://alexaubry.github.io/JavaScriptKit"
 
