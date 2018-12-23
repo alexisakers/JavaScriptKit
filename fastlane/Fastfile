@@ -65,5 +65,5 @@ end
 desc "Validate for Release"
 lane :validate do
   sh("cd .. && carthage build --no-skip-current")
-  sh("cd .. && bundle exec pod lib lint")
+  sh("cd .. && pod lib lint")
 end
