@@ -105,6 +105,7 @@
 
 /* Begin PBXFileReference section */
 		5502FF2121C64BD300CE7544 /* JSExpression+Evaluation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "JSExpression+Evaluation.swift"; sourceTree = "<group>"; };
+		5502FF7421CFC1F100CE7544 /* CHANGELOG.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = CHANGELOG.md; sourceTree = "<group>"; };
 		550F9F301F6E94AA00792329 /* ExpressionModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExpressionModels.swift; sourceTree = "<group>"; };
 		5513C3671F6E71B700030A30 /* TestsSupport.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestsSupport.swift; sourceTree = "<group>"; };
 		5513C36A1F6E78A000030A30 /* KeyedDecodingTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeyedDecodingTests.swift; sourceTree = "<group>"; };
@@ -216,6 +217,7 @@
 				5543E48B1F57336D0057E28B /* LICENSE */,
 				5543E48A1F57336D0057E28B /* JavaScriptKit.podspec */,
 				5543E48C1F57336D0057E28B /* README.md */,
+				5502FF7421CFC1F100CE7544 /* CHANGELOG.md */,
 			);
 			name = "Library Metadata";
 			sourceTree = "<group>";
