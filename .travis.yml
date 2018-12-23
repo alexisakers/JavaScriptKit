@@ -1,4 +1,4 @@
-osx_image: xcode9
+osx_image: xcode10
 language: objective-c
 
 env:
@@ -10,13 +10,10 @@ env:
     - SCHEME="JavaScriptKit-iOS" DESTINATION="platform=iOS Simulator,name=iPhone 6,OS=11.0" PLATFORM="iOS"
 
 before_install:
-  - brew update
-  - brew outdated carthage || brew upgrade carthage
   - gem install xcpretty
 
 before_script:
   - open -b com.apple.iphonesimulator
-  - carthage bootstrap --platform $PLATFORM
 
 script:
   - set -o pipefail && xcodebuild test -project "$PROJECT" -scheme "$SCHEME" -destination "$DESTINATION" | xcpretty

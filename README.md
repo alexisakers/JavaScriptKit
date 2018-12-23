@@ -21,7 +21,7 @@ JavaScriptKit is a powerful replacement for JavaScriptCore to use with your WebK
 To use CocoaPods, add the following to your Podfile:
 
 ```ruby
-pod 'JavaScriptKit', '~> 1.0'
+pod 'JavaScriptKit', '~> 2.0'
 ```
 
 ### Carthage
@@ -29,15 +29,15 @@ pod 'JavaScriptKit', '~> 1.0'
 To use Carthage, add the following to your Cartfile:
 
 ```ogdl
-github "alexaubry/JavaScriptKit" ~> 1.0
+github "alexaubry/JavaScriptKit" ~> 2.0
 ```
 ## Versions
 
-| | 1.0.x |
-|---|---|
-| Minimum iOS Version | 8.0 |
-| Minimum macOS Version | 10.10 |
-| Supported Swift Version(s) | 4.0.x |
+| | 1.0.x | 2.0.x |
+|---|---|---|
+| Minimum iOS Version | 8.0 | 8.0 |
+| Minimum macOS Version | 10.10 | 10.10 |
+| Supported Swift Version(s) | 4.0.x | 4.2.x |
 
 ## How it works
 
@@ -60,8 +60,7 @@ Use the `JSVariable` expression type to get the value of a variable at the speci
 ~~~swift
 let titleVariable = JSVariable<String>("document.title")
 
-titleVariable.evaluate(in: webView) { result in
-
+webView.evaluate(expression: titleVariable) { result in
     switch result {
     case .success(let title):
         // do something with the `title` string
@@ -69,7 +68,6 @@ titleVariable.evaluate(in: webView) { result in
     case .failure(let error):
         // handle error
     }
-
 }
 ~~~
 
@@ -88,8 +86,7 @@ When the function does not return a value, use the `JSVoid` return type.
 ~~~swift
 let encodeURI = JSFunction<String>("window.encodeURI", arguments: "Hello world")
 
-encodeURI.evaluate(in: webView) { result in
-
+webView.evaluate(expression: encodeURI) { result in
     switch result {
     case .success(let encodedURI):
         // do something with the `encodedURI` string
@@ -97,7 +94,6 @@ encodeURI.evaluate(in: webView) { result in
     case .failure(let error):
         // handle error
     }
-
 }
 ~~~
 
@@ -110,8 +106,7 @@ encodeURI.evaluate(in: webView) { result in
 
 ~~~swift
 let alert = JSFunction<JSVoid>("window.alert", arguments: "Hello from Swift!")
-
-alert.evaluate(in: webView, completionHandler: nil)
+webView.evaluate(expression: alert, completionHandler: nil)
 ~~~
 
 - The `alert` expression will be converted to: `"this.window.alert("Hello from Swift!");"`.
@@ -124,7 +119,7 @@ alert.evaluate(in: webView, completionHandler: nil)
 ~~~swift
 let reload = JSFunction<JSVoid>("location.reload")
 
-reload.evaluate(in: webView, completionHandler: nil)
+webView.evaluate(expression: reload, completionHandler: nil)
 ~~~
 
 - You can omit the `arguments` parameter if the function takes no arguments.
@@ -167,7 +162,7 @@ getTimeOfDay(hours);
 
 let script = JSScript<TimeOfDay>(scriptBody)
 
-script.evaluate(in: webView) { result in
+webView.evaluate(expression: script) { result in
 
     switch result {
     case .success(let timeOfDay):
