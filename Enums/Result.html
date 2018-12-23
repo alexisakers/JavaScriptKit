@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <title>JSDecodingStrategy Enumeration Reference</title>
+    <title>Result Enumeration Reference</title>
     <link rel="stylesheet" type="text/css" href="../css/jazzy.css" />
     <link rel="stylesheet" type="text/css" href="../css/highlight.css" />
     <meta charset='utf-8'>
@@ -10,8 +10,8 @@
     
   </head>
   <body>
-    <a name="//apple_ref/swift/Enum/JSDecodingStrategy" class="dashAnchor"></a>
-    <a title="JSDecodingStrategy Enumeration Reference"></a>
+    <a name="//apple_ref/swift/Enum/Result" class="dashAnchor"></a>
+    <a title="Result Enumeration Reference"></a>
     <header>
       <div class="content-wrapper">
         <p><a href="../index.html">JavaScriptKit Docs</a> (97% documented)</p>
@@ -23,7 +23,7 @@
       <p id="breadcrumbs">
         <a href="../index.html">JavaScriptKit Reference</a>
         <img id="carat" src="../img/carat.png" />
-        JSDecodingStrategy Enumeration Reference
+        Result Enumeration Reference
       </p>
     </div>
     <div class="content-wrapper">
@@ -86,16 +86,19 @@
       <article class="main-content">
         <section>
           <section class="section">
-            <h1>JSDecodingStrategy</h1>
+            <h1>Result</h1>
               <div class="declaration">
                 <div class="language">
-                  <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">enum</span> <span class="kt">JSDecodingStrategy</span><span class="o">&lt;</span><span class="kt">ReturnType</span><span class="o">&gt;</span></code></pre>
+                  <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">enum</span> <span class="kt">Result</span><span class="o">&lt;</span><span class="kt">Success</span><span class="p">,</span> <span class="kt">Failure</span><span class="o">&gt;</span> <span class="k">where</span> <span class="kt">Failure</span> <span class="p">:</span> <span class="kt">Error</span></code></pre>
 
                 </div>
               </div>
-            <p>The strategies to decode a value.</p>
+            <p>A type providing either a success or an error value, from the result of an operation.</p>
+<div class="aside aside-note">
+    <p class="aside-title">Note</p>
+    This can be removed when migrating to Swift 5.
 
-<p>Strategies are used to determine whether the evaluation result sent by the web view is valid or not.</p>
+</div>
 
           </section>
           <section class="section task-group-section">
@@ -104,9 +107,9 @@
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:13JavaScriptKit18JSDecodingStrategyO20returnValueMandatoryyACyxGAEmlF"></a>
-                    <a name="//apple_ref/swift/Element/returnValueMandatory" class="dashAnchor"></a>
-                    <a class="token" href="#/s:13JavaScriptKit18JSDecodingStrategyO20returnValueMandatoryyACyxGAEmlF">returnValueMandatory</a>
+                    <a name="/s:13JavaScriptKit6ResultO7successyACyxq_GxcAEms5ErrorR_r0_lF"></a>
+                    <a name="//apple_ref/swift/Element/success(_:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:13JavaScriptKit6ResultO7successyACyxq_GxcAEms5ErrorR_r0_lF">success(_:)</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -114,22 +117,19 @@
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>A return value is mandatory.</p>
-
-<p>If a value or an error is not provided, the result of the expression will be considered
- invalid.</p>
+                        <p>The operation succeeded and returned a value.</p>
 
                       </div>
                       <div class="declaration">
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="k">case</span> <span class="n">returnValueMandatory</span></code></pre>
+                          <pre class="highlight swift"><code><span class="k">case</span> <span class="nf">success</span><span class="p">(</span><span class="kt">Success</span><span class="p">)</span></code></pre>
 
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/alexaubry/JavaScriptKit/tree/master/Sources/JSExpression.swift#L67">Show on GitHub</a>
+                        <a href="https://github.com/alexaubry/JavaScriptKit/tree/master/Sources/JSTypes.swift#L30">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -137,9 +137,9 @@
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:13JavaScriptKit18JSDecodingStrategyO13noReturnValueyACyxGx_tcAEmlF"></a>
-                    <a name="//apple_ref/swift/Element/noReturnValue(defaultValue:)" class="dashAnchor"></a>
-                    <a class="token" href="#/s:13JavaScriptKit18JSDecodingStrategyO13noReturnValueyACyxGx_tcAEmlF">noReturnValue(defaultValue:)</a>
+                    <a name="/s:13JavaScriptKit6ResultO7failureyACyxq_Gq_cAEms5ErrorR_r0_lF"></a>
+                    <a name="//apple_ref/swift/Element/failure(_:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:13JavaScriptKit6ResultO7failureyACyxq_Gq_cAEms5ErrorR_r0_lF">failure(_:)</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -147,46 +147,19 @@
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>The expression must not return a value.</p>
-
-<p>If a value is provided, the result of the expression will be considered invalid.</p>
-
-<p>When no value and no error is provided, the default value will be passed to your completion
- handler.</p>
-
-<p>This strategy must only be used when <code>ReturnType</code> is <code><a href="../Structs/JSVoid.html">JSVoid</a></code>, as the web view will not
- provide a value on success for this return type.</p>
+                        <p>The operation failed and returned an error.</p>
 
                       </div>
                       <div class="declaration">
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="k">case</span> <span class="nf">noReturnValue</span><span class="p">(</span><span class="n">defaultValue</span><span class="p">:</span> <span class="kt">ReturnType</span><span class="p">)</span></code></pre>
+                          <pre class="highlight swift"><code><span class="k">case</span> <span class="nf">failure</span><span class="p">(</span><span class="kt">Failure</span><span class="p">)</span></code></pre>
 
                         </div>
                       </div>
-                      <div>
-                        <h4>Parameters</h4>
-                        <table class="graybox">
-                          <tbody>
-                            <tr>
-                              <td>
-                                <code>
-                                <em>defaultValue</em>
-                                </code>
-                              </td>
-                              <td>
-                                <div>
-                                  <p>The default value. Should be a <code><a href="../Structs/JSVoid.html">JSVoid</a></code> value, i.e. <code>JSVoid()</code>.</p>
-                                </div>
-                              </td>
-                            </tr>
-                          </tbody>
-                        </table>
-                      </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/alexaubry/JavaScriptKit/tree/master/Sources/JSExpression.swift#L83">Show on GitHub</a>
+                        <a href="https://github.com/alexaubry/JavaScriptKit/tree/master/Sources/JSTypes.swift#L33">Show on GitHub</a>
                       </div>
                     </section>
                   </div>

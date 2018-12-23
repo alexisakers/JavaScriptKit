@@ -14,7 +14,7 @@
     <a title="JSFunction Class Reference"></a>
     <header>
       <div class="content-wrapper">
-        <p><a href="../index.html">JavaScriptKit Docs</a> (100% documented)</p>
+        <p><a href="../index.html">JavaScriptKit Docs</a> (97% documented)</p>
         <p class="header-right"><a href="https://github.com/alexaubry/JavaScriptKit"><img src="../img/gh.png"/>View on GitHub</a></p>
         <p class="header-right"><a href="dash-feed://https%3A%2F%2Falexaubry%2Egithub%2Eio%2Fdocsets%2FJavaScriptKit%2Exml"><img src="../img/dash.png"/>Install in Dash</a></p>
       </div>
@@ -44,13 +44,24 @@
             </ul>
           </li>
           <li class="nav-group-name">
-            <a href="../Enums.html">Enums</a>
+            <a href="../Enums.html">Enumerations</a>
             <ul class="nav-group-tasks">
               <li class="nav-group-task">
                 <a href="../Enums/JSDecodingStrategy.html">JSDecodingStrategy</a>
               </li>
               <li class="nav-group-task">
                 <a href="../Enums/JSErrorDomain.html">JSErrorDomain</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Enums/Result.html">Result</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-group-name">
+            <a href="../Extensions.html">Extensions</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a href="../Extensions/WKWebView.html">WKWebView</a>
               </li>
             </ul>
           </li>
@@ -63,7 +74,7 @@
             </ul>
           </li>
           <li class="nav-group-name">
-            <a href="../Structs.html">Structs</a>
+            <a href="../Structs.html">Structures</a>
             <ul class="nav-group-tasks">
               <li class="nav-group-task">
                 <a href="../Structs/JSVoid.html">JSVoid</a>
@@ -78,21 +89,21 @@
             <h1>JSFunction</h1>
               <div class="declaration">
                 <div class="language">
-                  <pre class="highlight"><code><span class="kd">public</span> <span class="kd">final</span> <span class="kd">class</span> <span class="kt">JSFunction</span><span class="o">&lt;</span><span class="kt">T</span><span class="o">&gt;</span><span class="p">:</span> <span class="kt"><a href="../Protocols/JSExpression.html">JSExpression</a></span> <span class="k">where</span> <span class="kt">T</span><span class="p">:</span> <span class="kt">Decodable</span></code></pre>
+                  <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">final</span> <span class="kd">class</span> <span class="kt">JSFunction</span><span class="o">&lt;</span><span class="kt">T</span><span class="o">&gt;</span> <span class="p">:</span> <span class="kt"><a href="../Protocols/JSExpression.html">JSExpression</a></span> <span class="k">where</span> <span class="kt">T</span> <span class="p">:</span> <span class="kt">Decodable</span></code></pre>
 
                 </div>
               </div>
             <p>A JavaScript expression that executes a function in the current JavaScript <code>this</code>. The
-function variable is referenced by a key path relative to the current <code>this</code>.</p>
+ function variable is referenced by a key path relative to the current <code>this</code>.</p>
 
 <p>For instance, to present an alert:</p>
-<pre class="highlight swift"><code><span class="k">let</span> <span class="nv">alert</span> <span class="o">=</span> <span class="kt">JSFunction</span><span class="o">&lt;</span><span class="kt">JSVoid</span><span class="o">&gt;</span><span class="p">(</span><span class="s">"window.alert"</span><span class="p">,</span> <span class="nv">arguments</span><span class="p">:</span> <span class="s">"Hello from Swift!"</span><span class="p">)</span>
-<span class="c1">// equivalent to the JS script: `this.window.alert("Hello from Swift!");`</span>
+<pre class="highlight swift"><code> <span class="k">let</span> <span class="nv">alert</span> <span class="o">=</span> <span class="kt">JSFunction</span><span class="o">&lt;</span><span class="kt">JSVoid</span><span class="o">&gt;</span><span class="p">(</span><span class="s">"window.alert"</span><span class="p">,</span> <span class="nv">arguments</span><span class="p">:</span> <span class="s">"Hello from Swift!"</span><span class="p">)</span>
+ <span class="c1">// equivalent to the JS script: `this.window.alert("Hello from Swift!");`</span>
 </code></pre>
 
 <p>Instances of this class are specialized with the <code>T</code> generic parameter. It must be set to the
-return type of the JavaScript function to execute. Check the documentation of the JavaScript
-function to know what to set the parameter to.</p>
+ return type of the JavaScript function to execute. Check the documentation of the JavaScript
+ function to know what to set the parameter to.</p>
 
 <p><code>T</code> must be a <code>Decodable</code> type. This includes:</p>
 
@@ -114,9 +125,38 @@ function to know what to set the parameter to.</p>
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:13JavaScriptKit10JSFunctionC7keyPathSSv"></a>
+                    <a name="/s:13JavaScriptKit12JSExpressionP10ReturnTypeQa"></a>
+                    <a name="//apple_ref/swift/Alias/ReturnType" class="dashAnchor"></a>
+                    <a class="token" href="#/s:13JavaScriptKit12JSExpressionP10ReturnTypeQa">ReturnType</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">typealias</span> <span class="kt">ReturnType</span> <span class="o">=</span> <span class="kt">T</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div class="slightly-smaller">
+                        <a href="https://github.com/alexaubry/JavaScriptKit/tree/master/Sources/Expressions/JSFunction.swift#L35">Show on GitHub</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:13JavaScriptKit10JSFunctionC7keyPathSSvp"></a>
                     <a name="//apple_ref/swift/Property/keyPath" class="dashAnchor"></a>
-                    <a class="token" href="#/s:13JavaScriptKit10JSFunctionC7keyPathSSv">keyPath</a>
+                    <a class="token" href="#/s:13JavaScriptKit10JSFunctionC7keyPathSSvp">keyPath</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -131,7 +171,7 @@ function to know what to set the parameter to.</p>
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight"><code><span class="kd">public</span> <span class="k">let</span> <span class="nv">keyPath</span><span class="p">:</span> <span class="kt">String</span></code></pre>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="k">let</span> <span class="nv">keyPath</span><span class="p">:</span> <span class="kt">String</span></code></pre>
 
                         </div>
                       </div>
@@ -144,9 +184,9 @@ function to know what to set the parameter to.</p>
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:13JavaScriptKit10JSFunctionC9argumentsSays9Encodable_pGv"></a>
+                    <a name="/s:13JavaScriptKit10JSFunctionC9argumentsSaySE_pGvp"></a>
                     <a name="//apple_ref/swift/Property/arguments" class="dashAnchor"></a>
-                    <a class="token" href="#/s:13JavaScriptKit10JSFunctionC9argumentsSays9Encodable_pGv">arguments</a>
+                    <a class="token" href="#/s:13JavaScriptKit10JSFunctionC9argumentsSaySE_pGvp">arguments</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -161,7 +201,7 @@ function to know what to set the parameter to.</p>
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight"><code><span class="kd">public</span> <span class="k">let</span> <span class="nv">arguments</span><span class="p">:</span> <span class="p">[</span><span class="kt">Encodable</span><span class="p">]</span></code></pre>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="k">let</span> <span class="nv">arguments</span><span class="p">:</span> <span class="p">[</span><span class="kt">Encodable</span><span class="p">]</span></code></pre>
 
                         </div>
                       </div>
@@ -174,9 +214,9 @@ function to know what to set the parameter to.</p>
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:13JavaScriptKit10JSFunctionCACyxGSS_Says9Encodable_pG9argumentsdtcfc"></a>
+                    <a name="/s:13JavaScriptKit10JSFunctionC_9argumentsACyxGSS_SE_pdtcfc"></a>
                     <a name="//apple_ref/swift/Method/init(_:arguments:)" class="dashAnchor"></a>
-                    <a class="token" href="#/s:13JavaScriptKit10JSFunctionCACyxGSS_Says9Encodable_pG9argumentsdtcfc">init(_:arguments:)</a>
+                    <a class="token" href="#/s:13JavaScriptKit10JSFunctionC_9argumentsACyxGSS_SE_pdtcfc">init(_:arguments:)</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -187,8 +227,8 @@ function to know what to set the parameter to.</p>
                         <p>Creates a new method description.</p>
 
 <p>For instance, to present an alert:</p>
-<pre class="highlight swift"><code><span class="k">let</span> <span class="nv">alert</span> <span class="o">=</span> <span class="kt">JSFunction</span><span class="o">&lt;</span><span class="kt">JSVoid</span><span class="o">&gt;</span><span class="p">(</span><span class="s">"window.alert"</span><span class="p">,</span> <span class="nv">arguments</span><span class="p">:</span> <span class="s">"Hello from Swift!"</span><span class="p">)</span>
-<span class="c1">// equivalent to the JS script: `this.window.alert("Hello from Swift!");`</span>
+<pre class="highlight swift"><code> <span class="k">let</span> <span class="nv">alert</span> <span class="o">=</span> <span class="kt">JSFunction</span><span class="o">&lt;</span><span class="kt">JSVoid</span><span class="o">&gt;</span><span class="p">(</span><span class="s">"window.alert"</span><span class="p">,</span> <span class="nv">arguments</span><span class="p">:</span> <span class="s">"Hello from Swift!"</span><span class="p">)</span>
+ <span class="c1">// equivalent to the JS script: `this.window.alert("Hello from Swift!");`</span>
 </code></pre>
 
                       </div>
@@ -196,7 +236,7 @@ function to know what to set the parameter to.</p>
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight"><code><span class="kd">public</span> <span class="nf">init</span><span class="p">(</span><span class="n">_</span> <span class="nv">keyPath</span><span class="p">:</span> <span class="kt">String</span><span class="p">,</span> <span class="nv">arguments</span><span class="p">:</span> <span class="kt">Encodable</span><span class="o">...</span><span class="p">)</span></code></pre>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="nf">init</span><span class="p">(</span><span class="n">_</span> <span class="nv">keyPath</span><span class="p">:</span> <span class="kt">String</span><span class="p">,</span> <span class="nv">arguments</span><span class="p">:</span> <span class="kt">Encodable</span><span class="o">...</span><span class="p">)</span></code></pre>
 
                         </div>
                       </div>
@@ -259,12 +299,12 @@ the JavaScript function you are calling takes no arguments.</p>
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">makeExpressionString</span><span class="p">()</span> <span class="k">throws</span> <span class="o">-&gt;</span> <span class="kt">String</span></code></pre>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">makeExpressionString</span><span class="p">()</span> <span class="k">throws</span> <span class="o">-&gt;</span> <span class="kt">String</span></code></pre>
 
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/alexaubry/JavaScriptKit/tree/master/Sources/Expressions/JSFunction.swift#L67-L80">Show on GitHub</a>
+                        <a href="https://github.com/alexaubry/JavaScriptKit/tree/master/Sources/Expressions/JSFunction.swift#L67-L77">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -274,8 +314,8 @@ the JavaScript function you are calling takes no arguments.</p>
           </section>
         </section>
         <section id="footer">
-          <p>Copyright © 2017 Alexis Aubry. Available under the MIT License.</p>
-          <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external">jazzy ♪♫ v0.8.3</a>, a <a class="link" href="http://realm.io" target="_blank" rel="external">Realm</a> project.</p>
+          <p>Copyright © 2017 - present Alexis Aubry. Available under the MIT License.</p>
+          <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external">jazzy ♪♫ v0.9.2</a>, a <a class="link" href="http://realm.io" target="_blank" rel="external">Realm</a> project.</p>
         </section>
       </article>
     </div>

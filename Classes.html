@@ -10,10 +10,11 @@
     
   </head>
   <body>
+    <a name="//apple_ref/swift/Section/Classes" class="dashAnchor"></a>
     <a title="Classes  Reference"></a>
     <header>
       <div class="content-wrapper">
-        <p><a href="index.html">JavaScriptKit Docs</a> (100% documented)</p>
+        <p><a href="index.html">JavaScriptKit Docs</a> (97% documented)</p>
         <p class="header-right"><a href="https://github.com/alexaubry/JavaScriptKit"><img src="img/gh.png"/>View on GitHub</a></p>
         <p class="header-right"><a href="dash-feed://https%3A%2F%2Falexaubry%2Egithub%2Eio%2Fdocsets%2FJavaScriptKit%2Exml"><img src="img/dash.png"/>Install in Dash</a></p>
       </div>
@@ -43,13 +44,24 @@
             </ul>
           </li>
           <li class="nav-group-name">
-            <a href="Enums.html">Enums</a>
+            <a href="Enums.html">Enumerations</a>
             <ul class="nav-group-tasks">
               <li class="nav-group-task">
                 <a href="Enums/JSDecodingStrategy.html">JSDecodingStrategy</a>
               </li>
               <li class="nav-group-task">
                 <a href="Enums/JSErrorDomain.html">JSErrorDomain</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Enums/Result.html">Result</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-group-name">
+            <a href="Extensions.html">Extensions</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a href="Extensions/WKWebView.html">WKWebView</a>
               </li>
             </ul>
           </li>
@@ -62,7 +74,7 @@
             </ul>
           </li>
           <li class="nav-group-name">
-            <a href="Structs.html">Structs</a>
+            <a href="Structs.html">Structures</a>
             <ul class="nav-group-tasks">
               <li class="nav-group-task">
                 <a href="Structs/JSVoid.html">JSVoid</a>
@@ -84,63 +96,6 @@
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:13JavaScriptKit10JSVariableC"></a>
-                    <a name="//apple_ref/swift/Class/JSVariable" class="dashAnchor"></a>
-                    <a class="token" href="#/s:13JavaScriptKit10JSVariableC">JSVariable</a>
-                    </code>
-                  </div>
-                  <div class="height-container">
-                    <div class="pointer-container"></div>
-                    <section class="section">
-                      <div class="pointer"></div>
-                      <div class="abstract">
-                        <p>A JavaScript expression that returns the value of a variable in the current JavaScript
-<code>this</code>. The variable is referenced by a key path relative to the current <code>this</code>.</p>
-
-<p>For instance, to get the title of the current document:</p>
-<pre class="highlight swift"><code><span class="k">let</span> <span class="nv">title</span> <span class="o">=</span> <span class="kt">JSVariable</span><span class="o">&lt;</span><span class="kt">String</span><span class="o">&gt;</span><span class="p">(</span><span class="s">"document.title"</span><span class="p">)</span>
-<span class="c1">// equivalent to the JS script: `this.document.title;`</span>
-</code></pre>
-
-<p>Instances of this class are specialized with the <code>T</code> generic parameter. It must be set to the
-type of the JavaScript variable to query. Check the documentation of the JavaScript variable
-to know what to set the parameter to.</p>
-
-<p><code>T</code> must be a <code>Decodable</code> type. This includes:</p>
-
-<ul>
-<li>Primitive values (Strings, Numbers, Booleans, &hellip;)</li>
-<li>Decodable enumerations</li>
-<li>Objects decodable from JSON</li>
-<li>Arrays of primitive values</li>
-<li>Arrays of enumeration cases</li>
-<li>Arrays of objects</li>
-<li>Native dictionaries</li>
-</ul>
-
-                        <a href="Classes/JSVariable.html" class="slightly-smaller">See more</a>
-                      </div>
-                      <div class="declaration">
-                        <h4>Declaration</h4>
-                        <div class="language">
-                          <p class="aside-title">Swift</p>
-                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">final</span> <span class="kd">class</span> <span class="kt">JSVariable</span><span class="o">&lt;</span><span class="kt">T</span><span class="o">&gt;</span><span class="p">:</span> <span class="kt"><a href="Protocols/JSExpression.html">JSExpression</a></span> <span class="k">where</span> <span class="kt">T</span><span class="p">:</span> <span class="kt">Decodable</span></code></pre>
-
-                        </div>
-                      </div>
-                      <div class="slightly-smaller">
-                        <a href="https://github.com/alexaubry/JavaScriptKit/tree/master/Sources/Expressions/JSVariable.swift#L34-L63">Show on GitHub</a>
-                      </div>
-                    </section>
-                  </div>
-                </li>
-              </ul>
-            </div>
-            <div class="task-group">
-              <ul>
-                <li class="item">
-                  <div>
-                    <code>
                     <a name="/s:13JavaScriptKit10JSFunctionC"></a>
                     <a name="//apple_ref/swift/Class/JSFunction" class="dashAnchor"></a>
                     <a class="token" href="#/s:13JavaScriptKit10JSFunctionC">JSFunction</a>
@@ -152,16 +107,16 @@ to know what to set the parameter to.</p>
                       <div class="pointer"></div>
                       <div class="abstract">
                         <p>A JavaScript expression that executes a function in the current JavaScript <code>this</code>. The
-function variable is referenced by a key path relative to the current <code>this</code>.</p>
+ function variable is referenced by a key path relative to the current <code>this</code>.</p>
 
 <p>For instance, to present an alert:</p>
-<pre class="highlight swift"><code><span class="k">let</span> <span class="nv">alert</span> <span class="o">=</span> <span class="kt">JSFunction</span><span class="o">&lt;</span><span class="kt">JSVoid</span><span class="o">&gt;</span><span class="p">(</span><span class="s">"window.alert"</span><span class="p">,</span> <span class="nv">arguments</span><span class="p">:</span> <span class="s">"Hello from Swift!"</span><span class="p">)</span>
-<span class="c1">// equivalent to the JS script: `this.window.alert("Hello from Swift!");`</span>
+<pre class="highlight swift"><code> <span class="k">let</span> <span class="nv">alert</span> <span class="o">=</span> <span class="kt">JSFunction</span><span class="o">&lt;</span><span class="kt">JSVoid</span><span class="o">&gt;</span><span class="p">(</span><span class="s">"window.alert"</span><span class="p">,</span> <span class="nv">arguments</span><span class="p">:</span> <span class="s">"Hello from Swift!"</span><span class="p">)</span>
+ <span class="c1">// equivalent to the JS script: `this.window.alert("Hello from Swift!");`</span>
 </code></pre>
 
 <p>Instances of this class are specialized with the <code>T</code> generic parameter. It must be set to the
-return type of the JavaScript function to execute. Check the documentation of the JavaScript
-function to know what to set the parameter to.</p>
+ return type of the JavaScript function to execute. Check the documentation of the JavaScript
+ function to know what to set the parameter to.</p>
 
 <p><code>T</code> must be a <code>Decodable</code> type. This includes:</p>
 
@@ -182,12 +137,12 @@ function to know what to set the parameter to.</p>
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">final</span> <span class="kd">class</span> <span class="kt">JSFunction</span><span class="o">&lt;</span><span class="kt">T</span><span class="o">&gt;</span><span class="p">:</span> <span class="kt"><a href="Protocols/JSExpression.html">JSExpression</a></span> <span class="k">where</span> <span class="kt">T</span><span class="p">:</span> <span class="kt">Decodable</span></code></pre>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">final</span> <span class="kd">class</span> <span class="kt">JSFunction</span><span class="o">&lt;</span><span class="kt">T</span><span class="o">&gt;</span> <span class="p">:</span> <span class="kt"><a href="Protocols/JSExpression.html">JSExpression</a></span> <span class="k">where</span> <span class="kt">T</span> <span class="p">:</span> <span class="kt">Decodable</span></code></pre>
 
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/alexaubry/JavaScriptKit/tree/master/Sources/Expressions/JSFunction.swift#L35-L82">Show on GitHub</a>
+                        <a href="https://github.com/alexaubry/JavaScriptKit/tree/master/Sources/Expressions/JSFunction.swift#L35-L79">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -210,31 +165,31 @@ function to know what to set the parameter to.</p>
                       <div class="pointer"></div>
                       <div class="abstract">
                         <p>A JavaScript expression that executes a user-defined script. This class allows you to
-evaluate your own custom scripts.</p>
+ evaluate your own custom scripts.</p>
 
 <p>For instance, to return the text of the longest <p> node in the current document:</p>
-<pre class="highlight swift"><code><span class="k">let</span> <span class="nv">javaScript</span> <span class="o">=</span> <span class="s">"""
-var longestInnerHTML = "";
-var pTags = document.getElementsByTagName("</span><span class="n">p</span><span class="s">");
+<pre class="highlight swift"><code> <span class="k">let</span> <span class="nv">javaScript</span> <span class="o">=</span> <span class="s">"""
+ var longestInnerHTML = "";
+ var pTags = document.getElementsByTagName("</span><span class="n">p</span><span class="s">");
 
-for (var i = 0; i &lt; pTags.length; i++) {
-    var innerHTML = pTags[i].innerHTML;
+ for (var i = 0; i &lt; pTags.length; i++) {
+     var innerHTML = pTags[i].innerHTML;
 
-    if (innerHTML.length &gt; longestInnerHTML.length) {
-        longestInnerHTML = innerHTML;
-    }
-}
+     if (innerHTML.length &gt; longestInnerHTML.length) {
+         longestInnerHTML = innerHTML;
+     }
+ }
 
-longestInnerHTML;
-"""</span>
+ longestInnerHTML;
+ """</span>
 
-<span class="k">let</span> <span class="nv">findLongestText</span> <span class="o">=</span> <span class="kt">JSScript</span><span class="o">&lt;</span><span class="kt">String</span><span class="o">&gt;</span><span class="p">(</span><span class="n">javaScript</span><span class="p">)</span>
-<span class="c1">// this is equivalent to running the script inside a browser's JavaScript console.</span>
+ <span class="k">let</span> <span class="nv">findLongestText</span> <span class="o">=</span> <span class="kt">JSScript</span><span class="o">&lt;</span><span class="kt">String</span><span class="o">&gt;</span><span class="p">(</span><span class="n">javaScript</span><span class="p">)</span>
+ <span class="c1">// this is equivalent to running the script inside a browser's JavaScript console.</span>
 </code></pre>
 
 <p>Instances of this class are specialized with the <code>T</code> generic parameter. It must be set to the
-type of the last statement in your script. In the above example, <code>findLongestText</code> has a return
-type of <code>String</code> because its last statement is a String (<code>longestInnerHTML</code>).</p>
+ type of the last statement in your script. In the above example, <code>findLongestText</code> has a return
+ type of <code>String</code> because its last statement is a String (<code>longestInnerHTML</code>).</p>
 
 <p><code>T</code> must be a <code>Decodable</code> type. This includes:</p>
 
@@ -255,7 +210,7 @@ type of <code>String</code> because its last statement is a String (<code>longes
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">final</span> <span class="kd">class</span> <span class="kt">JSScript</span><span class="o">&lt;</span><span class="kt">T</span><span class="o">&gt;</span><span class="p">:</span> <span class="kt"><a href="Protocols/JSExpression.html">JSExpression</a></span> <span class="k">where</span> <span class="kt">T</span><span class="p">:</span> <span class="kt">Decodable</span></code></pre>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">final</span> <span class="kd">class</span> <span class="kt">JSScript</span><span class="o">&lt;</span><span class="kt">T</span><span class="o">&gt;</span> <span class="p">:</span> <span class="kt"><a href="Protocols/JSExpression.html">JSExpression</a></span> <span class="k">where</span> <span class="kt">T</span> <span class="p">:</span> <span class="kt">Decodable</span></code></pre>
 
                         </div>
                       </div>
@@ -267,11 +222,68 @@ type of <code>String</code> because its last statement is a String (<code>longes
                 </li>
               </ul>
             </div>
+            <div class="task-group">
+              <ul>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:13JavaScriptKit10JSVariableC"></a>
+                    <a name="//apple_ref/swift/Class/JSVariable" class="dashAnchor"></a>
+                    <a class="token" href="#/s:13JavaScriptKit10JSVariableC">JSVariable</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>A JavaScript expression that returns the value of a variable in the current JavaScript
+ <code>this</code>. The variable is referenced by a key path relative to the current <code>this</code>.</p>
+
+<p>For instance, to get the title of the current document:</p>
+<pre class="highlight swift"><code> <span class="k">let</span> <span class="nv">title</span> <span class="o">=</span> <span class="kt">JSVariable</span><span class="o">&lt;</span><span class="kt">String</span><span class="o">&gt;</span><span class="p">(</span><span class="s">"document.title"</span><span class="p">)</span>
+ <span class="c1">// equivalent to the JS script: `this.document.title;`</span>
+</code></pre>
+
+<p>Instances of this class are specialized with the <code>T</code> generic parameter. It must be set to the
+ type of the JavaScript variable to query. Check the documentation of the JavaScript variable
+ to know what to set the parameter to.</p>
+
+<p><code>T</code> must be a <code>Decodable</code> type. This includes:</p>
+
+<ul>
+<li>Primitive values (Strings, Numbers, Booleans, &hellip;)</li>
+<li>Decodable enumerations</li>
+<li>Objects decodable from JSON</li>
+<li>Arrays of primitive values</li>
+<li>Arrays of enumeration cases</li>
+<li>Arrays of objects</li>
+<li>Native dictionaries</li>
+</ul>
+
+                        <a href="Classes/JSVariable.html" class="slightly-smaller">See more</a>
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">final</span> <span class="kd">class</span> <span class="kt">JSVariable</span><span class="o">&lt;</span><span class="kt">T</span><span class="o">&gt;</span> <span class="p">:</span> <span class="kt"><a href="Protocols/JSExpression.html">JSExpression</a></span> <span class="k">where</span> <span class="kt">T</span> <span class="p">:</span> <span class="kt">Decodable</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div class="slightly-smaller">
+                        <a href="https://github.com/alexaubry/JavaScriptKit/tree/master/Sources/Expressions/JSVariable.swift#L34-L63">Show on GitHub</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+              </ul>
+            </div>
           </section>
         </section>
         <section id="footer">
-          <p>Copyright © 2017 Alexis Aubry. Available under the MIT License.</p>
-          <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external">jazzy ♪♫ v0.8.3</a>, a <a class="link" href="http://realm.io" target="_blank" rel="external">Realm</a> project.</p>
+          <p>Copyright © 2017 - present Alexis Aubry. Available under the MIT License.</p>
+          <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external">jazzy ♪♫ v0.9.2</a>, a <a class="link" href="http://realm.io" target="_blank" rel="external">Realm</a> project.</p>
         </section>
       </article>
     </div>
