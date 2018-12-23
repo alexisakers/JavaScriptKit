@@ -7,7 +7,8 @@ steps:
   displayName: "Setup environment"
 
 - script: |
-    fastlane build
+    fastlane ios build
+    fastlane mac build
   displayName: "Build"
 
 - task: PublishBuildArtifacts@1
@@ -18,7 +19,8 @@ steps:
   displayName: "Store build log"
 
 - script: |
-    fastlane test
+    fastlane ios test
+    fastlane mac test
   displayName: "Test"
 
 - task: PublishBuildArtifacts@1
@@ -27,3 +29,7 @@ steps:
     artifactName: "Test logs"
   condition: succeededOrFailed()
   displayName: "Store test log"
+  
+- script: |
+    fastlane validate
+  displayName: "Validate with package managers"
