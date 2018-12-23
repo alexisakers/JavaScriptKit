@@ -27,7 +27,6 @@
 		5530C3011F5DAC73005A97C9 /* KeyedEncodingTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5530C2FF1F5DAC73005A97C9 /* KeyedEncodingTests.swift */; };
 		5538FC781F6F10280039AFD2 /* CodableSupportTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5538FC771F6F10280039AFD2 /* CodableSupportTests.swift */; };
 		5538FC791F6F10280039AFD2 /* CodableSupportTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5538FC771F6F10280039AFD2 /* CodableSupportTests.swift */; };
-		5543E4951F5736E50057E28B /* Result.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5543E4941F5736E50057E28B /* Result.framework */; };
 		5543E4961F5737370057E28B /* JavaScriptKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 556E88E71F556EF70031476D /* JavaScriptKit.framework */; };
 		5543E4981F57374F0057E28B /* JavaScriptKit.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 556E88E71F556EF70031476D /* JavaScriptKit.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		555CCC2F1F5EA7FD00BA9E1D /* UnkeyedDecodingTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 555CCC2E1F5EA7FD00BA9E1D /* UnkeyedDecodingTests.swift */; };
@@ -150,7 +149,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				5543E4951F5736E50057E28B /* Result.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -634,7 +632,7 @@
 				SDKROOT = macosx;
 				SKIP_INSTALL = YES;
 				SUPPORTED_PLATFORMS = macosx;
-				SWIFT_VERSION = 4.0;
+				SWIFT_VERSION = 4.2;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Debug;
@@ -661,7 +659,7 @@
 				SDKROOT = macosx;
 				SKIP_INSTALL = YES;
 				SUPPORTED_PLATFORMS = macosx;
-				SWIFT_VERSION = 4.0;
+				SWIFT_VERSION = 4.2;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Release;
@@ -680,7 +678,7 @@
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SDKROOT = macosx;
 				SUPPORTED_PLATFORMS = macosx;
-				SWIFT_VERSION = 4.0;
+				SWIFT_VERSION = 4.2;
 			};
 			name = Debug;
 		};
@@ -698,7 +696,7 @@
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SDKROOT = macosx;
 				SUPPORTED_PLATFORMS = macosx;
-				SWIFT_VERSION = 4.0;
+				SWIFT_VERSION = 4.2;
 			};
 			name = Release;
 		};
@@ -841,7 +839,7 @@
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SDKROOT = iphoneos;
 				SKIP_INSTALL = YES;
-				SWIFT_VERSION = 4.0;
+				SWIFT_VERSION = 4.2;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Debug;
@@ -866,7 +864,7 @@
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SDKROOT = iphoneos;
 				SKIP_INSTALL = YES;
-				SWIFT_VERSION = 4.0;
+				SWIFT_VERSION = 4.2;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Release;
@@ -883,7 +881,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = "fr.alexaubry.JavaScriptKit.Tests-iOS";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
-				SWIFT_VERSION = 4.0;
+				SWIFT_VERSION = 4.2;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Debug;
@@ -900,7 +898,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = "fr.alexaubry.JavaScriptKit.Tests-iOS";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
-				SWIFT_VERSION = 4.0;
+				SWIFT_VERSION = 4.2;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Release;
