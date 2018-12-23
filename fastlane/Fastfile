@@ -1,0 +1,69 @@
+opt_out_usage
+
+platform :ios do
+    desc "Build for testing"
+    lane :build do
+        scan(
+            scheme: "JavaScriptKit-iOS",
+            configuration: "Debug",
+            build_for_testing: true,
+            devices: ["iPhone 7"],
+            code_coverage: true,
+            derived_data_path: "DerivedData",
+            buildlog_path: "build",
+            output_directory: "build",
+            output_types: "junit"
+        )
+    end
+
+    desc "Test without building"
+    lane :test do
+        scan(
+            scheme: "JavaScriptKit-iOS",
+            configuration: "Debug",
+            test_without_building: true,
+            devices: ["iPhone 7"],
+            code_coverage: true,
+            derived_data_path: "DerivedData",
+            buildlog_path: "test",
+            output_directory: "test",
+            output_types: "junit"
+        )
+    end
+end
+
+platform :mac do
+  desc "Build for testing"
+  lane :build do
+      scan(
+          scheme: "JavaScriptKit-macOS",
+          configuration: "Debug",
+          build_for_testing: true,
+          code_coverage: true,
+          derived_data_path: "DerivedData",
+          buildlog_path: "build",
+          output_directory: "build",
+          output_types: "junit"
+      )
+  end
+
+  desc "Test without building"
+  lane :test do
+      scan(
+          scheme: "JavaScriptKit-macOS",
+          configuration: "Debug",
+          test_without_building: true,
+          code_coverage: true,
+          derived_data_path: "DerivedData",
+          buildlog_path: "test",
+          output_directory: "test",
+          output_types: "junit"
+      )
+  end
+end
+
+desc "Validate for Release"
+lane :validate do
+  sh("cd .. && carthage build --no-skip-current")
+  sh("cd .. && bundle exec pod lib lint")
+end

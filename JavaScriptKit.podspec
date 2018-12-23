@@ -21,7 +21,7 @@ DESC
   s.resource_bundles      = { "JavaScriptKit" => ["Locales/**/*.lproj"] }
 
   s.frameworks = "Foundation", "WebKit"
-  s.swift_version = 4.2
+  s.swift_version = "4.2"
 
   s.documentation_url = "https://alexaubry.github.io/JavaScriptKit"
 end

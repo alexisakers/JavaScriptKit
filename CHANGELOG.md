@@ -12,6 +12,7 @@
 - Move to Swift 4.2 and Xcode 10
 - Update documentation
 - Simplified tests
+- Add Fastlane and Azure DevOps support
 
 ## 🔖 v1.0.0
 
