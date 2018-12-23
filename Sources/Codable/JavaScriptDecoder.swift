@@ -1,23 +1,23 @@
-/**
- *  JavaScriptKit
- *  Copyright (c) 2017 Alexis Aubry. Licensed under the MIT license.
- */
+//
+//  JavaScriptKit
+//  Copyright (c) 2017 - present Alexis Aubry. Licensed under the MIT license.
+//
 
 import Foundation
 
-///
-/// Decodes a JavaScript expression result to a `Decodable` value.
-///
+/**
+ * Decodes a JavaScript expression result to a `Decodable` value.
+ */
 
 final class JavaScriptDecoder {
 
-    ///
-    /// Decodes a value returned by a JavaScript expression and decodes it as a the specified
-    /// `Decodable` type.
-    ///
-    /// - parameter value: The value returned by the JavaScript expression.
-    /// - returns: The JavaScript text representing the value.
-    ///
+    /**
+     * Decodes a value returned by a JavaScript expression and decodes it as a the specified
+     * `Decodable` type.
+     *
+     * - parameter value: The value returned by the JavaScript expression.
+     * - returns: The JavaScript text representing the value.
+     */
 
     func decode<T: Decodable>(_ value: Any) throws -> T {
         let container = try JavaScriptDecoder.makeContainer(with: value)
@@ -34,7 +34,6 @@ final class JavaScriptDecoder {
 
     /// Creates a Coding Container from a value.
     fileprivate static func makeContainer(with value: Any) throws -> JSCodingContainer {
-
         if let dictionary = value as? NSDictionary {
             let storage = DictionaryStorage(dictionary)
             return .keyed(storage)
@@ -45,16 +44,15 @@ final class JavaScriptDecoder {
             let storage = try SingleValueStorage(storedValue: value)
             return .singleValue(storage)
         }
-
     }
     
 }
 
 // MARK: - Structure Decoder
 
-///
-/// An object that decodes the structure of a JavaScript value.
-///
+/**
+ * An object that decodes the structure of a JavaScript value.
+ */
 
 private class JSStructureDecoder: Decoder {
 
@@ -71,7 +69,6 @@ private class JSStructureDecoder: Decoder {
 
     /// The type of the container (for debug printing)
     var containerType: String {
-
         switch container {
         case .singleValue:
             return "a single value"
@@ -80,7 +77,6 @@ private class JSStructureDecoder: Decoder {
         case .keyed:
             return "a keyed"
         }
-
     }
 
     // MARK: Initilization
@@ -94,7 +90,6 @@ private class JSStructureDecoder: Decoder {
     // MARK: - Containers
 
     func container<Key: CodingKey>(keyedBy type: Key.Type) throws -> KeyedDecodingContainer<Key> {
-
         switch container {
         case .keyed(let storage):
             let decodingContainer = JSKeyedDecodingContainer<Key>(referencing: self, storage: storage)
@@ -104,11 +99,9 @@ private class JSStructureDecoder: Decoder {
             let errorContext = DecodingError.Context(codingPath: codingPath, debugDescription: "Attempt to decode the result using a keyed container container, but the data is encoded as \(containerType) container.")
             throw DecodingError.dataCorrupted(errorContext)
         }
-
     }
 
     func unkeyedContainer() throws -> UnkeyedDecodingContainer {
-
         switch container {
         case .unkeyed(let storage):
             return JSUnkeyedDecodingContainer(referencing: self, storage: storage)
@@ -117,11 +110,9 @@ private class JSStructureDecoder: Decoder {
             let errorContext = DecodingError.Context(codingPath: codingPath, debugDescription: "Attempt to decode the result using an unkeyed container container, but the data is encoded as \(containerType) container.")
             throw DecodingError.dataCorrupted(errorContext)
         }
-
     }
 
     func singleValueContainer() throws -> SingleValueDecodingContainer {
-
         switch container {
         case .singleValue(let storage):
             return JSSingleValueDecodingContainer(referencing: self, storage: storage, codingPath: codingPath)
@@ -130,12 +121,15 @@ private class JSStructureDecoder: Decoder {
             let errorContext = DecodingError.Context(codingPath: codingPath, debugDescription: "Attempt to decode the result using a single value container, but the data is encoded as \(containerType) container.")
             throw DecodingError.dataCorrupted(errorContext)
         }
-
     }
 
 }
 
 // MARK: - Single Value Decoder
+
+/**
+ * A decoding container for a single value.
+ */
 
 private class JSSingleValueDecodingContainer: SingleValueDecodingContainer {
 
@@ -228,9 +222,9 @@ private class JSSingleValueDecodingContainer: SingleValueDecodingContainer {
 
 // MARK: - Unkeyed Container
 
-///
-/// A decoding container for unkeyed storage.
-///
+/**
+ * A decoding container for unkeyed storage.
+ */
 
 private class JSUnkeyedDecodingContainer: UnkeyedDecodingContainer {
 
@@ -272,7 +266,6 @@ private class JSUnkeyedDecodingContainer: UnkeyedDecodingContainer {
 
     /// Get the value at the current index, converted to the specified type.
     func getNextValue<T>() throws -> T {
-
         guard !isAtEnd else {
             throw DecodingError.valueNotFound(Decoder.self,
                                               DecodingError.Context(codingPath: self.codingPath,
@@ -286,9 +279,7 @@ private class JSUnkeyedDecodingContainer: UnkeyedDecodingContainer {
         }
 
         currentIndex += 1
-
         return value
-
     }
 
     /// Decode the value at the current index.
@@ -369,14 +360,12 @@ private class JSUnkeyedDecodingContainer: UnkeyedDecodingContainer {
     // MARK: Nested Containers
 
     func nestedContainer<NestedKey>(keyedBy type: NestedKey.Type) throws -> KeyedDecodingContainer<NestedKey> where NestedKey : CodingKey {
-
         let dictionaryStorage = try DictionaryStorage(getNextValue())
         let decodingContainer = JSKeyedDecodingContainer<NestedKey>(referencing: decoder,
                                                                     storage: dictionaryStorage,
                                                                     codingPath: codingPath)
 
         return KeyedDecodingContainer(decodingContainer)
-
     }
 
     func nestedUnkeyedContainer() throws -> UnkeyedDecodingContainer {
@@ -401,12 +390,11 @@ private class JSUnkeyedDecodingContainer: UnkeyedDecodingContainer {
 
 // MARK: - Keyed Container
 
-///
-/// A decoding container for keyed storage.
-///
+/**
+ * A decoding container for keyed storage.
+ */
 
 private class JSKeyedDecodingContainer<K: CodingKey>: KeyedDecodingContainerProtocol {
-
     typealias Key = K
 
     // MARK: Properties
@@ -439,7 +427,6 @@ private class JSKeyedDecodingContainer<K: CodingKey>: KeyedDecodingContainerProt
 
     /// Decode the value for the given key.
     func decodeValue<T>(forKey key: Key, _ unboxer: (SingleValueStorage) throws -> T) throws -> T {
-
         guard let value = storage[key.stringValue] else {
             throw DecodingError.valueNotFound(T.self,
                                               DecodingError.Context(codingPath: codingPath,
@@ -448,7 +435,6 @@ private class JSKeyedDecodingContainer<K: CodingKey>: KeyedDecodingContainerProt
 
         let valueStorage = try SingleValueStorage(storedValue: value)
         return try unboxer(valueStorage)
-
     }
 
     func contains(_ key: K) -> Bool {
@@ -516,7 +502,6 @@ private class JSKeyedDecodingContainer<K: CodingKey>: KeyedDecodingContainerProt
     }
 
     func decode<T: Decodable>(_ type: T.Type, forKey key: K) throws -> T {
-
         guard let value = storage[key.stringValue] else {
             throw DecodingError.valueNotFound(T.self,
                                               DecodingError.Context(codingPath: codingPath,
@@ -524,13 +509,11 @@ private class JSKeyedDecodingContainer<K: CodingKey>: KeyedDecodingContainerProt
         }
 
         return try decoder.unboxDecodableValue(value)
-
     }
 
     // MARK: Nested Containers
 
     func nestedContainer<NestedKey>(keyedBy type: NestedKey.Type, forKey key: K) throws -> KeyedDecodingContainer<NestedKey> where NestedKey : CodingKey {
-
         guard let value = storage[key.stringValue] as? NSDictionary else {
             throw DecodingError.valueNotFound(NSDictionary.self,
                                               DecodingError.Context(codingPath: codingPath,
@@ -541,11 +524,9 @@ private class JSKeyedDecodingContainer<K: CodingKey>: KeyedDecodingContainerProt
         let decodingContainer = JSKeyedDecodingContainer<NestedKey>(referencing: decoder, storage: dictionaryStorage, codingPath: codingPath)
 
         return KeyedDecodingContainer(decodingContainer)
-
     }
 
     func nestedUnkeyedContainer(forKey key: K) throws -> UnkeyedDecodingContainer {
-
         guard let value = storage[key.stringValue] as? NSArray else {
             throw DecodingError.valueNotFound(NSArray.self,
                                               DecodingError.Context(codingPath: codingPath,
@@ -554,11 +535,9 @@ private class JSKeyedDecodingContainer<K: CodingKey>: KeyedDecodingContainerProt
 
         let arrayStorage = ArrayStorage(value)
         return JSUnkeyedDecodingContainer(referencing: decoder, storage: arrayStorage, codingPath: codingPath)
-
     }
 
     func superDecoder() throws -> Decoder {
-
         guard let value = storage[JSONKey.super.stringValue] else {
             throw DecodingError.valueNotFound(NSDictionary.self,
                                               DecodingError.Context(codingPath: codingPath,
@@ -567,11 +546,9 @@ private class JSKeyedDecodingContainer<K: CodingKey>: KeyedDecodingContainerProt
 
         let container = try JavaScriptDecoder.makeContainer(with: value)
         return JSStructureDecoder(container: container, codingPath: decoder.codingPath, userInfo: decoder.userInfo)
-
     }
 
     func superDecoder(forKey key: K) throws -> Decoder {
-
         guard let value = storage[key.stringValue] else {
             throw DecodingError.valueNotFound(NSDictionary.self,
                                               DecodingError.Context(codingPath: codingPath,
@@ -580,7 +557,6 @@ private class JSKeyedDecodingContainer<K: CodingKey>: KeyedDecodingContainerProt
 
         let container = try JavaScriptDecoder.makeContainer(with: value)
         return JSStructureDecoder(container: container, codingPath: decoder.codingPath, userInfo: decoder.userInfo)
-
     }
 
 }
@@ -590,24 +566,20 @@ private class JSKeyedDecodingContainer<K: CodingKey>: KeyedDecodingContainerProt
 extension JSStructureDecoder {
 
     func unboxNil(_ storage: SingleValueStorage) -> Bool {
-
         switch storage {
         case .null:
             return true
         default:
             return false
         }
-
     }
 
     func unboxBool(_ storage: SingleValueStorage) throws -> Bool {
-
         switch storage {
         case .boolean(let bool):
             return bool
 
         case .number(let number):
-
             guard (number == kCFBooleanTrue) || (number == kCFBooleanFalse) else {
                 try throwTypeError(storedType: storage.storedType, expected: "Bool")
             }
@@ -617,154 +589,126 @@ extension JSStructureDecoder {
         default:
             try throwTypeError(storedType: storage.storedType, expected: "Bool")
         }
-
     }
 
     func unboxInt(_ storage: SingleValueStorage) throws -> Int {
-
         switch storage {
         case .number(let number):
             return number.intValue
         default:
             try throwTypeError(storedType: storage.storedType, expected: "Int")
         }
-
     }
 
     func unboxInt8(_ storage: SingleValueStorage) throws -> Int8 {
-
         switch storage {
         case .number(let number):
             return number.int8Value
         default:
             try throwTypeError(storedType: storage.storedType, expected: "Int8")
         }
-
     }
 
     func unboxInt16(_ storage: SingleValueStorage) throws -> Int16 {
-
         switch storage {
         case .number(let number):
             return number.int16Value
         default:
             try throwTypeError(storedType: storage.storedType, expected: "Int16")
         }
-
     }
 
     func unboxInt32(_ storage: SingleValueStorage) throws -> Int32 {
-
         switch storage {
         case .number(let number):
             return number.int32Value
         default:
             try throwTypeError(storedType: storage.storedType, expected: "Int32")
         }
-
     }
 
     func unboxInt64(_ storage: SingleValueStorage) throws -> Int64 {
-
         switch storage {
         case .number(let number):
             return number.int64Value
         default:
             try throwTypeError(storedType: storage.storedType, expected: "Int64")
         }
-
     }
 
     func unboxUInt(_ storage: SingleValueStorage) throws -> UInt {
-
         switch storage {
         case .number(let number):
             return number.uintValue
         default:
             try throwTypeError(storedType: storage.storedType, expected: "UInt")
         }
-
     }
 
     func unboxUInt8(_ storage: SingleValueStorage) throws -> UInt8 {
-
         switch storage {
         case .number(let number):
             return number.uint8Value
         default:
             try throwTypeError(storedType: storage.storedType, expected: "UInt8")
         }
-
     }
 
     func unboxUInt16(_ storage: SingleValueStorage) throws -> UInt16 {
-
         switch storage {
         case .number(let number):
             return number.uint16Value
         default:
             try throwTypeError(storedType: storage.storedType, expected: "UInt16")
         }
-
     }
 
     func unboxUInt32(_ storage: SingleValueStorage) throws -> UInt32 {
-
         switch storage {
         case .number(let number):
             return number.uint32Value
         default:
             try throwTypeError(storedType: storage.storedType, expected: "UInt32")
         }
-
     }
 
     func unboxUInt64(_ storage: SingleValueStorage) throws -> UInt64 {
-
         switch storage {
         case .number(let number):
             return number.uint64Value
         default:
             try throwTypeError(storedType: storage.storedType, expected: "UInt64")
         }
-
     }
 
     func unboxFloat(_ storage: SingleValueStorage) throws -> Float {
-
         switch storage {
         case .number(let number):
             return Float(number.doubleValue)
         default:
             try throwTypeError(storedType: storage.storedType, expected: "Float")
         }
-
     }
 
     func unboxDouble(_ storage: SingleValueStorage) throws -> Double {
-
         switch storage {
         case .number(let number):
             return number.doubleValue
         default:
             try throwTypeError(storedType: storage.storedType, expected: "Float")
         }
-
     }
 
     func unboxString(_ storage: SingleValueStorage) throws -> String {
-
         switch storage {
         case .string(let string):
             return string
         default:
             try throwTypeError(storedType: storage.storedType, expected: "String")
         }
-
     }
 
     func unboxDate(_ storage: SingleValueStorage) throws -> Date {
-
         switch storage {
         case .date(let date):
             return date
@@ -773,14 +717,11 @@ extension JSStructureDecoder {
         default:
             try throwTypeError(storedType: storage.storedType, expected: "Date")
         }
-
     }
 
     func unboxURL(_ storage: SingleValueStorage) throws -> URL {
-
         switch storage {
         case .string(let string):
-
             guard let url = URL(string: string) else {
                 try throwTypeError(storedType: storage.storedType, expected: "URL")
             }
@@ -790,7 +731,6 @@ extension JSStructureDecoder {
         default:
             try throwTypeError(storedType: storage.storedType, expected: "URL")
         }
-
     }
 
     func unboxDecodableValue<T: Decodable>(_ value: Any) throws -> T {
@@ -799,7 +739,6 @@ extension JSStructureDecoder {
     }
 
     func unboxDecodable<T: Decodable>(_ storage: SingleValueStorage) throws -> T {
-
         if T.self == Date.self {
             return try unboxDate(storage) as! T
         } else if T.self == URL.self {
@@ -807,16 +746,13 @@ extension JSStructureDecoder {
         }
 
         return try unboxDecodable(in: .singleValue(storage))
-
     }
 
     private func unboxDecodable<T: Decodable>(in container: JSCodingContainer) throws -> T {
-
         let tempDecoder = JSStructureDecoder(container: container, codingPath: codingPath)
         let decodedObject = try T(from: tempDecoder)
 
         return decodedObject
-
     }
 
     // MARK: Utilities

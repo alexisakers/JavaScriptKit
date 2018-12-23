@@ -19,7 +19,23 @@ class JavaScriptEncoder {
 
     func encode(_ argument: Encodable) throws -> String {
         let structureEncoder = JSStructureEncoder()
-        try argument.encode(to: structureEncoder)
+
+        /*** I- Encode the structure of the value ***/
+
+        // Date and URL Encodable implementations are not compatible with JavaScript.
+        if let date = argument as? Date {
+            var singleValueStorage = structureEncoder.singleValueContainer()
+            try singleValueStorage.encode(date)
+
+        } else if let url = argument as? URL {
+            var singleValueStorage = structureEncoder.singleValueContainer()
+            try singleValueStorage.encode(url)
+
+        } else {
+            try argument.encode(to: structureEncoder)
+        }
+
+        /*** II- Get the encoded value and convert it to a JavaScript literal ***/
 
         guard let topLevelContainer = structureEncoder.container else {
             throw EncodingError.invalidValue(argument,
