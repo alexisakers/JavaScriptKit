@@ -104,6 +104,7 @@ extension JSErrorDomain {
 
     /// A set of localized error strings.
     private enum LocalizedStrings: String {
+
         static let localizationContainer: Bundle = {
             if let bundle = Bundle(identifier: "fr.alexaubry.JavaScriptKit") {
                 return bundle
