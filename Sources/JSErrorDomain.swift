@@ -105,8 +105,17 @@ extension JSErrorDomain {
     /// A set of localized error strings.
     private enum LocalizedStrings: String {
 
-        static var localizationContainer = Bundle(identifier: "fr.alexaubry.JavaScriptKit")!
-        static var localizationTableName = "Localizable"
+        static let localizationTableName = "Localizable"
+
+        static let localizationContainer: Bundle = {
+            if let bundle = Bundle(identifier: "fr.alexaubry.JavaScriptKit") {
+                return bundle
+            } else {
+                let frameworkBundle = Bundle(for: JavaScriptEncoder.self)
+                let url = frameworkBundle.url(forResource: "JavaScriptKit", withExtension: "bundle")!
+                return Bundle(url: url)!
+            }
+        }()
 
         case invalidReturnType = "JSErrorDomain.InvalidReturnType"
         case executionError = "JSErrorDomain.ExecutionError"
