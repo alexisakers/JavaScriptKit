@@ -105,6 +105,8 @@ extension JSErrorDomain {
     /// A set of localized error strings.
     private enum LocalizedStrings: String {
 
+        static let localizationTableName = "Localizable"
+
         static let localizationContainer: Bundle = {
             if let bundle = Bundle(identifier: "fr.alexaubry.JavaScriptKit") {
                 return bundle
@@ -114,7 +116,6 @@ extension JSErrorDomain {
                 return Bundle(url: url)!
             }
         }()
-        static let localizationTableName = "Localizable"
 
         case invalidReturnType = "JSErrorDomain.InvalidReturnType"
         case executionError = "JSErrorDomain.ExecutionError"
