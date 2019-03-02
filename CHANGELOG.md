@@ -1,5 +1,11 @@
 # _JavaScriptKit_ Changelog
 
+## 🔖 v2.0.1
+
+### Fixed
+
+- Fixed a crash for CocoaPods users related to resource bundles. Thanks [@a2](https://github.com/a2).
+
 ## 🔖 v2.0.0
 
 ### New Features
